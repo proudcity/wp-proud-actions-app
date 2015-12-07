@@ -1,0 +1,32 @@
+
+<ol class="breadcrumb clean">
+  <li>
+    <a href="" main-toggle="slide-left"><i class="fa fa-search"></i></a>
+  </li>
+  <li class="active">
+    <i class="fa fa-file-text-o"></i> Examine details
+  </li>
+</ol>
+
+<h4 class="margin-top-none">{{item.summary}}</h4>
+
+<div class="row">
+
+  <div class="col-sm-2">
+    <h4 class="track-status status-{{item.status}}">{{item.status}}</h4>
+    <h5 ng-if="item.requested_datetime != item.updated_datetime">Last updated: {{item.updated_datetime}}</h5>
+    <h5 ng-if="item.requested_datetime == item.updated_datetime">Not yet updated</h5>
+  </div>
+
+  <div class="col-sm-7 col-md-6">
+    <h6>{{item.requested_datetime | date:'MMM d yyyy'}}</h6>
+    <h6><a href="" ng-href="http://maps.google.com/maps?z=12&t=m&q=loc:{{item.lat}}+{{item.long}}" target="_blank"><i class="fa fa-map-marker"></i> {{item.address}}</a></h6>
+    <p>{{item.description}}</p>
+  </div>
+
+  <div class="col-sm-3 col-md-4">
+    <img src="{{item.media_url}}" class="img-responsive" />
+  </div>
+
+</div>
+<div main-toggle="slide-left" main-toggle-force="add" main-toggle-enter="true"></div>

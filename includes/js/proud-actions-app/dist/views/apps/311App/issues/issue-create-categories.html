@@ -1,0 +1,18 @@
+<div class="slide-left-2">
+  <ol class="breadcrumb clean">
+    <li class="active">
+      <i class="fa fa-th"></i> Select issue type
+    </li>
+  </ol>
+  <dl class="angular-311-2col">
+    <dd ng-repeat="item in types | orderBy: 'title'" class="col-sm-6 col-md-4">
+      <h4>
+        <a main-toggle="slide-left" href="" ui-sref="{{typeUrl(item.url)}}" style="color: {{item.field_icon.color}}"><i ng-if="item.field_icon" class="fa fa-{{item.field_icon.icon}}"></i><span>{{item.title}}</span></a>
+      </h4>
+    </dd>
+  </dl>
+</div>
+
+<div class="animation-wrap slide-left-2">
+  <div id="main-311-1" class="main main-311 transform clearfix quickfade" ui-view></div>
+</div>
