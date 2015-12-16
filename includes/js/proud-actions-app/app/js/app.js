@@ -23,8 +23,8 @@ angular.module('311AppParent', [
       $rootScope.currentRoute = '';
 
 
-      $rootScope.mapboxAccessToken = _.get(drupal, 'settings.proud_311_app.mapbox_access_token') || 'pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw';
-      $rootScope.mapboxMap = _.get(drupal, 'settings.proud_311_app.mapbox_map') || 'albatrossdigital.lpkdpcjb';
+      $rootScope.mapboxAccessToken = _.get(Proud, 'settings.proud_311_app.mapbox_access_token') || 'pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw';
+      $rootScope.mapboxMap = _.get(Proud, 'settings.proud_311_app.mapbox_map') || 'albatrossdigital.lpkdpcjb';
 
       $rootScope.proudShowcaseKey = '325jk154hl3y8r2J34NRAasdfasdf';
       $rootScope.showcaseApiUrl='http://ui.dev.getproudcity.com/';  //@todo: switch to my.getproudcity.com
@@ -81,12 +81,12 @@ angular.module('311AppParent', [
 		}
 	]
 )
-.directive('parent', function factory($state, Menu311, $location) {
+.directive('parent', function($rootScope, Menu311, $location) {
   return {
     restrict: 'C',
     link: function($scope, $element, $attrs) {
       if(!$location.$$path) {
-        $location.path(Menu311.default311Url);
+        $location.path(Menu311.getDefaultUrl($rootScope.appId));
       }
       
     }

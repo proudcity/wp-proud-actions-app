@@ -24,7 +24,7 @@ angular.module('311App')
     templateUrl: 'views/apps/311App/menu311.html',
     link: function($scope, $element, $attrs) {
       // Push to scope
-      $scope.menu = Menu311.menu;
+      $scope.menu = Menu311.getMenu($rootScope.appId);
     }
   }
 })

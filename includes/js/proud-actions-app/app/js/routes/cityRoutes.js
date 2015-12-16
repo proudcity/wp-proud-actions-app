@@ -20,8 +20,8 @@ angular.module('311AppParent')
         // FAQ depth 0
         .state("city", {
           url: '/city', 
-          abstract: true, 
-          templateUrl: 'views/apps/311App/app-311-wrap.html'
+          abstract: true,
+          template: '<div app-311-wrap></div>'
         } );
       // })
     }

@@ -15,15 +15,18 @@
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="bower_components/afkl-lazy-image/release/lazy-image-style.css">
     <link rel="stylesheet" href="http://dev.getproudcity.com/sites/all/themes/dev/proudtheme/css/proud-vendor.css">
-    <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/angular-google-places-autocomplete/src/autocomplete.css" />
-    <link rel="stylesheet" href="bower_components/angular-google-places-autocomplete/dist/autocomplete.min.css" />
     <!-- endbower -->
+    <!-- endbuild -->
+    <!-- build:css cs/maps.css -->
+    <link rel="stylesheet" href="bower_components/mapbox.js/mapbox.css">
+    <link rel="stylesheet" href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.mapbox.css">
     <!-- endbuild -->
     <!-- build:css css/app.min.css -->
     <link rel="stylesheet" href="css/app.css">
     <!-- endbuild -->
     <script type="text/javascript">
+
+    var Proud = {};
   
     </script>
     <script type="text/javascript">
@@ -37,9 +40,9 @@
   </head>
   <body>
     
-    <div class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
+    <div ng-init="$root.appId = 'proud_311_app-1'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
         
-    <!-- build:js js/bootstrap.min.js -->
+    <!-- build:js js/bootstrap.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/bootstrap-sass-official/assets/javascripts/bootstrap.js"></script>
     <script src="bower_components/lodash/lodash.js"></script>
@@ -48,23 +51,24 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="bower_components/angular-bindonce/bindonce.js"></script>
     <!-- endbuild -->
     <!-- build:js js/angular-router-animate.js -->
     <script src="bower_components/angular-touch/angular-touch.js"></script>
     <script src="bower_components/angular-animate/angular-animate.js"></script>
     <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbuild -->
-    <!-- build:js js/angular-lazy.min.js -->
+    <!-- build:js js/angular-lazy.js -->
     <script src="bower_components/angular-inview/angular-inview.js"></script>
     <script src="bower_components/angular-lazycompile/src/angular-lazycompile.js"></script>
+    <!-- endbuild -->
+    <!-- build:js js/maps.js -->
+    <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+    <script src="bower_components/mapbox.js/mapbox.standalone.js"></script>
+    <script src="bower_components/leaflet.locatecontrol/src/L.Control.Locate.js"></script>
     <!-- endbuild -->
     <!-- build:js js/libraries.min.js -->
     <!-- bower:js -->
     <script src="bower_components/afkl-lazy-image/release/lazy-image.js"></script>
-    <script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
-    <script src="bower_components/angular-google-places-autocomplete/src/autocomplete.js"></script>
-    <script src="bower_components/angular-google-places-autocomplete/dist/autocomplete.min.js"></script>
     <script src="bower_components/angular-stripe-checkout/angular-stripe-checkout.js"></script>
     <!-- endbower -->
     <!-- endbuild -->

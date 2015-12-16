@@ -12,8 +12,11 @@
     <meta name="keywords" ng-attr-content="{{metaKeywords()}}" />
     <title ng-bind="pageTitle();">FILLME!</title>
     <link rel="stylesheet" href="css/libraries.min.css">
+    <link rel="stylesheet" href="cs/maps.css">
     <link rel="stylesheet" href="css/app.min.css">
     <script type="text/javascript">
+
+    var Proud = {};
   
     </script>
     <script type="text/javascript">
@@ -27,12 +30,13 @@
   </head>
   <body>
     
-    <div class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
+    <div ng-init="$root.appId = 'proud_311_app-1'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
         
-    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.js"></script>
     <script src="js/angular-core.js"></script>
     <script src="js/angular-router-animate.js"></script>
-    <script src="js/angular-lazy.min.js"></script>
+    <script src="js/angular-lazy.js"></script>
+    <script src="js/maps.js"></script>
     <script src="js/libraries.min.js"></script>
     
     <script src="js/app.min.js"></script>

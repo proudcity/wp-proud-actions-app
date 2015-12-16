@@ -50,15 +50,7 @@ angular.module('311App')
           templateUrl: 'views/apps/311App/issues/issue-create-categories.html',
           resolve: {
             services: function($stateParams, TrackService, $rootScope) {
-              // @todo: remove
-              if ($stateParams.city == undefined) {
-                $stateParams = {
-                  "city": 'Huntsville',
-                  "state": 'AL'
-                };
-              }
-              console.log($stateParams.city +', '+ $stateParams.state);
-              return TrackService.query({address: $stateParams.city +', '+ $stateParams.state}).$promise.then(function(data) {
+              return TrackService.query({address: $rootScope.activeCity +', '+ $rootScope.activeState}).$promise.then(function(data) {
                 return data['request_types'] != undefined ? data['request_types'] : null;
               });
             }
@@ -114,7 +106,7 @@ angular.module('311App')
           controller: function($scope, $rootScope, $state, $http){
             $scope.type = $state.params.type;
             $scope.config = undefined;
-            $http.get('//workhorse.albatrossdigital.com/proudcity-api.php?state='+ $state.params.state +'&city='+ $state.params.city).success(function(data){
+            $http.get('//workhorse.albatrossdigital.com/proudcity-api.php?state='+ $rootScope.activeState +'&city='+ $rootScope.activeCity).success(function(data){
               $scope.config = data;
             });
 
