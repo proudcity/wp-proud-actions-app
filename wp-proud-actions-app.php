@@ -17,23 +17,36 @@ namespace Proud\ActionsApp;
 // Init rendered var for actions overlay
 $GLOBALS['proud_actions_app_rendered'] = false;
 
-if ( ! function_exists( 'proud_actions_init_widget' ) ) {
-  // Init on plugins loaded
-  function proud_actions_init_widget() {
-    require_once plugin_dir_path(__FILE__) . '/lib/proud-actions-widget.class.php';
-  }
+// Load Extendible
+// -----------------------
+if ( ! class_exists( 'ProudPlugin' ) ) {
+  require_once( plugin_dir_path(__FILE__) . '../wp-proud-core/proud-plugin.class.php' );
 }
 
-add_action('plugins_loaded', __NAMESPACE__ . '\\proud_actions_init_widget');
+class ActionsApp extends \ProudPlugin {
 
+  /**
+   * Constructor
+   */
+  public function __construct() {
 
+    parent::__construct( array(
+      'textdomain'     => 'wp-proud-actions-app',
+      'plugin_path'    => __FILE__,
+    ) );
 
-// Respond to navbar footer hook
-// Print widget if has not been rendered elsewhere
-// -----------------------------
-if ( ! function_exists( 'proud_actions_print_311 ' ) ) {
+    $this->hook( 'plugins_loaded', 'proud_actions_init_widget' );
+    $this->hook( 'proud_navbar_overlay_311', 'proud_actions_print_311');
+  }
+
   // Init on plugins loaded
-  function proud_actions_print_311() {
+  public function proud_actions_init_widget() {
+    require_once plugin_dir_path(__FILE__) . '/lib/proud-actions-widget.class.php';
+  }
+  
+  // Respond to navbar footer hook
+  // Print widget if has not been rendered elsewhere
+  public function proud_actions_print_311() {
     global $proudcore;
     // Add rendered variable to JS
     $proudcore->addJsSettings([
@@ -49,4 +62,6 @@ if ( ! function_exists( 'proud_actions_print_311 ' ) ) {
     }
   }
 }
-add_action('proud_navbar_overlay_311', __NAMESPACE__ . '\\proud_actions_print_311');
+
+
+new ActionsApp;
