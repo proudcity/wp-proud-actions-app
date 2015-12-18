@@ -5,7 +5,11 @@
       var instances = _.get(settings, 'proud_actions_app.instances');
       // initialize instances
       if (instances) {
+        // Got to have 1 ID... not really meant to have multiple
+        // on page, but this works
+        var useId;
         $.each(instances, function(id, appVals) {
+          useId = id;
           var $app = $('#' + id);
           if(!$app.hasClass('ng-scope')) {
             angular.bootstrap($app, ['311AppParent']);
@@ -22,7 +26,7 @@
                   event.callback(true);
                 }
                 else {
-                  event.callback(false, id, 0, ['menu', 'search']);
+                  event.callback(false, useId, 0, ['menu', 'search']);
                 }
                 window.location.hash = '/city/' + event['event'] + (event.hash || '') 
                 break;
