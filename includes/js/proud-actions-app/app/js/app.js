@@ -38,7 +38,7 @@ angular.module('311AppParent', [
       // Apply meta data if available
       $rootScope.$on('$stateChangeStart', 
         function(event, toState, toParams, fromState, fromParams){
-          console.log('sjsjs');
+          //console.log('sjsjs');
         }
       );
 

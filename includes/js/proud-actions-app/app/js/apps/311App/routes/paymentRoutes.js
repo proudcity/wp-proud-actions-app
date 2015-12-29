@@ -17,28 +17,29 @@ angular.module('311App')
           },
           url: "/payments",
           resolve: {
-            nodes: function($stateParams, Node) {
-              return Node.query({type: 'payment'}).$promise.then(function(data) {
-                return data.list;
+            posts: function($stateParams, Post) {
+              return Post.query({postType: 'payments'}).$promise.then(function(data) {
+                return data;
               });
             }
           },
-          controller: function($scope, $rootScope, $state, nodes){
-            $scope.nodes = nodes;
+          controller: function($scope, $rootScope, $state, posts){
+            $scope.posts = posts;
           }
         })
 
         .state("city.payments.type", {
           templateUrl: 'views/apps/311App/payment/payment-type.html',
-          url: "/:nid",
+          url: "/:slug",
           resolve: {
-            node: function($stateParams, $filter, nodes) {
-              return $filter('filter')(nodes, { nid: $stateParams.nid })[0];
+            post: function($stateParams, $filter, posts) {
+              return $filter('filter')(posts, { slug: $stateParams.slug })[0];
             },
             stripe: StripeCheckoutProvider.load
           },
-          controller: function($scope, $rootScope, $state, node, Payment, StripeCheckout){
-            $scope.node = node;
+          controller: function($scope, $rootScope, $state, post, Payment, StripeCheckout){
+            console.log(post);
+            $scope.post = post;
             $scope.demoInfo = false;
             $scope.payment = {
               number: '',
@@ -79,7 +80,7 @@ angular.module('311App')
 
             // Initialize Stripe
             var handler = StripeCheckout.configure({
-              name: node.title,
+              name: post.title,
               token: function(token, args) {
                 //$log.debug("Got stripe token: " + token.id);
               }
@@ -87,8 +88,8 @@ angular.module('311App')
 
             // Submit
             $scope.submit = function(payment) {
-              if ($scope.node.field_payment_link != undefined) {
-                window.location = $scope.node.field_payment_link.replace('[invoice]', payment.number).replace('[amount]', payment.amount);
+              if ($scope.post.field_payment_link != undefined) {
+                window.location = $scope.post.field_payment_link.replace('[invoice]', payment.number).replace('[amount]', payment.amount);
               }
               else {
                 // Stripe checkout 
@@ -106,7 +107,7 @@ angular.module('311App')
                   });
 
                 // @todo?: This linked to Drupal
-                // window.location = $scope.node.url + '?edit[line_item_fields][field_payment_invoice_id][und][0][value]=' + $scope.payment.number + '&edit[line_item_fields][helm_payment_amount][und][0][value]=' + $scope.amount;
+                // window.location = $scope.post.url + '?edit[line_item_fields][field_payment_invoice_id][und][0][value]=' + $scope.payment.number + '&edit[line_item_fields][helm_payment_amount][und][0][value]=' + $scope.amount;
               }
             }
 
@@ -119,11 +120,11 @@ angular.module('311App')
           templateUrl: 'views/apps/311App/payment/payment-success.html',
           url: "/:nid/:token",
           resolve: {
-            node: function($stateParams, $filter, nodes) {
-              return $filter('filter')(nodes, { nid: $stateParams.nid })[0];
+            post: function($stateParams, $filter, posts) {
+              return $filter('filter')(posts, { nid: $stateParams.nid })[0];
             },
           },
-          controller: function($scope, $rootScope, $state, node, Payment){
+          controller: function($scope, $rootScope, $state, post, Payment){
             
 
           }

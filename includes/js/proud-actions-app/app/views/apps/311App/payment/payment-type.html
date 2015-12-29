@@ -8,7 +8,7 @@
   </li>
 </ol>
 
-<h3>{{node.title}}</h3>
+<h3>{{post.title.rendered}}</h3>
 
 <div class="row">
 
@@ -49,7 +49,7 @@
 
   <div class="col-sm-6">
     <h4>Other ways to pay</h4>
-    <div class="body" ng-bind-html="node.body.value"></div>
+    <div class="body" ng-bind-html="post.content.rendered"></div>
   </div>
 
 </div>

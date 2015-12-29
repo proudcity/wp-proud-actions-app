@@ -5,8 +5,8 @@
     </li>
   </ol>
   <dl class="angular-311-2col">
-    <dd ng-repeat="item in nodes | orderBy: 'title'" class="col-sm-6 col-md-4 category-wrapper">
-      <h4><a main-toggle="slide-left" href="" ui-sref="city.payments.type({nid: item.nid})" style="color: {{item.field_icon.color}}"><i ng-if="item.field_icon" class="fa {{item.field_icon.icon}}"></i><span>{{item.title}}</span></a></h4>
+    <dd ng-repeat="item in posts | orderBy: 'title'" class="col-sm-6 col-md-4 category-wrapper">
+      <h4><a main-toggle="slide-left" href="" ui-sref="city.payments.type({slug: item.slug})"><i ng-if="item.meta.icon" class="fa {{item.meta.icon}}"></i><span>{{item.title.rendered}}</span></a></h4>
     </dd>
   </dl>
 </div>
