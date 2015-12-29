@@ -72,6 +72,15 @@ class ActionsBox extends Core\ProudWidget {
     wp_enqueue_script('proud-actions-app-libraries', $path . 'js/libraries.min.js', array('angular'), false, true);
     wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js', array('proud-actions-app-libraries'), false, true);
     wp_enqueue_script('proud-actions-app-templates', $path . 'views/app.templates.js', array('proud-actions-app-app'), false, true);
+    
+    // Add global settings
+    parent::addJsSettings(array('proud_actions_app' => array('global' => array(
+      //'payment_key' => '', //@todo
+      'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
+      //'payment_url' => '',
+      //'track_url' => '',
+      //'seeclickfixUrl' => '',
+    ))));
   }
 
   /**

@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name:        Proud 311 App
-Plugin URI:         http://getproudcity.com
+Plugin Name:        Proud 311 Actions App
+Plugin URI:         http://proudcity.com
 Description:        ProudCity distribution
 Version:            1.0.0
 Author:             ProudCity
-Author URI:         http://getproudcity.com
+Author URI:         http://proudcity.com
 
 License:            MIT License
 License URI:        http://opensource.org/licenses/MIT
