@@ -30,7 +30,8 @@ angular.module('wordpressService', ['ngResource'])
 
   .factory('TaxonomyTerm', ['$resource', '$rootScope', function ($resource, $rootScope) {
     var params = {
-      vocabulary: '@vocabulary'
+      vocabulary: '@vocabulary',
+      per_page: 1000,
     };
     if($rootScope.categorySection) {
       params['field_faq_section'] = $rootScope.categorySection;
