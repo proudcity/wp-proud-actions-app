@@ -12,10 +12,20 @@
 
 <div class="row">
 
-  <div class="col-sm-6">
-    <h4>Pay online now</h4>
- 
+  <div class="col-sm-5" ng-if="post.meta.link">
 
+    <h4>Online payments</h4>
+    <p>
+      <a href="" ng-href="{{post.meta.link}}" class="btn btn-primary btn-lg" target="_blank">Pay online now &raquo;</a>
+    </p>
+    <p>
+      <small><em>You will be redirected to our secure online payment provider.</em></small>
+    </p>
+  </div>
+
+  <div ng-if="!post.meta.link">
+
+    <h4>Pay online now</h4>
     <form class="form-horizontal" role="form" method="GET" ng-submit="submit(payment)">
       <div class="form-group" ng-class="numberClass">
         <label class="control-label col-sm-4" for="invoice_number">Invoice number:</label>
