@@ -35,13 +35,14 @@ class ActionsApp extends \ProudPlugin {
       'plugin_path'    => __FILE__,
     ) );
 
-    $this->hook( 'plugins_loaded', 'proud_actions_init_widget' );
+    $this->hook( 'plugins_loaded', 'proud_actions_init_widgets' );
     $this->hook( 'proud_navbar_overlay_311', 'proud_actions_print_311');
   }
 
   // Init on plugins loaded
-  public function proud_actions_init_widget() {
+  public function proud_actions_init_widgets() {
     require_once plugin_dir_path(__FILE__) . '/lib/proud-actions-widget.class.php';
+    require_once plugin_dir_path(__FILE__) . '/lib/proud-action-menu-widget.class.php';
   }
   
   // Respond to navbar footer hook
