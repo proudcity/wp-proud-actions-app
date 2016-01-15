@@ -22,6 +22,7 @@
               case 'answers':
               case 'payments':
               case 'report':
+              case 'status':
                 if(_.get(settings, 'proud_actions_app.global.render_in_overlay')) {
                   event.callback(true);
                 }
