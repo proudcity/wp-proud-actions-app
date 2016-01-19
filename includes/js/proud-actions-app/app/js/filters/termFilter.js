@@ -42,11 +42,18 @@ angular.module('311AppParent')
 
 // Filters by checking there are no parents
 .filter('termsNoParent', function() {
-  return function(items) {
+  return function(items, categories) {
     var filtered = [];
     for(var i = 0; i < items.length; i++) {
-      if(items[i].parent == 0)
-        filtered.push(items[i]);
+      if(items[i].parent == 0) {
+
+        if( !categories )
+          filtered.push(items[i]);
+        else {
+          if( categories.indexOf(items[i].slug) >= 0 )
+            filtered.push(items[i]);
+        }
+      }
     }
     return filtered;
   }

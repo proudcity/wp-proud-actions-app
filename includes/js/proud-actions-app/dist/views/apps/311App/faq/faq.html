@@ -1,7 +1,7 @@
 <div class="slide-left-2 column">
   <ol class="breadcrumb clean"><li class="active"><i class="fa fa-th"></i> Select answer type</li></ol>
   <dl class="angular-311-2col">
-    <dd ng-repeat="item in terms | termsNoParent | orderBy: 'weight'" class="col-sm-6 col-md-4" ng-class="{'active' : item.slug == active.slug, 'expanded': $root.displayExpanded('answers')}">
+    <dd ng-repeat="item in terms | termsNoParent:$root.categories | orderBy: 'weight'" class="col-sm-6 col-md-4" ng-class="{'active' : item.slug == active.slug, 'expanded': $root.displayExpanded('answers')}">
       <h4><a ng-click="open(item)" href="" ng-click="open(item)">
         <i ng-if="item.description" class="fa {{item.description}}"></i><span ng-bind-html="item.name"></span>
       </a></h4>

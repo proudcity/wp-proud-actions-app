@@ -16,6 +16,17 @@ class ActionsBox extends Core\ProudWidget {
   }
 
   function initialize() {
+    // Get answers topics
+    $topics = get_categories( [
+      'taxonomy' => 'faq-topic',
+      'orderby' => 'name',
+      'parent' => 0
+    ] );
+    $options = [];
+    foreach ( $topics as $topic ) {
+      $options[$topic->slug] = $topic->name;
+    }
+
     $this->settings = [
       'active_tabs' => [
         '#title' => 'Active tabs',
@@ -41,20 +52,14 @@ class ActionsBox extends Core\ProudWidget {
         '#to_js_settings' => true
       ],
       'category_section' => [
-        '#type' => 'radios',
+        '#type' => 'checkboxes',
         '#title' => 'FAQ section',
-        '#description' => 'Choose the faq "section" type you would like to be displayed.',
-        '#default_value' => 'all',
-        '#options' => [
-          'all' => 'Show all', 
-          'residents' => 'Residents',
-          'business' => 'Business',
-          'visitors' => 'Visitors'
-        ],
+        '#description' => 'Choose the faq "topics" you would like to be displayed.',
+        '#default_value' => array_keys( $options ),
+        '#options' => $options,
         '#to_js_settings' => true
       ]
     ];
-    parent::initialize();
   }
 
   public function registerLibraries() {
@@ -92,7 +97,6 @@ class ActionsBox extends Core\ProudWidget {
    * @param array $instance Saved values from database.
    */
   public function printWidget( $args, $instance ) {
-
     // We are rendering
     $GLOBALS['proud_actions_app_rendered'] = true;
 

@@ -19,15 +19,15 @@ angular.module('311App')
         active311Items = _.get(Proud, 'settings.proud_311_app.' + appId + '.active_tabs') || {
             'faq': true, 
             'payments': true, 
-            'report': true, 
-            'status': true
+            'report': 0, 
+            'status': 0
         };
 
         // Push objects
         _.forEach(active311Items, function(item, key) {
           switch(key) {
             case 'faq':
-              if(item) {
+              if(item && item !== '0') {
                 menu.push({title: 'Get Answers', state: 'faq', icon: 'fa-question-circle'});
                 if(!default311Url) {
                   default311Url = '/city/answers';
@@ -35,7 +35,7 @@ angular.module('311App')
               }
               break;
             case 'payments':
-              if(item) {
+              if(item && item !== '0') {
                 menu.push({title: 'Make a Payment', state: 'payments', icon: 'fa-credit-card'});
                 if(!default311Url) {
                   default311Url = '/city/payments';
@@ -43,7 +43,7 @@ angular.module('311App')
               }
               break;
             case 'report':
-              if(item) {
+              if(item && item !== '0') {
                 menu.push({title: 'Report an Issue', state: 'report', icon: 'fa-exclamation-triangle'});
                 if(!default311Url) {
                   default311Url = '/city/report';
@@ -51,7 +51,7 @@ angular.module('311App')
               }
               break;
             case 'status':
-              if(item) {
+              if(item && item !== '0') {
                 menu.push({title: 'Check Status', state: 'status', icon: 'fa-wrench'});
                 if(!default311Url) {
                   default311Url = '/city/status';
