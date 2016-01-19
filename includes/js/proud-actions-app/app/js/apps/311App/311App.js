@@ -59,17 +59,9 @@ angular.module('311App', [
       // Display options
       // ---------------------------
       // Expand categories?
-      $rootScope.appPageDisplay = _.get(Proud, 'settings.proud_311_app.' + $rootScope.appId + '.expand_section') || false;
+      $rootScope.appPageDisplay = _.get(Proud, 'settings.proud_actions_app.instances.' + $rootScope.appId + '.expand_section') || false;
       // Restrict to visitor, resident, ect ?
-      var categories = _.get(Proud, 'settings.proud_311_app.' + $rootScope.appId + '.category_section') || {
-        "health": "health",
-        "jobs-contracts": "jobs-contracts",
-        "payments": "payments",
-        "permits-licensing": "0",
-        "property-housing": "0",
-        "services": "0",
-        "transportation": "transportation"
-      };
+      var categories = _.get(Proud, 'settings.proud_actions_app.instances.' + $rootScope.appId + '.category_section') || false;
       categories = _.transform(_.values(categories), function(res, v, k) {
         if(v && v !== "0") {
           res.push(v);

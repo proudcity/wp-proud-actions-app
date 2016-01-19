@@ -16,7 +16,7 @@ angular.module('311App')
     var initMenu = function(appId) {
       // Only run once
       if(!active311Items) {
-        active311Items = _.get(Proud, 'settings.proud_311_app.' + appId + '.active_tabs') || {
+        active311Items = _.get(Proud, 'settings.proud_actions_app.instances.' + appId + '.active_tabs') || {
             'faq': true, 
             'payments': true, 
             'report': 0, 
