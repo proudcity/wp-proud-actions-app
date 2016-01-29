@@ -41,16 +41,6 @@ class ActionsBox extends Core\ProudWidget {
         '#description' => 'Click all tabs you would like to appear',
         '#to_js_settings' => true
       ],
-      'expand_section' => [
-        '#type' => 'checkbox',
-        '#title' => 'Expand FAQ dropdowns?',
-        '#description' => 'Checking this box will expand all the top faq categories, displaying all options at once.',
-        '#return_value' => 'answers',
-        '#label_above' => true,
-        '#replace_title' => 'Yes',
-        '#default_value' => false,
-        '#to_js_settings' => true
-      ],
       'category_section' => [
         '#type' => 'checkboxes',
         '#title' => 'FAQ section',
@@ -58,7 +48,17 @@ class ActionsBox extends Core\ProudWidget {
         '#default_value' => array_keys( $options ),
         '#options' => $options,
         '#to_js_settings' => true
-      ]
+      ],
+      'expand_section' => [
+        '#type' => 'checkbox',
+        '#title' => 'Advanced',
+        '#description' => 'Checking this box will expand all the top faq categories, displaying all options at once.',
+        '#return_value' => 'answers',
+        '#label_above' => true,
+        '#replace_title' => 'Expand FAQ dropdowns',
+        '#default_value' => false,
+        '#to_js_settings' => true
+      ],
     ];
   }
 
