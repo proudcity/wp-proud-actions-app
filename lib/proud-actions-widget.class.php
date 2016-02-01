@@ -23,10 +23,11 @@ class ActionsBox extends Core\ProudWidget {
       'parent' => 0
     ] );
     $options = [];
-    foreach ( $topics as $topic ) {
-      $options[$topic->slug] = $topic->name;
+    if( !empty( $topics ) && empty( $topics['errors'] ) ) {
+      foreach ( $topics as $topic ) {
+        $options[$topic->slug] = $topic->name;
+      }
     }
-
     $this->settings = [
       'active_tabs' => [
         '#title' => 'Active tabs',
