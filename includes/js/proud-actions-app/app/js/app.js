@@ -30,7 +30,7 @@ angular.module('311AppParent', [
       $rootScope.showcaseApiUrl='http://ui.dev.getproudcity.com/';  //@todo: switch to my.getproudcity.com
 
       // $rootScope.proudcityApi='http://localhost:32790/api/proudcity/';
-      $rootScope.proudcityApi='http://my.getproudcity.com/api/proudcity/';
+      $rootScope.proudcityApi='https://west-carrollton-oh.proudcity.com';
       //$rootScope.proudcityApi='http://localhost:32804/api/proudcity/';
       $rootScope.proxyUrl = $rootScope.proudcityApi + 'proxy';
       $rootScope.paymentUrl = $rootScope.proudcityApi + 'invoice-example';

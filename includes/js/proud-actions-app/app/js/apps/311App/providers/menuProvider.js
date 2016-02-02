@@ -19,8 +19,8 @@ angular.module('311App')
         active311Items = _.get(Proud, 'settings.proud_actions_app.instances.' + appId + '.active_tabs') || {
             'faq': true, 
             'payments': true, 
-            'report': 0, 
-            'status': 0
+            'report': true, 
+            'status': true
         };
 
         // Push objects
