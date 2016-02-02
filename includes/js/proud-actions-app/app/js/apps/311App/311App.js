@@ -24,6 +24,9 @@ angular.module('311App', [
       $rootScope.trackUrl = _.get(Proud, 'settings.proud_actions_app.global.track_url') || 'http://markaspot.helmcivic.com/georeport/v2';
       $rootScope.seeclickfixUrl = _.get(Proud, 'settings.proud_actions_app.global.seeclickfixUrl') || "https://test.seeclickfix.com/api/v2/";
 
+      $rootScope.issue = _.get(Proud, 'settings.proud_actions_app.global.issue') || 'http://markaspot.helmcivic.com/georeport/v2';
+      $rootScope.payment = _.get(Proud, 'settings.proud_actions_app.global.payment') || 'http://markaspot.helmcivic.com/georeport/v2';
+
       // Global options
       // ---------------------------
       $rootScope.activeCity = _.get(Proud, 'settings.global.location.city') || 'Huntsville';
