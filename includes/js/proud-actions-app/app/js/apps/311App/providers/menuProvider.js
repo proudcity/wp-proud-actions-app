@@ -44,7 +44,14 @@ angular.module('311App')
               break;
             case 'report':
               if(item && item !== '0') {
-                menu.push({title: 'Report an Issue', state: 'report', icon: 'fa-exclamation-triangle'});
+                var item = {title: 'Report an Issue', icon: 'fa-exclamation-triangle'};
+                if ($rootScope.issue.service == 'link') {
+                  item.url = $rootScope.issue.link_report;
+                }
+                else {
+                  item.state = 'report';
+                }
+                menu.push(item);
                 if(!default311Url) {
                   default311Url = '/city/report';
                 }
@@ -52,7 +59,14 @@ angular.module('311App')
               break;
             case 'status':
               if(item && item !== '0') {
-                menu.push({title: 'Check Status', state: 'status', icon: 'fa-wrench'});
+                var item = {title: 'Check Status', icon: 'fa-wrench'};
+                if ($rootScope.issue.service == 'link') {
+                  item.url = $rootScope.issue.link_report;
+                }
+                else {
+                  item.state = 'report';
+                }
+                menu.push(item);
                 if(!default311Url) {
                   default311Url = '/city/status';
                 }
