@@ -53,7 +53,16 @@ class ActionsApp extends \ProudPlugin {
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'global' => [
-          'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered']
+          'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered'],
+          'issue' => array(
+            'service' => get_option('311_service', 'seeclickfix'),
+            'link_create' => get_option('311_link_create'), 
+            'link_lookup' => get_option('311_link_lookup'),
+          ),
+          'payment' => array(
+            'service' => get_option('payment_service', 'seeclickfix'),
+            'stripe_key' => get_option('payment_stripe_key'), 
+          ), 
         ]
       ]
     ]);
