@@ -19,7 +19,7 @@ angular.module('311App', [
 
       // Api Options
       // ---------------------------
-      $rootScope.apiUrl = _.get(Proud, 'settings.proud_actions_app.global.api_path') || 'http://wordpress.albatrossdemos.com/wp-json/wp/v2/';
+      $rootScope.apiUrl = _.get(Proud, 'settings.proud_actions_app.global.api_path') || 'https://west-carrollton-oh.proudcity.com/wp-json/wp/v2/';
       $rootScope.paymentUrl = _.get(Proud, 'settings.proud_actions_app.global.payment_url') || 'http://demo.helmcivic.com/invoice-example';//$rootScope.proudcityApi + 'invoice-example';
       $rootScope.trackUrl = _.get(Proud, 'settings.proud_actions_app.global.track_url') || 'http://markaspot.helmcivic.com/georeport/v2';
       $rootScope.seeclickfixUrl = _.get(Proud, 'settings.proud_actions_app.global.seeclickfixUrl') || "https://test.seeclickfix.com/api/v2/";
@@ -62,11 +62,13 @@ angular.module('311App', [
       $rootScope.appPageDisplay = _.get(Proud, 'settings.proud_actions_app.instances.' + $rootScope.appId + '.expand_section') || false;
       // Restrict to visitor, resident, ect ?
       var categories = _.get(Proud, 'settings.proud_actions_app.instances.' + $rootScope.appId + '.category_section') || false;
-      categories = _.transform(_.values(categories), function(res, v, k) {
-        if(v && v !== "0") {
-          res.push(v);
-        }
-      });
+      if(categories) {  
+        categories = _.transform(_.values(categories), function(res, v, k) {
+          if(v && v !== "0") {
+            res.push(v);
+          }
+        });
+      }
       $rootScope.categories = categories;
     }
   }
