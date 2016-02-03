@@ -84,19 +84,17 @@ angular.module('311App')
 // Open external links in a new tab?
 .directive('href', function($rootScope) {
   return {
-    compile: function(element) {
-      return {
-        post: function(scope, element, attributes, controller, transcludeFn){
-          if ($rootScope.externalLinkWindow) {
-            var a = new RegExp('/' + window.location.host + '/');
-            var href = element.attr('href');console.log(href);
-            if(href != undefined && href && !a.test(href)) {       
-              console.log(href);
-              element.attr('target', '_blank');
-            }
-          }
+    restrict: 'A',
+    link: function($scope, $element, $attrs) {
+
+      if ($rootScope.externalLinkWindow) {
+        var a = new RegExp('/' + window.location.host + '/');
+        var href = $attrs.ngHref != undefined ? $attrs.ngHref : $attrs.href;
+        if(href != undefined && href.indexOf('http') != -1 && !a.test(href)) {       
+          $element.attr('target', '_blank');
         }
       }
+
     }
   };
 });

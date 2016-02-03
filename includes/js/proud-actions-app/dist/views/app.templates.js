@@ -47,7 +47,7 @@ angular.module('311AppParent').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/apps/311App/menu311.html',
-    "<div ng-if=\"menu.length >= 1\" class=\"col-sm-12 nav-contain\"><ul class=\"nav nav-pills nav-stacked {{addlClass}}\"><li ng-repeat=\"item in menu\" ui-sref-active=\"active\"><a ng-if=\"item.state\" menu-click main-toggle=\"slide-left\" main-toggle-force=\"remove\" animate-route=\"{{item.direction}}\" ui-sref=\"city.{{item.state}}\" menu-item><i class=\"fa {{item.icon}}\"></i> <span class=\"hidden-xs\">{{item.title}}</span></a> <a ng-if=\"item.url\" ng-href=\"{{item.url}}\"><i class=\"fa {{item.icon}}\"></i> <span class=\"hidden-xs\">{{item.title}}</span></a></li></ul></div>"
+    "<div ng-if=\"menu.length >= 1\" class=\"col-sm-12 nav-contain\"><ul class=\"nav nav-pills nav-stacked {{addlClass}}\"><li ng-repeat=\"item in menu\" ui-sref-active=\"active\"><a ng-if=\"item.state\" menu-click main-toggle=\"slide-left\" main-toggle-force=\"remove\" animate-route=\"{{item.direction}}\" ui-sref=\"city.{{item.state}}\" menu-item><i class=\"fa {{item.icon}}\"></i> <span class=\"hidden-xs\">{{item.title}}</span></a> <a ng-if=\"item.url\" href=\"\" ng-href=\"{{item.url}}\"><i class=\"fa {{item.icon}}\"></i> <span class=\"hidden-xs\">{{item.title}}</span></a></li></ul></div>"
   );
 
 
