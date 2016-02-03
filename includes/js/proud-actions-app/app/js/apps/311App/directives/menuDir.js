@@ -85,17 +85,18 @@ angular.module('311App')
 .directive('href', function($rootScope) {
   return {
     compile: function(element) {
-      if ($rootScope.externalLinkWindow) {
-              console.log($rootScope);
-
-        var a = new RegExp('/' + window.location.host + '/');
-        var href = element.attr('href');console.log(href);
-        if(href != undefined && href && !a.test(href)) {       
-          console.log(href);
-          element.attr('target', '_blank');
+      return {
+        post: function(scope, element, attributes, controller, transcludeFn){
+          if ($rootScope.externalLinkWindow) {
+            var a = new RegExp('/' + window.location.host + '/');
+            var href = element.attr('href');console.log(href);
+            if(href != undefined && href && !a.test(href)) {       
+              console.log(href);
+              element.attr('target', '_blank');
+            }
+          }
         }
       }
-      
     }
   };
 });
