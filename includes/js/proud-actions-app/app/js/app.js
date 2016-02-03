@@ -26,8 +26,10 @@ angular.module('311AppParent', [
       $rootScope.mapboxAccessToken = _.get(Proud, 'settings.proud_actions_app.mapbox_access_token') || 'pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw';
       $rootScope.mapboxMap = _.get(Proud, 'settings.proud_actions_app.mapbox_map') || 'albatrossdigital.lpkdpcjb';
 
-      $rootScope.proudShowcaseKey = '325jk154hl3y8r2J34NRAasdfasdf';
-      $rootScope.showcaseApiUrl='http://ui.dev.getproudcity.com/';  //@todo: switch to my.getproudcity.com
+      $rootScope.externalLinkWindow =_.get(Proud, 'settings.global.external_link_window') || true;
+
+      //$rootScope.proudShowcaseKey = '325jk154hl3y8r2J34NRAasdfasdf';
+      //$rootScope.showcaseApiUrl='http://ui.dev.getproudcity.com/';  //@todo: switch to my.getproudcity.com
 
       // $rootScope.proudcityApi='http://localhost:32790/api/proudcity/';
       $rootScope.proudcityApi='https://west-carrollton-oh.proudcity.com';

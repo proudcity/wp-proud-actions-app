@@ -57,10 +57,10 @@ class ActionsApp extends \ProudPlugin {
           'issue' => array(
             'service' => get_option('311_service', 'seeclickfix'),
             'link_create' => get_option('311_link_create'), 
-            'link_lookup' => get_option('311_link_lookup'),
+            'link_status' => get_option('311_link_status'),
           ),
           'payment' => array(
-            'service' => get_option('payment_service', 'seeclickfix'),
+            'service' => get_option('payment_service', 'stripe'),
             'stripe_key' => get_option('payment_stripe_key'), 
           ), 
         ]

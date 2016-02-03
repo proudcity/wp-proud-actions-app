@@ -45,7 +45,6 @@ angular.module('311App')
       if(!$scope.mainToggleEnter) {
         // listen for a click
         $element.on('click', function() {
-          console.log($rootScope.currentYPosition());
           // Animate down if necessary
           if($rootScope.currentYPosition() < 300) {
             $('html, body').animate({
@@ -79,4 +78,23 @@ angular.module('311App')
       });
     }
   }
+})
+
+
+// Open external links in a new tab?
+.directive('href', function($rootScope) {
+  return {
+    compile: function(element) {
+      console.log($rootScope);
+      if ($rootScope.externalLinkWindow) {
+        var a = new RegExp('/' + window.location.host + '/');
+        var href = element.attr('href');
+        if(href != undefined && href && !a.test(element.href)) {       
+          console.log(href);
+          element.attr('target', '_blank');
+        }
+      }
+      
+    }
+  };
 });

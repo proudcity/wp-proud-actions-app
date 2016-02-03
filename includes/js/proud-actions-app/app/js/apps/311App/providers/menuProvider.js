@@ -23,6 +23,8 @@ angular.module('311App')
             'status': true
         };
 
+        var issue = _.get(Proud, 'settings.proud_actions_app.global.issue') || {'service': 'seeclickfix'};
+
         // Push objects
         _.forEach(active311Items, function(item, key) {
           switch(key) {
@@ -45,8 +47,8 @@ angular.module('311App')
             case 'report':
               if(item && item !== '0') {
                 var item = {title: 'Report an Issue', icon: 'fa-exclamation-triangle'};
-                if ($rootScope.issue.service == 'link') {
-                  item.url = $rootScope.issue.link_report;
+                if (issue.service == 'link') {
+                  item.url = issue.link_report;
                 }
                 else {
                   item.state = 'report';
@@ -60,8 +62,8 @@ angular.module('311App')
             case 'status':
               if(item && item !== '0') {
                 var item = {title: 'Check Status', icon: 'fa-wrench'};
-                if ($rootScope.issue.service == 'link') {
-                  item.url = $rootScope.issue.link_report;
+                if (issue.service == 'link') {
+                  item.url = issue.link_status;
                 }
                 else {
                   item.state = 'report';
