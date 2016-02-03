@@ -38,7 +38,7 @@ class ActionsBox extends Core\ProudWidget {
           'report' => 'Report an Issue',
           'status' => 'Check status',
         ],
-        '#default_value' => ['faq', 'payments', 'report', 'status'],
+        '#default_value' => ['faq' => 1, 'payments' => 1, 'report' => 1, 'status' => 1],
         '#description' => 'Click all tabs you would like to appear',
         '#to_js_settings' => true
       ],
