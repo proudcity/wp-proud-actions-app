@@ -85,11 +85,12 @@ angular.module('311App')
 .directive('href', function($rootScope) {
   return {
     compile: function(element) {
-      console.log($rootScope);
       if ($rootScope.externalLinkWindow) {
+              console.log($rootScope);
+
         var a = new RegExp('/' + window.location.host + '/');
-        var href = element.attr('href');
-        if(href != undefined && href && !a.test(element.href)) {       
+        var href = element.attr('href');console.log(href);
+        if(href != undefined && href && !a.test(href)) {       
           console.log(href);
           element.attr('target', '_blank');
         }

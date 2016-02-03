@@ -23,8 +23,8 @@ angular.module('311AppParent', [
       $rootScope.currentRoute = '';
 
 
-      $rootScope.mapboxAccessToken = _.get(Proud, 'settings.proud_actions_app.mapbox_access_token') || 'pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw';
-      $rootScope.mapboxMap = _.get(Proud, 'settings.proud_actions_app.mapbox_map') || 'albatrossdigital.lpkdpcjb';
+      $rootScope.mapboxAccessToken = _.get(Proud, 'settings.global.mapbox.token') || 'pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw';
+      $rootScope.mapboxMap = _.get(Proud, 'settings.global.mapbox.map') || 'albatrossdigital.lpkdpcjb';
 
       $rootScope.externalLinkWindow =_.get(Proud, 'settings.global.external_link_window') || true;
 
