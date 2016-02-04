@@ -105,10 +105,6 @@ angular.module('311App')
           templateUrl: 'views/apps/311App/issues/issue-create-map.html',         
           controller: function($scope, $rootScope, $state, $http){
             $scope.type = $state.params.type;
-            $scope.config = undefined;
-            $http.get('//workhorse.albatrossdigital.com/proudcity-api.php?state='+ $rootScope.activeState +'&city='+ $rootScope.activeCity).success(function(data){
-              $scope.config = data;
-            });
 
             $scope.next = function() {
               console.log();
@@ -125,47 +121,46 @@ angular.module('311App')
             }
 
             $scope.$watch('config', function(value){
-              if ($scope.config != undefined) {
-                L.mapbox.accessToken = $rootScope.mapboxAccessToken;
 
-                var map = new L.mapbox.Map('issue-map', $rootScope.mapboxMap, {
-                    center: new L.LatLng($scope.config.lat, $scope.config.lng),
-                    zoom: 15,
-                    scrollWheelZoom: false
-                });
+              L.mapbox.accessToken = $rootScope.mapboxAccessToken;
 
-                $scope.marker = null;
+              var map = new L.mapbox.Map('issue-map', $rootScope.mapboxMap, {
+                  center: new L.LatLng($rootScope.location.lat, $rootScope.location.lng),
+                  zoom: 15,
+                  scrollWheelZoom: false
+              });
 
-                var addMarker = function(self) {
-                  var latlng = self.latlng != undefined ? self.latlng : new L.LatLng(self.feature.center[1], self.feature.center[0]);
-                  $scope.marker = L.marker(latlng, {
-                    icon: L.mapbox.marker.icon({
-                        'marker-color': 'ff8888'
-                    }),
-                    draggable: true
-                  }).addTo(map);
-                  $scope.$apply();
-                }
+              $scope.marker = null;
 
-                // Add marker when the map is clicked (if it hasn't already been added)
-                map.on('click', function(self) {
-                  if ($scope.marker === null) {
-                    addMarker(self);
-                  }
-                });
-
-                // Add geocode control, add marker when selected
-                map.addControl(L.mapbox.geocoderControl('mapbox.places', {
-                    keepOpen: true,
-                    autocomplete: true
-                }).on('select', addMarker).on('autoselect', addMarker));
-                
-                // Add locate control, add marker when located
-                L.control.locate({
-                  drawCircle: true
+              var addMarker = function(self) {
+                var latlng = self.latlng != undefined ? self.latlng : new L.LatLng(self.feature.center[1], self.feature.center[0]);
+                $scope.marker = L.marker(latlng, {
+                  icon: L.mapbox.marker.icon({
+                      'marker-color': 'ff8888'
+                  }),
+                  draggable: true
                 }).addTo(map);
-                map.on('locationfound', addMarker);
+                $scope.$apply();
               }
+
+              // Add marker when the map is clicked (if it hasn't already been added)
+              map.on('click', function(self) {
+                if ($scope.marker === null) {
+                  addMarker(self);
+                }
+              });
+
+              // Add geocode control, add marker when selected
+              map.addControl(L.mapbox.geocoderControl('mapbox.places', {
+                  keepOpen: true,
+                  autocomplete: true
+              }).on('select', addMarker).on('autoselect', addMarker));
+              
+              // Add locate control, add marker when located
+              L.control.locate({
+                drawCircle: true
+              }).addTo(map);
+              map.on('locationfound', addMarker);
               
             });
 

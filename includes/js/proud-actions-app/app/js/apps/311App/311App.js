@@ -28,6 +28,7 @@ angular.module('311App', [
       // ---------------------------
       $rootScope.activeCity = _.get(Proud, 'settings.global.location.city') || 'Huntsville';
       $rootScope.activeState = _.get(Proud, 'settings.global.location.state') || 'Alabama';
+      $rootScope.location = _.get(Proud, 'settings.global.location') || {lat: 0, lng: 0};
 
       // Helper function returns boolean for if we're in "full page mode"
       $rootScope.displayExpanded = function(section) {
