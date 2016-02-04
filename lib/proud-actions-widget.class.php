@@ -44,7 +44,7 @@ class ActionsBox extends Core\ProudWidget {
       ],
       'category_section' => [
         '#type' => 'checkboxes',
-        '#title' => 'FAQ section',
+        '#title' => 'Answers section',
         '#description' => 'Choose the faq "topics" you would like to be displayed.',
         '#default_value' => array_keys( $options ),
         '#options' => $options,
@@ -56,7 +56,7 @@ class ActionsBox extends Core\ProudWidget {
         '#description' => 'Checking this box will expand all the top faq categories, displaying all options at once.',
         '#return_value' => 'answers',
         '#label_above' => true,
-        '#replace_title' => 'Expand FAQ dropdowns',
+        '#replace_title' => 'Expand Answers dropdowns',
         '#default_value' => false,
         '#to_js_settings' => true
       ],
