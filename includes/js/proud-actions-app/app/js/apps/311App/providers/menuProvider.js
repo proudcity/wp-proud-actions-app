@@ -48,7 +48,7 @@ angular.module('311App')
               if(item && item !== '0') {
                 var item = {title: 'Report an Issue', icon: 'fa-exclamation-triangle'};
                 if (issue.service == 'link') {
-                  item.url = issue.link_report;
+                  item.url = issue.link_create;
                 }
                 else {
                   item.state = 'report';
