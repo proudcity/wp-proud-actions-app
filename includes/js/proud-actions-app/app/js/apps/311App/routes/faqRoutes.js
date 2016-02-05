@@ -23,9 +23,7 @@ angular.module('311App')
           resolve: {
             terms: function($stateParams, $rootScope, TaxonomyTerm) {
               return TaxonomyTerm.query({
-                vocabulary: 'faq-topic',
-                sort: 'weight',
-                direction: 'ASC'
+                vocabulary: 'faq-topic'
               }).$promise.then(function(data) {
                 return data;
               });
