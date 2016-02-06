@@ -45,7 +45,7 @@ angular.module('311App', [
       // $locationProvider.html5Mode(true);
 
       StripeCheckoutProvider.defaults({
-        key: _.get(Proud, 'settings.proud_actions_app.global.payment.stripe_key') || ""
+        key: _.get(Proud, 'settings.proud_actions_app.global.payment.stripe_key') || "sk_test_0sXDrBwvUc9ZPZHeq89HSxOV"
       });
     }
   ]
