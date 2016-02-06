@@ -80,7 +80,7 @@ angular.module('311App')
 
             // Initialize Stripe
             var handler = StripeCheckout.configure({
-              name: post.title,
+              name: post.title.rendered,
               token: function(token, args) {
                 //$log.debug("Got stripe token: " + token.id);
               }

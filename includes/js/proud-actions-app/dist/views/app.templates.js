@@ -42,7 +42,10 @@ angular.module('311AppParent').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/apps/311App/issues/issue-status.html',
-    "<div class=\"slide-left-2\"><ol class=\"breadcrumb clean\"><li class=\"active\"><i class=\"fa fa-search\"></i> Lookup service request</li></ol><div class=\"row\"><div class=\"col-md-9\"><form class=\"form-inline\"><div class=\"form-group\"><label for=\"code\">Tracking code</label><input type=\"text\" class=\"form-control\" id=\"code\" ng-model=\"code\" placeholder=\"Try 2d13-2 or 3b16-4\"></div><a class=\"btn btn-primary\" main-toggle=\"slide-left\" ui-sref=\"city.status.item({code: code})\">Lookup</a><h3>Recent items</h3><p><a href=\"\" ui-sref=\"city.status.item({code: '2d13-2'})\">Graffiti Report</a></p></form></div><div class=\"col-md-3\"><a href=\"#\" ng-click=\"\" class=\"btn btn-default\"><div><i class=\"fa fa-map-marker fa-3x\"></i></div>View map of<br>recent issues &raquo;</a></div></div></div><div class=\"animation-wrap slide-left-2\"><div class=\"quickfade\" ui-view></div></div>"
+    "<div class=\"slide-left-2\"><ol class=\"breadcrumb clean\"><li class=\"active\"><i class=\"fa fa-search\"></i> Lookup service request</li></ol><div class=\"row\"><div class=\"col-md-9\"><form class=\"form-inline\"><div class=\"form-group\"><label for=\"code\">Tracking code</label><input type=\"text\" class=\"form-control\" id=\"code\" ng-model=\"code\" placeholder=\"Try 2d13-2 or 3b16-4\"></div><a class=\"btn btn-primary\" main-toggle=\"slide-left\" ui-sref=\"city.status.item({code: code})\">Lookup</a><h3>Recent items</h3><p><a href=\"\" ui-sref=\"city.status.item({code: '2d13-2'})\">Graffiti Report</a></p></form></div><div class=\"col-md-3\"><!--<a href=\"#\" ng-click=\"\" class=\"btn btn-default\">\n" +
+    "        <div><i class=\"fa fa-map-marker fa-3x\"></i></div>\n" +
+    "        View map of <br/>recent issues &raquo;\n" +
+    "      </a>--></div></div></div><div class=\"animation-wrap slide-left-2\"><div class=\"quickfade\" ui-view></div></div>"
   );
 
 

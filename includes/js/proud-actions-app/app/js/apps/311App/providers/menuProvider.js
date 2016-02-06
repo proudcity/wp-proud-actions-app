@@ -66,7 +66,7 @@ angular.module('311App')
                   item.url = issue.link_status;
                 }
                 else {
-                  item.state = 'report';
+                  item.state = 'status';
                 }
                 menu.push(item);
                 if(!default311Url) {
