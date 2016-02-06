@@ -29,6 +29,8 @@ angular.module('311App', [
       $rootScope.activeCity = _.get(Proud, 'settings.global.location.city') || 'Huntsville';
       $rootScope.activeState = _.get(Proud, 'settings.global.location.state') || 'Alabama';
       $rootScope.location = _.get(Proud, 'settings.global.location') || {lat: 0, lng: 0};
+      $rootScope.mapboxAccessToken = _.get(Proud, 'settings.global.mapbox.token') || 'pk.eyJ1IjoicHJvdWRjaXR5IiwiYSI6ImNpa2JsN2h4eTBtM3N2NGt1ZWltdmRwM3gifQ.yMFhYzprJEYIecChP-rJAg';
+      $rootScope.mapboxMap = _.get(Proud, 'settings.global.mapbox.map') || 'https://api.mapbox.com/v3/mapbox.streets.json';
 
       // Helper function returns boolean for if we're in "full page mode"
       $rootScope.displayExpanded = function(section) {
