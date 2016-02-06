@@ -23,7 +23,7 @@
     </p>
   </div>
 
-  <div ng-if="!post.meta.link">
+  <div class="col-sm-5" ng-if="!post.meta.link">
 
     <h4>Pay online now</h4>
     <form class="form-horizontal" role="form" method="GET" ng-submit="submit(payment)">
@@ -44,14 +44,14 @@
       </div>
       <div class="form-group"><div class="col-sm-8 col-sm-push-4">
         <input type="submit" name="submit" value="Make payment" class="btn btn-primary">
-        <small>
-        Note: Demo mode. <a href="" ng-click="demoInfoToggle()">More &gt;</a>
+        <div><small>
+        Note: Demo mode. <a href="" ng-click="demoInfoToggle($event)">More &gt;</a>
         <div ng-if="demoInfo">
         This will launch an example Stripe payment dialog to demonstrate the payment process. Enter
         4242 4242 4242 4242 as the card number and 123 as the CVV2.  Enter your real email address to receive
         an example receipt.
         </div>
-        </small>
+        </small></div>
       </div></div>
     </form>
 
