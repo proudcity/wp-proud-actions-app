@@ -10,6 +10,8 @@ angular.module('311AppParent', [
   '311App',
   'angular-inview',
   'angular-lazycompile'
+
+
 ])
 
 .run(
@@ -36,7 +38,16 @@ angular.module('311AppParent', [
       // Apply meta data if available
       $rootScope.$on('$stateChangeStart', 
         function(event, toState, toParams, fromState, fromParams){
-          //console.log('sjsjs');
+          // Checks for back buttons, ect and makes sure
+          // slide functionality of app doesn't break
+          // Make sure the offcanvas resets for main window
+          if(_.get(toState, 'data.undoMainToggle')) {
+            $rootScope.toggleMain('slide-left', 'remove');
+          }
+          // Make sure offcanvas resets for child windows
+          if(_.get(toState, 'data.undoChildToggle')) {
+            $rootScope.toggleMain('slide-left', 'remove', '-' + _.get(toState, 'data.undoChildToggle'));
+          }
         }
       );
 

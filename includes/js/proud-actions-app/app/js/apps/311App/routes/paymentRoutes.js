@@ -13,7 +13,8 @@ angular.module('311App')
         .state("city.payments", {
           templateUrl: 'views/apps/311App/payment/payment.html',
           data: { 
-            doScroll: false  // No scroll on route change
+            doScroll: false,  // No scroll on route change
+            undoMainToggle: true   // Force "offcanvas" class off
           },
           url: "/payments",
           resolve: {

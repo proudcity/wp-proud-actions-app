@@ -1,21 +1,5 @@
 'use strict';
 
-function toggleMain(toggleClass, toggleType, select) {
-  select = select || '';
-  switch(toggleType) {
-    case 'remove':
-      jQuery('#main-311' + select).removeClass(toggleClass);
-      break;
-
-    case 'add':
-      jQuery('#main-311' + select).addClass(toggleClass);
-      break;
-
-    default:
-      jQuery('#main-311' + select).toggleClass(toggleClass);
-  }
-}
-
 angular.module('311App')
 
 .directive('menu', function factory($rootScope, Menu311, $state) {
@@ -51,12 +35,12 @@ angular.module('311App')
               scrollTop: $('#wrapper-311').offset().top - 70
             }, 300);
           }
-          toggleMain($scope.mainToggle, $scope.mainToggleForce, select);
+          $rootScope.toggleMain($scope.mainToggle, $scope.mainToggleForce, select);
         });
       }
       // or just showing up?
       else {
-        toggleMain($scope.mainToggle, $scope.mainToggleForce, select);
+        $rootScope.toggleMain($scope.mainToggle, $scope.mainToggleForce, select);
       }
     }
   }

@@ -15,7 +15,8 @@ angular.module('311App')
         .state("city.status", {
           url: '/status',
           data: { 
-            doScroll: false  // No scroll on route change
+            doScroll: false,  // No scroll on route change
+            undoMainToggle: true   // Force "offcanvas" class off
           },
           templateUrl: 'views/apps/311App/issues/issue-status.html',
           controller: function($scope, $rootScope, $state){
@@ -26,6 +27,9 @@ angular.module('311App')
 
         .state("city.status.item", {
           url: '/:code',
+          data: { 
+            undoMainToggle: false,   // Force "offcanvas" class off
+          },
           templateUrl: 'views/apps/311App/issues/issue-status-result.html',
           controller: function($scope, $rootScope, $state, TrackIssue){
             $scope.code = $state.params.code;
@@ -45,7 +49,8 @@ angular.module('311App')
         .state("city.report", {
           url: '/report',
           data: { 
-            doScroll: false  // No scroll on route change
+            doScroll: false,  // No scroll on route change
+            undoMainToggle: true   // Force "offcanvas" class off
           },
           templateUrl: 'views/apps/311App/issues/issue-create-categories.html',
           resolve: {
@@ -102,12 +107,15 @@ angular.module('311App')
 
         .state("city.report.map", {
           url: '/:type',
+          data: { 
+            undoMainToggle: false,   // Force "offcanvas" class off
+            undoChildToggle: 1       // Force "offcanvas" class off for child
+          },
           templateUrl: 'views/apps/311App/issues/issue-create-map.html',         
           controller: function($scope, $rootScope, $state, $http){
             $scope.type = $state.params.type;
 
             $scope.next = function() {
-              console.log();
               if ($scope.marker == undefined) {
                 alert('Please enter an address, or click the Locate button to use your current location.')
               }
@@ -170,6 +178,9 @@ angular.module('311App')
 
         .state("city.report.map.details", {
           url: '/details?lat&lng',
+          data: { 
+            undoChildToggle: false   // Force "offcanvas" class off for child?
+          },
           templateUrl: 'views/apps/311App/issues/issue-create-details.html',
           resolve: {
             data: function($stateParams, $rootScope, TrackFields) {

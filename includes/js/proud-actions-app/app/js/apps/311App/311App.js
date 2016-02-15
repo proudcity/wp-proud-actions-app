@@ -36,6 +36,23 @@ angular.module('311App', [
       $rootScope.displayExpanded = function(section) {
         return section == $rootScope.appPageDisplay;
       }
+
+      // Function allows for manipulating the offcanvase slide
+      $rootScope.toggleMain = function(toggleClass, toggleType, select) {
+        select = select || '';
+        switch(toggleType) {
+          case 'remove':
+            jQuery('#main-311' + select).removeClass(toggleClass);
+            break;
+
+          case 'add':
+            jQuery('#main-311' + select).addClass(toggleClass);
+            break;
+
+          default:
+            jQuery('#main-311' + select).toggleClass(toggleClass);
+        }
+      }
     }
   ]
 )

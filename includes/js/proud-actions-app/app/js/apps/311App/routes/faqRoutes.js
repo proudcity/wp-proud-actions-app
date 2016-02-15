@@ -17,8 +17,8 @@ angular.module('311App')
             title: 'FAQ',                 // Sets meta title
             description: 'About the about', // Sets different meta description
             keywords: 'About, this, page',  // Sets different meta keywords,
-            doScroll: false                 // no scroll on route change
-
+            doScroll: false,                // no scroll on route change
+            undoMainToggle: true            // Force "offcanvas" class off
           },
           resolve: {
             terms: function($stateParams, $rootScope, TaxonomyTerm) {
@@ -60,6 +60,7 @@ angular.module('311App')
             title: 'FAQ',                 // Sets meta title
             description: 'About the about', // Sets different meta description
             keywords: 'About, this, page',  // Sets different meta keywords
+            undoMainToggle: false           // Force "offcanvas" class off
           },
           controller: function($scope, $rootScope, $state, $filter, terms, Post){
             $scope.activeTerm = $filter('termBySlug')(terms, $state.params.slug);
