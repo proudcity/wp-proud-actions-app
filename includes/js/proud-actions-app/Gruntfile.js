@@ -190,6 +190,6 @@ module.exports = function(grunt) {
 	//grunt.registerTask('validate-js', ['jshint', 'ngtemplates', 'concat']);
 	grunt.registerTask('server-dist', ['connect:dist']);
 	
-	grunt.registerTask('publish', ['compile-sass', 'clean:dist', 'useminPrepare', 'copy:dist',  'concat:generated', 'concat:wrap']);
+	grunt.registerTask('publish', ['compile-sass', 'clean:dist', 'useminPrepare', 'copy:dist',  'concat:generated', 'concat:wrap', 'cssmin', 'ngtemplates','uglify', 'usemin']);
 
 };
