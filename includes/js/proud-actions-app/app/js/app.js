@@ -94,7 +94,7 @@ angular.module('311AppParent', [
   return {
     restrict: 'C',
     link: function($scope, $element, $attrs) {
-      if(!$location.$$path) {
+      if(!$location.$$path || $location.$$path == '/') {
         $location.path(Menu311.getDefaultUrl($rootScope.appId));
       }
       

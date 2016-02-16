@@ -26,7 +26,19 @@
     <!-- endbuild -->
     <script type="text/javascript">
 
-    var Proud = {};
+    var Proud = { 
+        settings: {
+            proud_actions_app: {
+                instances: {
+                    "proud_actions_app-32021001": {
+                        active_tabs: {
+                            payments: "payments"
+                        }
+                    }
+                }
+            }
+        }
+    };
   
     </script>
     <script type="text/javascript">
@@ -40,7 +52,7 @@
   </head>
   <body>
     
-    <div ng-init="$root.appId = 'proud_311_app-1'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
+    <div ng-init="$root.appId = 'proud_actions_app-32021001'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
         
     <!-- build:js js/bootstrap.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
