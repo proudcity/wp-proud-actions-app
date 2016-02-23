@@ -56,9 +56,18 @@ angular.module('311AppParent', [
 
           // send tracking
           if ($window.ga){
+            // normal path + abstracted path
+            var path    = $location.path(),
+                subPath = path.indexOf('city/') >= 0 ? path.substring(path.indexOf('city/') + 5) : path;
             $window.ga('send', 'pageview', { 
-              page: $location.path(),
+              page: subPath,
               title: toState.data && toState.data.title ? toState.data.title : 'FILLME!'
+            });
+            $window.ga('send', {
+              hitType: 'event',
+              eventCategory: 'ActionsApp',
+              eventAction: 'navigation',
+              eventLabel: path
             });
           }
 

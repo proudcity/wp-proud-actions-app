@@ -29,12 +29,18 @@ angular.module('311App')
               });
             }
           },
-          controller: function($scope, $rootScope, $state, terms){
+          controller: function($scope, $rootScope, $state, terms, $window){
             $scope.terms = terms;
             $scope.active = null;
             $scope.childOpen = false;
 
             $scope.open = function(item) {
+              $window.ga('send', {
+                hitType: 'event',
+                eventCategory: 'ActionsApp',
+                eventAction: 'category open',
+                eventLabel: item.slug
+              });
               $scope.active = item;
             }
 
