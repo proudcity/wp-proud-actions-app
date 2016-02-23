@@ -56,9 +56,13 @@ angular.module('311AppParent', [
 
           // send tracking
           if ($window.ga){
-            // normal path + abstracted path
+            // normal path + more concise path
             var path    = $location.path(),
                 subPath = path.indexOf('city/') >= 0 ? path.substring(path.indexOf('city/') + 5) : path;
+            // Furthermore, if on faq node...
+            if( _.get(toState, 'name') == "city.faq.child.answers" && _.get(toParams, 'postSlug') != "list" ) {
+              subPath = 'question/' + subPath.substring(subPath.lastIndexOf('/') + 1);
+            }
             $window.ga('send', 'pageview', { 
               page: subPath,
               title: toState.data && toState.data.title ? toState.data.title : 'FILLME!'
