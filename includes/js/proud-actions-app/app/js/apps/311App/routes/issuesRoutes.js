@@ -16,7 +16,8 @@ angular.module('311App')
           url: '/status',
           data: { 
             doScroll: false,  // No scroll on route change
-            undoMainToggle: true   // Force "offcanvas" class off
+            undoMainToggle: true,   // Force "offcanvas" class off
+            title: 'Check Status'
           },
           templateUrl: 'views/apps/311App/issues/issue-status.html',
           controller: function($scope, $rootScope, $state){
@@ -50,7 +51,8 @@ angular.module('311App')
           url: '/report',
           data: { 
             doScroll: false,  // No scroll on route change
-            undoMainToggle: true   // Force "offcanvas" class off
+            undoMainToggle: true,   // Force "offcanvas" class off
+            title: 'Report Issue'
           },
           templateUrl: 'views/apps/311App/issues/issue-create-categories.html',
           resolve: {

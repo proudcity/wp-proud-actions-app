@@ -30,11 +30,11 @@ angular.module('311App')
         // listen for a click
         $element.on('click', function() {
           // Animate down if necessary
-          if($rootScope.currentYPosition() < 300) {
-            $('html, body').animate({
-              scrollTop: $('#wrapper-311').offset().top - 70
-            }, 300);
-          }
+          // if($rootScope.currentYPosition() < 300) {
+          //   $('html, body').animate({
+          //     scrollTop: $('#wrapper-311').offset().top - 170
+          //   }, 300);
+          // }
           $rootScope.toggleMain($scope.mainToggle, $scope.mainToggleForce, select);
         });
       }

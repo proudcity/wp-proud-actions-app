@@ -14,7 +14,8 @@ angular.module('311App')
           templateUrl: 'views/apps/311App/payment/payment.html',
           data: { 
             doScroll: false,  // No scroll on route change
-            undoMainToggle: true   // Force "offcanvas" class off
+            undoMainToggle: true,   // Force "offcanvas" class off
+            title: 'Payments'
           },
           url: "/payments",
           resolve: {
