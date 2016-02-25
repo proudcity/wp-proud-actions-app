@@ -31,12 +31,12 @@ angular.module('wordpressService', ['ngResource'])
   .factory('TaxonomyTerm', ['$resource', '$rootScope', function ($resource, $rootScope) {
     var params = {
       vocabulary: '@vocabulary',
-      per_page: 1000,
+      per_page: 100,
     };
     if($rootScope.categorySection) {
       params['field_faq_section'] = $rootScope.categorySection;
     }
-    return $resource($rootScope.apiUrl + 'terms/:vocabulary/:tid', 
+    return $resource($rootScope.apiUrl + ':vocabulary/:tid', 
       params,
       {
         get: {
@@ -59,25 +59,8 @@ angular.module('wordpressService', ['ngResource'])
     )
   }])
 
-/*
-  .factory('TaxonomyTermIndex', ['$resource', '$rootScope', function ($resource, $rootScope) {
-    return $resource($rootScope.apiUrl + 'terms/:vocabulary', 
-      {
-        vocabulary: '@vocabulary',
-      },
-      {
-        query: {
-          method:'GET',
-          transformRequest: function(data, headersGetter) {
-            headersGetter()['Accept'] = 'application/json';
-          },
-          cache: true,
-          isArray: false
-        }
-      }
-    )
-  }])
-*/
+
+  /*
   .factory('TaxonomyTermPosts', ['$resource', '$rootScope', function ($resource, $rootScope) {
     return $resource($rootScope.apiUrl + '/taxonomy_term_nodes', {tid: '@tid'}, {});
   }])
@@ -94,44 +77,5 @@ angular.module('wordpressService', ['ngResource'])
           }
       });
   }])
-
-
-
-  // Helper functions for views
-  .factory('viewsFactory', ['View', function(View) {
-    var service = {};
-
-    // For infinite scroll pager
-    service.pageLoad = function($scope, params) {
-      if (!$scope.loadingPage && $scope.items != undefined && $scope.items.length > 0) {
-        $scope.currentPage++;
-        var newData = View.query(params, function() {
-          if (newData.length > 0) {
-            Array.prototype.push.apply($scope.items, newData);
-            $scope.loadingPage = false;
-          }
-        });
-      }
-      $scope.loadingPage = true;
-    }
-
-    return service;
-  }])
-  
-
-  .directive('openReveal', function factory() {
-    return {
-      restrict: 'A',
-      scope: {
-        'openReveal': '@'
-      },
-      link: function($scope, $element, $attrs) {
-        // listen for a click
-        $element.on('click', function() {
-          jQuery('#' + $scope.openReveal).foundation('reveal', 'open');
-        });
-      }
-    }
-  });
-
+  */
 
