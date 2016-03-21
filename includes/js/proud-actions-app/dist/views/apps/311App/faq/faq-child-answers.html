@@ -9,6 +9,11 @@
     <p ng-if="node.field_faq_link">
       <a href="" ng-href="{{node.field_faq_link.url}}" class="btn btn-primary">{{node.field_faq_link.title}} &raquo;</a>
     </p>
+
+    <a class="btn btn-default btn-xs" ng-class="{active : node.hearted}" href="#" ng-click="heartClick(node, $event)" title="This makes me proud">
+      <i class="fa fa-fw fa-heart"></i> Helpful
+    </a>
+
   </div>
   
 </div>

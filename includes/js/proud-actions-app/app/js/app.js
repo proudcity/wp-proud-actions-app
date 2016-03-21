@@ -62,10 +62,11 @@ angular.module('311AppParent', [
             // Furthermore, if on faq node...
             if( _.get(toState, 'name') == "city.faq.child.answers" && _.get(toParams, 'postSlug') != "list" ) {
               subPath = 'question/' + subPath.substring(subPath.lastIndexOf('/') + 1);
+
             }
             $window.ga('send', 'pageview', { 
               page: subPath,
-              title: toState.data && toState.data.title ? toState.data.title : 'FILLME!'
+              title: toState.data && toState.data.title ? toState.data.title : ''
             });
             $window.ga('send', {
               hitType: 'event',
@@ -73,6 +74,19 @@ angular.module('311AppParent', [
               eventAction: 'navigation',
               eventLabel: path
             });
+
+            $rootScope.analyticsUrl = location.protocol + "//" + location.host + "/" + subPath;
+            if( _.get(toState, 'name') == "city.faq.child.answers" && _.get(toParams, 'postSlug') != "list" ) {
+              // Send `Answer` event
+              $window.ga('send', { 
+                eventLabel: toState.data && toState.data.title ? toState.data.title : '',
+                hitType: 'event',
+                eventCategory: 'Answer',
+                eventAction: $rootScope.analyticsUrl,
+                eventValue: 1
+              });
+            }
+              
           }
 
           // first time, and are we changing the main / secondary route

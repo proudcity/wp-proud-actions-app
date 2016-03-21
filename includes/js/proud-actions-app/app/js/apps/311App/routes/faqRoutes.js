@@ -84,7 +84,7 @@ angular.module('311App')
             description: 'About the about', // Sets different meta description
             keywords: 'About, this, page',  // Sets different meta keywords
           },
-          controller: function($scope, $rootScope, $state, $filter, Post){
+          controller: function($scope, $rootScope, $state, $filter, $window, Post){
             $scope.activeSlug = $state.params.postSlug != 'list' ? $state.params.postSlug : null;
             // @todo: put this in resolve
             Post.query({
@@ -95,6 +95,29 @@ angular.module('311App')
             }).$promise.then(function(data) {
               $scope.nodes = data;
             });
+
+            // Click event for heart button
+            $scope.heartClick = function(node, e) {
+              e.preventDefault();
+              node.hearted = (node.hearted == undefined || !node.hearted)
+              $window.ga('send', {
+                hitType: 'event',
+                eventCategory: 'Score',
+                eventLabel: node.title.rendered,
+                eventAction: $rootScope.analyticsUrl,
+                eventValue: node.hearted ? +5 : -5
+              });
+              if (node.hearted) {
+                $window.ga('send', {
+                  hitType: 'event',
+                  eventCategory: 'Heart',
+                  eventLabel: node.title.rendered,
+                  eventAction: $rootScope.analyticsUrl,
+                  eventValue: node.hearted ? 1 : -1
+                });
+              }
+            }
+
           }
         })
     }
