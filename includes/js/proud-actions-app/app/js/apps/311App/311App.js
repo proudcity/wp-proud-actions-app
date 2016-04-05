@@ -8,7 +8,6 @@ angular.module('311App', [
   'ui.router',
   'ngSanitize',
   'ngAnimate',
-  'stripe.checkout',
   'ngTouch',
   'scrollTo'
 ])
@@ -58,14 +57,12 @@ angular.module('311App', [
 )
 
 .config(
-  [          '$locationProvider', '$stateProvider', '$urlRouterProvider', 'StripeCheckoutProvider',
-    function ($locationProvider,   $stateProvider,   $urlRouterProvider,   StripeCheckoutProvider) {
+  [          '$locationProvider', '$stateProvider', '$urlRouterProvider',
+    function ($locationProvider,   $stateProvider,   $urlRouterProvider) {
       // set location provider as regular urls
       // $locationProvider.html5Mode(true);
 
-      StripeCheckoutProvider.defaults({
-        key: _.get(Proud, 'settings.proud_actions_app.global.payment.stripe_key') || "sk_test_0sXDrBwvUc9ZPZHeq89HSxOV"
-      });
+ 
     }
   ]
 )

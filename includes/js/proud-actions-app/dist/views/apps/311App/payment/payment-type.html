@@ -12,7 +12,7 @@
 
 <div class="row">
 
-  <div class="col-sm-5" ng-if="post.meta.link">
+  <div class="col-sm-5" ng-if="post.meta.type == 'link'">
 
     <h4>Online payments</h4>
     <p>
@@ -23,16 +23,16 @@
     </p>
   </div>
 
-  <div class="col-sm-5" ng-if="!post.meta.link">
+  <div class="col-sm-5" ng-if="post.meta.type == 'gravityform'">
 
     <h4>Pay online now</h4>
     <form class="form-horizontal" role="form" method="GET" ng-submit="submit(payment)">
-      <div class="form-group" ng-class="numberClass">
-        <label class="control-label col-sm-4" for="invoice_number">Invoice number:</label>
+      <div class="form-group" ng-class="idClass">
+        <label class="control-label col-sm-4" for="invoice_id">Invoice number:</label>
         <div class="col-sm-8">
-          <input type="text" class="form-control" id="invoice_number" ng-model-options="{ debounce: 250 }" ng-model="payment.number" placeholder="Try 0001 or 0002" required>
+          <input type="text" class="form-control" id="invoice_id" ng-model-options="{ debounce: 250 }" ng-model="payment.id" placeholder="Try 0001 or 0002" required>
           <div class="error-message hide">Sorry, we could not find your invoice number.  Please try 0001 or 0002 for this demo</div>
-          <div class="success-message hide">We found invoice <strong>{{payment.number}}</strong> for <strong>{{payment.name}}</strong> for <strong>${{payment.amount}}</strong></div>
+          <div class="success-message hide">We found invoice <strong>{{payment.id}}</strong> for <strong>{{payment.name}}</strong> for <strong>${{payment.amount}}</strong></div>
         </div>
       </div>
       <div class="form-group">
@@ -43,15 +43,7 @@
         </div></div>
       </div>
       <div class="form-group"><div class="col-sm-8 col-sm-push-4">
-        <input type="submit" name="submit" value="Make payment" class="btn btn-primary">
-        <div><small>
-        Note: Demo mode. <a href="" ng-click="demoInfoToggle($event)">More &gt;</a>
-        <div ng-if="demoInfo">
-        This will launch an example Stripe payment dialog to demonstrate the payment process. Enter
-        4242 4242 4242 4242 as the card number and 123 as the CVV2.  Enter your real email address to receive
-        an example receipt.
-        </div>
-        </small></div>
+        <input type="submit" name="submit" value="Make payment &raquo" class="btn btn-primary">
       </div></div>
     </form>
 
