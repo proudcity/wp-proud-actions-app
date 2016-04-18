@@ -3,7 +3,7 @@
 
 angular.module('311App', [
   'wordpressService',
-  'seeClickFixService',
+  'issueService',
   'paymentService',
   'ui.router',
   'ngSanitize',
@@ -19,9 +19,10 @@ angular.module('311App', [
       // Api Options
       // ---------------------------
       $rootScope.apiUrl = _.get(Proud, 'settings.proud_actions_app.global.api_path') || 'https://example.proudcity.com/wp-json/wp/v2/';
+      $rootScope.proudcityApiUrl = _.get(Proud, 'settings.global.proudcity_api') || 'http://localhost:4000';
+      $rootScope.proudcitySiteId = _.get(Proud, 'settings.global.proudcity_site_id') || 'san-rafael-ca.proudcity.com';
       $rootScope.paymentUrl = _.get(Proud, 'settings.proud_actions_app.global.payment_url') || 'https://demo-api.proudcity.com/api/proudcity/invoice-example';//$rootScope.proudcityApi + 'invoice-example';
       $rootScope.trackUrl = _.get(Proud, 'settings.proud_actions_app.global.track_url') || 'http://markaspot.helmcivic.com/georeport/v2';
-      $rootScope.seeclickfixUrl = _.get(Proud, 'settings.proud_actions_app.global.seeclickfixUrl') || "https://test.seeclickfix.com/api/v2/";
 
       // Global options
       // ---------------------------
