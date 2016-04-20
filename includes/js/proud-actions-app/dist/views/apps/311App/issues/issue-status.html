@@ -1,4 +1,4 @@
-<div class="slide-left-2">
+<div class="slide-left-2 issue-status">
   <ol class="breadcrumb clean">
     <li class="active">
       <i class="fa fa-search"></i> Lookup service request
@@ -17,7 +17,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div class="row issue-status-tabs">
     <div class="col-sm-4 col-md-3">
       <ul class="nav nav-pills nav-stacked">
         <li role="presentation" ng-class="{'active': activeTab == 'me'}" ng-if="myIssues !== -1"><a href="#" ng-click="tabClick('me', $event)"><i class="fa fa-fw fa-user"></i> My issues</a></li>
@@ -26,13 +26,13 @@
       </ul>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-8 tab-content">
 
       <div ng-if="activeTab == 'me'">
         <div ng-if="!myIssues">
           <p>We do not have a record of any reported issues on this device.  Search your email for your
           Issue Code and enter it in the box above.</p>
-          <p><a class="btn btn-primary" href="#" ui-sref="city.report"><i class="fa fa-fw fa-exclamation-triangle"></i> Report an issue</a></p>
+          <p><a class="btn btn-default" href="#" ui-sref="city.report"><i class="fa fa-fw fa-exclamation-triangle"></i> Report an issue</a></p>
         </div>
         <ul ng-if="myIssues" class="title-list list-unstyled">
           <li ng-repeat="item in myIssues" ui-sref="city.status.item({code: item.id})" class="teaser-mini">
