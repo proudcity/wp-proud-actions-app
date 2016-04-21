@@ -20,24 +20,92 @@ angular.module('311App')
             title: 'Check Status'
           },
           templateUrl: 'views/apps/311App/issues/issue-status.html',
-          controller: function($scope, $rootScope, $state){
+          controller: function($scope, $rootScope, $state, $timeout, Issue){
             //$scope.code = 'd2a6-1'; // @todo: default value, remove
+            //console.log('a', jQuery('#map-wrapper'));
+
+            $scope.tabClick = function(tab, e) {
+              e.preventDefault();
+              $scope.activeTab = tab;
+            }
+
+            $scope.city = $rootScope.activeCity;
+            $timeout(function() {
+              $scope.showMap = jQuery('.widget-proud-map-app').length;
+              console.log($scope);
+            }, 2000);
+            //console.log($scope);
+
+            $scope.clickMap = function(e) {
+              jQuery('#map-wrapper').trigger('click');
+              jQuery('#menu-ui a:last').trigger('click');
+              e.preventDefault();
+            }
+
+            // Get myIssues
+            $scope.hasMyIssues = false;
+            var local = localStorage.getItem('reportedIssues');
+            if (local === -1) {
+              $scope.hasMyIssues = -1;
+            }
+            if (local && local !== -1) {
+              $scope.myIssues = JSON.parse(local);
+              console.log('LOCAL', local);
+              $scope.activeTab = 'me';
+              $scope.hasMyIssues = true;
+            }
+
+            // Get recent issues
+            $scope.recentIssues = [];
+            $scope.recentLoading = true;
+            Issue.query().$promise.then(function(data) {
+              $scope.recentLoading = false;
+              $scope.recentIssues = data;
+            });
+
+            $scope.activeTab = $scope.hasMyIssues ? 'me' : 'recent';
+            $scope.issueThumb = function(item) {
+              return item.thumb ? item.thumb : 
+                'https://api.mapbox.com/v4/mapbox.emerald/' + item.lng +','+ item.lat + ',13/300x300@2x.png?access_token=' + $rootScope.mapboxAccessToken;
+            }
+
+
+            // Get recent issues (preload)
+
+            // No remember checkbox callback
+            $scope.showLocalCheckbox = true;
+            $scope.toggleSave = function() {
+              var local = localStorage.getItem('reportedIssues');
+              local = local === -1 ? [] : -1;
+              localStorage.setItem('reportedIssues', local);
+              if (local == -1) {
+                alert('We have deleted your saved issues and will not store issues you submit on this device in the future.');
+                $scope.showLocalCheckbox = false;
+              }
+            }
+
 
           }
         })
 
         .state("city.status.item", {
-          url: '/:code',
+          url: '/:code?saved',
           data: { 
             undoMainToggle: false,   // Force "offcanvas" class off
           },
           templateUrl: 'views/apps/311App/issues/issue-status-result.html',
-          controller: function($scope, $rootScope, $state, TrackIssue){
+          controller: function($scope, $rootScope, $state, $window, Issue){
             $scope.code = $state.params.code;
+            $scope.currentUrl = '';
+            $scope.loading = true;
+            $scope.error = false;
+            $scope.saved = $state.params.saved;
 
-            TrackIssue.get({code: $state.params.code}).$promise.then(function(data) {
+            Issue.get({code: $state.params.code}).$promise.then(function(data) {
+              $scope.loading = false;
               if (data != undefined) {
                 $scope.item = data;
+                $scope.currentUrl = $window.location.href.substring(0, $window.location.href.indexOf('?'));
               }
               else {
                 $scope.error = true;
@@ -56,53 +124,14 @@ angular.module('311App')
           },
           templateUrl: 'views/apps/311App/issues/issue-create-categories.html',
           resolve: {
-            services: function($stateParams, TrackService, $rootScope) {
-              return TrackService.query({address: $rootScope.activeCity +', '+ $rootScope.activeState}).$promise.then(function(data) {
+            services: function($stateParams, IssueTypes, $rootScope) {
+              return IssueTypes.query().$promise.then(function(data) {
                 return data['request_types'] != undefined ? data['request_types'] : null;
               });
             }
           },
           controller: function($scope, $rootScope, $state, services){
-            var mapping = [
-              { term: 'animal', icon: 'paw'},
-              { term: 'building', icon: 'building'},
-              { term: 'cemetary', icon: undefined},
-              { term: 'weed', icon: 'pagelines'},
-              { term: 'graffiti', icon: 'paint-brush'},
-              { term: 'sidewalk', icon: 'road'},
-              { term: 'light', icon: 'lightbulb-o'},
-              { term: 'sign', icon: 'map-signs'}, // @todo: added in fa 4.4
-              { term: 'tree', icon: 'tree'},
-              { term: 'street', icon: 'road'},
-              { term: 'garbage', icon: 'trash-o'},
-              { term: 'sewer', icon: undefined},
-              { term: 'pothole', icon: 'car'},
-              { term: 'parking', icon: 'car'},
-              { term: 'car', icon: 'car'},
-              { term: 'park', icon: 'leaf'},
-              { term: 'litter', icon: 'trash-o'},
-              { term: 'recycl', icon: 'recycle'},
-            ];
-            var colors = ['#BC2D07', '#14A88E', '#A4506C', '#094558', '#F68D38', '#67412C'];
-            for (var i=0; i<services.length; i++) {
-              services[i].field_icon = {
-                'color': colors[Math.floor(Math.random()*colors.length)]
-              }              
-              var title = services[i].title.toLowerCase();
-              for (var j=0; j<mapping.length; j++) {
-                if (title.indexOf(mapping[j].term) != -1) {
-                  services[i].field_icon.icon = mapping[j].icon;
-                }
-              }
-              services[i].field_icon.icon = services[i].field_icon.icon == undefined ? 'file-text-o' : services[i].field_icon.icon;
-            }
-            console.log(services);
             $scope.types = services;
-
-            $scope.typeUrl = function(url) {
-              var type = url.replace($rootScope.seeclickfixUrl + 'request_types/', '');
-              return "city.report.map({type:'"+type+"'})";
-            }
           }
         })
 
@@ -118,8 +147,8 @@ angular.module('311App')
             $scope.type = $state.params.type;
 
             $scope.next = function() {
-              if ($scope.marker == undefined) {
-                alert('Please enter an address, or click the Locate button to use your current location.')
+              if ($scope.marker == undefined || !$scope.marker) {
+                alert('Please enter an address, or click the Locate button to use your current location.');
               }
               else {
                 var latlng = $scope.marker.getLatLng();
@@ -177,7 +206,6 @@ angular.module('311App')
           }
         })
 
-
         .state("city.report.map.details", {
           url: '/details?lat&lng',
           data: { 
@@ -185,9 +213,10 @@ angular.module('311App')
           },
           templateUrl: 'views/apps/311App/issues/issue-create-details.html',
           resolve: {
-            data: function($stateParams, $rootScope, TrackFields) {
-              return TrackFields.get({type: $stateParams.type}).$promise.then(function(data) {
-                console.log(data);
+            data: function($stateParams, $rootScope, IssueFields) {
+              return IssueFields.get({
+                type: $stateParams.type
+              }).$promise.then(function(data) {
                 return {
                   categoryTitle: data.title,
                   fields: data.questions
@@ -195,7 +224,7 @@ angular.module('311App')
               });
             }
           },
-          controller: function($scope, $rootScope, $state, data, $http){
+          controller: function($scope, $rootScope, $state, data, Issue, IssueAddress){
             $scope.type = $state.params.type;
             $scope.form = {
               'request_type_id': $scope.type,
@@ -205,6 +234,26 @@ angular.module('311App')
             }
             $scope.fields = data.fields;
             $scope.form.category = data.categoryTitle;
+            $scope.form.address = data.address;
+            $scope.submitLabel = 'Continue with SeeClickFix';
+
+            $scope.guestAllowed = true;
+            $scope.form.guest = false;
+            $scope.toggleGuest = function(e) {
+              e.preventDefault();
+              $scope.form.guest = !$scope.form.guest;
+              $scope.submitLabel = 'Submit';
+            }
+
+            $scope.form.address = '';
+            IssueAddress.get({
+              type: $state.params.type,
+              lat: $state.params.lat,
+              lng: $state.params.lng
+            }).$promise.then(function(data) {
+              $scope.form.address = data.address;
+            });
+
 
             $scope.submit = function(data) {
 
@@ -215,18 +264,53 @@ angular.module('311App')
                 //putResponseHeaders => $http header getter
               });*/
 
-              console.log(JSON.stringify(data));
+              if (!data.guest) {
+                var url = 'https://test.seeclickfix.com/oauth/authorize?response_type=code'
+                  + '&client_id=' + 'YOUR_CLIENT_ID'
+                  + '&redirect_uri=' + 'http://api.proudcity.com:4000'; //@todo!!
 
-              $http.post($rootScope.seeclickfixUrl + 'issues', data).
-                then(function(response) {
-                  console.log(response);
-                }, function(response) {
-                  // called asynchronously if an error occurs
-                  // or server returns response with an error status.
+                var authorizeWindow = window.open(url, "authorize", "width=400,height=420");
+              }
+              else {
+                var issue = new Issue(data);
+                issue.$save(function(data){
+
+                  // Save issue history in localStorage
+                  var local = localStorage.getItem('reportedIssues');
+                  //local = '[]';
+                  if (local !== -1) {
+                    local = local ? JSON.parse(local) : [];
+                    local.push({
+                      created_at: data.created_at,
+                      title: data.summary,
+                      id: data.id,
+                      address: data.address
+                    });
+                    localStorage.setItem('reportedIssues', JSON.stringify(local));
+                  }
+                  
+                  // Redirect
+                  $state.go('city.status.item', {
+                    code: data.id,
+                    saved: local === -1 ? 1 : 2
+                  });
+
+                }, function(err){
+                  // @todo: better error handling here
+                  $scope.errors = '';
+                  for (var i in err.data.errors) {
+                    $scope.errors += '<div>'+err.data.errors[i][0]+'</div>';
+                  }
                 });
               }
 
+
+
+              
+
+
             }
+          }
 
         })
 

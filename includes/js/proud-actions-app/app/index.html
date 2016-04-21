@@ -26,19 +26,62 @@
     <!-- endbuild -->
     <script type="text/javascript">
 
-    var Proud = {}; 
-    //     settings: {
-    //         proud_actions_app: {
-    //             instances: {
-    //                 "proud_actions_app-32021001": {
-    //                     active_tabs: {
-    //                         payments: "payments"
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    // };
+    //var Proud = {};
+    var Proud = {
+        "global": {
+            "location": {
+                "city": "San Rafael",
+                "state": "California",
+                "lat": 39.6681,
+                "lng": -84.2481,
+                "code": "San_Rafael,_California"
+            },
+            "external_link_window": true,
+            "mapbox": {
+                "token": "pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw",
+                "map": "albatrossdigital.lpkdpcjb"
+            },
+            'proudcity_api': 'http://localhost:4000',
+            'proudcity_site_id': 'san-rafael-ca.proudcity.com'
+        },
+        "proud_actions_app": {
+            "instances": {
+                "proud_actions_app-1391001": {
+                    "active_tabs": {
+                        "faq": "faq",
+                        "payments": "payments",
+                        "report": "report",
+                        "status": "status"
+                    },
+                    "category_section": {
+                        "education-2": "education-2",
+                        "jobs-contracts": "jobs-contracts",
+                        "payments": "payments",
+                        "business": "business",
+                        "transportation": "transportation",
+                        "property-housing": "property-housing",
+                        "permits-licensing": "permits-licensing",
+                        "services": "services",
+                        "culture-recreation": "culture-recreation"
+                    },
+                    "expand_section": false
+                }
+            },
+            "global": {
+                "api_path": "\/wp-json\/wp\/v2\/",
+                "render_in_overlay": false,
+                "issue": {
+                    "service": "link",
+                    "link_create": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp",
+                    "link_status": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp"
+                },
+                "payment": {
+                    "service": "link",
+                    "stripe_key": ""
+                }
+            }
+        },
+    };
   
     </script>
     <script type="text/javascript">
@@ -51,33 +94,8 @@
     </script>
   </head>
   <body>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <div ng-init="$root.appId = 'proud_actions_app-32021001'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
-        <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
-    <p>1</p>
+
+    <div ng-init="$root.appId = 'proud_actions_app-1391001'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
         
     <!-- build:js js/bootstrap.js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -122,8 +140,7 @@
     <script src="js/apps/311App/311App.js"></script>
     <script src="js/apps/311App/directives/menuDir.js"></script>
     <script src="js/apps/311App/providers/menuProvider.js"></script>
-    <script src="js/apps/311App/providers/seeClickFixService.js"></script>
-    <script src="js/apps/311App/providers/trackService.js"></script>
+    <script src="js/apps/311App/providers/issueService.js"></script>
     <script src="js/apps/311App/providers/paymentService.js"></script>
     <script src="js/apps/311App/routes/faqRoutes.js"></script>
     <script src="js/apps/311App/routes/issuesRoutes.js"></script>
