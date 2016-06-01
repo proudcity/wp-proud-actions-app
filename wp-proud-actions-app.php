@@ -86,14 +86,21 @@ function attach_actions_meta(&$post) {
     // Try to get tax
     // Term cache should already be primed by 'update_post_term_cache'.
     $terms = get_object_term_cache( $post->ID, 'faq-topic' );
+    
     // Guess not
     if( empty( $terms ) ) {
         $terms = wp_get_object_terms( $post->ID, 'faq-topic' );
         wp_cache_add( $post->ID, $terms, 'faq-topic' . '_relationships' );
     }
     // We got some hits
-    if( !empty( $terms ) && $term_count = count($terms) ) {
-      $post->term = $terms[$term_count - 1]->slug;
+    if( !empty( $terms ) ) {
+      $interim_term = false;
+      foreach ( $terms as $key => $term ) {
+        if( !$interim_term || $term->parent ) {
+          $interim_term = $term;
+        }
+      }
+      $post->term = $interim_term->slug;
     }
     $post->action_attr = 'answers';
     $post->action_hash = '/' . $post->term . '/' . $post->post_name;
