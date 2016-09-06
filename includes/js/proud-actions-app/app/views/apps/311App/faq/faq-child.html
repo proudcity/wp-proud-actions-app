@@ -18,7 +18,7 @@
     <h5 ng-bind-html="activeParent.name"></h5>
     <ul class="nav nav-pills nav-stacked">
       <li ng-repeat="item in terms | termsByParent:activeParent.id | orderBy: 'weight'" ng-class="item.id == activeTerm.id ? 'active' : ''">
-        <a href="" ui-sref="city.faq.child.answers({slug: item.slug, postSlug: 'list'})">{{item.name}}</a>
+        <a href="" ui-sref="city.faq.child.answers({slug: item.slug, postSlug: 'list'})" ng-bind-html="item.name"></a>
       </li>
     </ul>
 
