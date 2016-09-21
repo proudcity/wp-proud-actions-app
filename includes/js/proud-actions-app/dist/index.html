@@ -16,8 +16,9 @@
     <link rel="stylesheet" href="css/app.min.css">
     <script type="text/javascript">
 
-    //var Proud = {};
-    var Proud = {
+
+    var Proud = {};
+    Proud.settings = {
         "global": {
             "location": {
                 "city": "San Rafael",
@@ -58,10 +59,10 @@
                 }
             },
             "global": {
-                "api_path": "\/wp-json\/wp\/v2\/",
+                "api_path": "\/\/localhost:8080\/wp-json\/wp\/v2\/",
                 "render_in_overlay": false,
                 "issue": {
-                    "service": "link",
+                    "service": "iframe",
                     "link_create": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp",
                     "link_status": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp"
                 },

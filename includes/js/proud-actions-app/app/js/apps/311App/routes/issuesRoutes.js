@@ -32,7 +32,6 @@ angular.module('311App')
             $scope.city = $rootScope.activeCity;
             $timeout(function() {
               $scope.showMap = jQuery('.widget-proud-map-app').length;
-              console.log($scope);
             }, 2000);
             //console.log($scope);
 
@@ -50,7 +49,6 @@ angular.module('311App')
             }
             if (local && local !== -1) {
               $scope.myIssues = JSON.parse(local);
-              console.log('LOCAL', local);
               $scope.activeTab = 'me';
               $scope.hasMyIssues = true;
             }
@@ -110,7 +108,6 @@ angular.module('311App')
               else {
                 $scope.error = true;
               }
-              console.log($scope.item);
             });
           }
         })
@@ -124,14 +121,50 @@ angular.module('311App')
           },
           templateUrl: 'views/apps/311App/issues/issue-create-categories.html',
           resolve: {
-            services: function($stateParams, IssueTypes, $rootScope) {
-              return IssueTypes.query().$promise.then(function(data) {
-                return data['request_types'] != undefined ? data['request_types'] : null;
-              });
+            services: function($stateParams, IssueTypes, Post, $rootScope) {
+              var issue = _.get(Proud, 'settings.proud_actions_app.global.issue') || {'service': 'seeclickfix'};
+              if (issue.service == 'seeclickfix') {
+                return IssueTypes.query().$promise.then(function(data) {
+                  return data['request_types'] != undefined ? data['request_types'] : null;
+                });
+              }
+              else {
+                return Post.query({
+                  postType: 'issues',
+                  sort: 'title',
+                  direction: 'ASC'
+                }).$promise.then(function(data) {
+                  return data;
+                });
+              }
             }
           },
           controller: function($scope, $rootScope, $state, services){
+            var issue = _.get(Proud, 'settings.proud_actions_app.global.issue') || {'service': 'seeclickfix'};
+            $scope.service = issue.service;
             $scope.types = services;
+          }
+        })
+
+
+        .state("city.report.iframe", {
+          url: '/embed/:slug',
+          data: { 
+            doScroll: false,  // No scroll on route change
+            undoMainToggle: true,   // Force "offcanvas" class off
+            title: 'Report Issue'
+          },
+          templateUrl: 'views/apps/311App/issues/issue-create-iframe.html',
+          resolve: {
+            post: function($stateParams, $filter, services) {
+              return $filter('filter')(services, { slug: $stateParams.slug })[0];
+            }
+          },
+          controller: function($scope, $rootScope, $state, $sce, post){
+            $scope.post = post;
+            $scope.trustSrc = function(src) {
+              return $sce.trustAsResourceUrl(src);
+            }
           }
         })
 

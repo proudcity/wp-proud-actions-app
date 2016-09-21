@@ -14,7 +14,9 @@
     <!-- build:css css/libraries.min.css -->
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="bower_components/afkl-lazy-image/release/lazy-image-style.css">
-    <link rel="stylesheet" href="http://dev.getproudcity.com/sites/all/themes/dev/proudtheme/css/proud-vendor.css">
+    
+    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud-vendor.css">
+    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud.css">
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css cs/maps.css -->
@@ -26,8 +28,9 @@
     <!-- endbuild -->
     <script type="text/javascript">
 
-    //var Proud = {};
-    var Proud = {
+
+    var Proud = {};
+    Proud.settings = {
         "global": {
             "location": {
                 "city": "San Rafael",
@@ -68,10 +71,10 @@
                 }
             },
             "global": {
-                "api_path": "\/wp-json\/wp\/v2\/",
+                "api_path": "\/\/localhost:8080\/wp-json\/wp\/v2\/",
                 "render_in_overlay": false,
                 "issue": {
-                    "service": "link",
+                    "service": "iframe",
                     "link_create": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp",
                     "link_status": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp"
                 },

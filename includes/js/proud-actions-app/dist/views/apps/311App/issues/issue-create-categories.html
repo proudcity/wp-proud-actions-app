@@ -7,7 +7,18 @@
   <dl class="angular-311-2col">
     <dd ng-repeat="item in types | orderBy: 'title'" class="col-sm-6 col-md-4">
       <h4>
-        <a main-toggle="slide-left" href="" ui-sref="city.report.map({type: item.id})"><i ng-if="item.icon" class="fa fa-{{item.icon}}"></i><span>{{item.title}}</span></a>
+        <a ng-if="service !== 'seeclickfix' && item.meta.issue_category_type === 'link'" main-toggle="slide-left" ng-href="{{item.meta.url}}" target="_blank">
+          <i ng-if="item.meta.icon" class="fa {{item.meta.icon}}"></i>
+          <span>{{item.title.rendered}}</span>
+        </a>
+        <a ng-if="service !== 'seeclickfix' && item.meta.issue_category_type === 'iframe'" main-toggle="slide-left" href="#" ui-sref="city.report.iframe({slug: item.slug})">
+          <i ng-if="item.meta.icon" class="fa {{item.meta.icon}}"></i>
+          <span>{{item.title.rendered}}</span>
+        </a>
+        <a ng-if="service === 'seeclickfix'" main-toggle="slide-left" href="#" ui-sref="city.report.map({type: item.id})">
+          <i ng-if="item.icon" class="fa fa-{{item.icon}}"></i>
+          <span>{{item.title}}</span>
+        </a>
       </h4>
     </dd>
   </dl>
