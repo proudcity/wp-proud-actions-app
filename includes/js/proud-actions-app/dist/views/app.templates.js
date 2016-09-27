@@ -2,7 +2,7 @@ angular.module('311AppParent').run(['$templateCache', function($templateCache) {
   'use strict';
 
   $templateCache.put('views/apps/311App/app-311-wrap.html',
-    "<div class=\"app-wrap\"><div class=\"action-box\" id=\"wrapper-311\"><div class=\"row\"><div menu></div><div class=\"col-sm-12 content-contain\"><div class=\"body-content animation-wrap\"><main id=\"main-311\" class=\"main main-311 transform clearfix\" ui-view></main></div></div></div></div></div>"
+    "<div class=\"app-wrap\"><div class=\"action-box\" id=\"wrapper-311\"><div class=\"row\"><div menu></div><div class=\"col-sm-12 content-contain\"><div class=\"body-content animation-wrap\"><div id=\"main-311\" class=\"main-311 transform clearfix\" ui-view></div></div></div></div></div></div>"
   );
 
 
@@ -22,7 +22,7 @@ angular.module('311AppParent').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/apps/311App/issues/issue-create-categories.html',
-    "<div class=\"slide-left-2\"><ol class=\"breadcrumb clean\"><li class=\"active\"><i class=\"fa fa-th\"></i> Select issue type</li></ol><dl class=\"angular-311-2col\"><dd ng-repeat=\"item in types | orderBy: 'title'\" class=\"col-sm-6 col-md-4\"><h4><a ng-if=\"service !== 'seeclickfix' && item.meta.issue_category_type === 'link'\" main-toggle=\"slide-left\" ng-href=\"{{item.meta.url}}\" target=\"_blank\"><i ng-if=\"item.meta.icon\" class=\"fa {{item.meta.icon}}\"></i> <span>{{item.title.rendered}}</span></a> <a ng-if=\"service !== 'seeclickfix' && item.meta.issue_category_type === 'iframe'\" main-toggle=\"slide-left\" href=\"#\" ui-sref=\"city.report.iframe({slug: item.slug})\"><i ng-if=\"item.meta.icon\" class=\"fa {{item.meta.icon}}\"></i> <span>{{item.title.rendered}}</span></a> <a ng-if=\"service === 'seeclickfix'\" main-toggle=\"slide-left\" href=\"#\" ui-sref=\"city.report.map({type: item.id})\"><i ng-if=\"item.icon\" class=\"fa fa-{{item.icon}}\"></i> <span>{{item.title}}</span></a></h4></dd></dl></div><div class=\"animation-wrap slide-left-2\"><div id=\"main-311-1\" class=\"main main-311 transform clearfix quickfade\" ui-view></div></div>"
+    "<div class=\"slide-left-2\"><ol class=\"breadcrumb clean\"><li class=\"active\"><i class=\"fa fa-th\"></i> Select issue type</li></ol><dl class=\"angular-311-2col\"><dd ng-repeat=\"item in types | orderBy: 'title'\" class=\"col-sm-6 col-md-4\"><h4><a ng-if=\"service !== 'seeclickfix' && item.meta.issue_category_type === 'link'\" main-toggle=\"slide-left\" ng-href=\"{{item.meta.url}}\" target=\"_blank\"><i ng-if=\"item.meta.icon\" class=\"fa {{item.meta.icon}}\"></i> <span>{{item.title.rendered}}</span></a> <a ng-if=\"service !== 'seeclickfix' && item.meta.issue_category_type === 'iframe'\" main-toggle=\"slide-left\" href=\"#\" ui-sref=\"city.report.iframe({slug: item.slug})\"><i ng-if=\"item.meta.icon\" class=\"fa {{item.meta.icon}}\"></i> <span>{{item.title.rendered}}</span></a> <a ng-if=\"service === 'seeclickfix'\" main-toggle=\"slide-left\" href=\"#\" ui-sref=\"city.report.map({type: item.id})\"><i ng-if=\"item.icon\" class=\"fa fa-{{item.icon}}\"></i> <span>{{item.title}}</span></a></h4></dd></dl></div><div class=\"animation-wrap slide-left-2\"><div id=\"main-311-1\" class=\"main-311 transform clearfix quickfade\" ui-view></div></div>"
   );
 
 
