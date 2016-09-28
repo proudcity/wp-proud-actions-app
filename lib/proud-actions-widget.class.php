@@ -33,6 +33,7 @@ class ActionsBox extends Core\ProudWidget {
         '#title' => 'Active tabs',
         '#type' => 'checkboxes',
         '#options' => [
+          'vote' => 'Vote',
           'faq' => 'Answers',
           'payments' => 'Payments',
           'report' => 'Report an Issue',
