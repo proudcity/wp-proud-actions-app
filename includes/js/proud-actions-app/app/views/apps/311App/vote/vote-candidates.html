@@ -1,0 +1,16 @@
+<div ng-repeat="contest in contests">
+  <h3>{{contest.office}} <small><i class="fa fa-fw fa-map-marker"></i>{{contest.district.name}}</small></h3>
+  <div class="row">
+    <div ng-repeat="candidate in contest.candidates" class="col-md-4 col-sm-6">
+      <div><strong>{{candidate.name}}</strong></div>
+      <div>{{candidate.party}}</div>
+      <div>
+        <a ng-repeat="channel in candidate.channels" ng-if="channel.type != 'GooglePlus'" href="{{channel.id}}">
+          <i class="fa fa-fw fa-{{channel.type|lowercase}}-square"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <hr/>
+</div>
