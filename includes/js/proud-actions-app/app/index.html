@@ -14,11 +14,10 @@
     <!-- build:css css/libraries.min.css -->
     <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css">
     <link rel="stylesheet" href="bower_components/afkl-lazy-image/release/lazy-image-style.css">
-    
-    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud-vendor.css">
-    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud.css">
     <!-- endbower -->
     <!-- endbuild -->
+    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud-vendor.css">
+    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud.css">
     <!-- build:css cs/maps.css -->
     <link rel="stylesheet" href="bower_components/mapbox.js/mapbox.css">
     <link rel="stylesheet" href="bower_components/leaflet.locatecontrol/dist/L.Control.Locate.mapbox.css">
@@ -84,7 +83,7 @@
                     "stripe_key": ""
                 },
                 'google_key': 'AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI',
-                'google_election_id': 2000
+                'google_election_id': 2000 // @todo: change to 5000 for 2016 election
             }
         },
     };
@@ -122,11 +121,15 @@
     <script src="bower_components/angular-inview/angular-inview.js"></script>
     <script src="bower_components/angular-lazycompile/src/angular-lazycompile.js"></script>
     <!-- endbuild -->
+
     <!-- build:js js/maps.js -->
-    <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
-    <script src="bower_components/mapbox.js/mapbox.standalone.js"></script>
-    <script src="bower_components/leaflet.locatecontrol/src/L.Control.Locate.js"></script>
     <!-- endbuild -->
+    <!--
+        <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+        <script src="bower_components/mapbox.js/mapbox.standalone.js"></script>
+        <script src="bower_components/leaflet.locatecontrol/src/L.Control.Locate.js"></script>
+    -->
+
     <!-- build:js js/libraries.min.js -->
     <!-- bower:js -->
     <script src="bower_components/afkl-lazy-image/release/lazy-image.js"></script>
@@ -152,7 +155,7 @@
     <script src="js/apps/311App/routes/issuesRoutes.js"></script>
     <script src="js/apps/311App/routes/paymentRoutes.js"></script>
     <!-- endbuild -->
-    <!-- build:js js/vote.js -->
+    <!-- build:js js/vote.min.js -->
     <script src="js/apps/311App/directives/googlePlace.js"></script>
     <script src="js/apps/311App/providers/googleCivicInfoService.js"></script>
     <script src="js/apps/311App/routes/voteRoutes.js"></script>

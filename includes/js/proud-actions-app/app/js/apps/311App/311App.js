@@ -10,8 +10,7 @@ angular.module('311App', [
   'ngAnimate',
   'ngTouch',
   'scrollTo',
-  // vote
-  'googleCivicInfoService',
+  'ngResource',
 ])
 
 .run(

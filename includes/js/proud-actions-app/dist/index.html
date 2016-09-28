@@ -12,6 +12,8 @@
     <meta name="keywords" ng-attr-content="{{metaKeywords()}}" />
     <title ng-bind="pageTitle();">FILLME!</title>
     <link rel="stylesheet" href="css/libraries.min.css">
+    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud-vendor.css">
+    <link rel="stylesheet" href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud.css">
     <link rel="stylesheet" href="cs/maps.css">
     <link rel="stylesheet" href="css/app.min.css">
     <script type="text/javascript">
@@ -72,7 +74,7 @@
                     "stripe_key": ""
                 },
                 'google_key': 'AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI',
-                'google_election_id': 2000
+                'google_election_id': 2000 // @todo: change to 5000 for 2016 election
             }
         },
     };
@@ -95,11 +97,18 @@
     <script src="js/angular-core.js"></script>
     <script src="js/angular-router-animate.js"></script>
     <script src="js/angular-lazy.js"></script>
-    <script src="js/maps.js"></script>
+
+
+    <!--
+        <script src="bower_components/leaflet/dist/leaflet-src.js"></script>
+        <script src="bower_components/mapbox.js/mapbox.standalone.js"></script>
+        <script src="bower_components/leaflet.locatecontrol/src/L.Control.Locate.js"></script>
+    -->
+
     <script src="js/libraries.min.js"></script>
     
     <script src="js/app.min.js"></script>
-    <script src="js/vote.js"></script>
+    <script src="js/vote.min.js"></script>
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI"></script>
 
     <style>
