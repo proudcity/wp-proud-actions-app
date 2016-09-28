@@ -37,9 +37,53 @@ class ActionsBox extends Core\ProudWidget {
           'payments' => 'Payments',
           'report' => 'Report an Issue',
           'status' => 'Check status',
+          'custom' => 'Custom Tab'
         ],
         '#default_value' => ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'],
         '#description' => 'Click all tabs you would like to appear',
+        '#to_js_settings' => true
+      ],
+      'custom_title' => [
+        '#type' => 'text',
+        '#title' => 'Custom tab title',
+        '#states' => [
+          'visible' => [
+            'active_tabs' => [
+              'operator' => '==',
+              'value' => ['custom'],
+              'glue' => '||'
+            ],
+          ],
+        ],
+        '#to_js_settings' => true
+      ],
+      'custom_icon' => [
+        '#type' => 'fa-icon',
+        '#title' => 'Custom tab icon',
+        '#states' => [
+          'visible' => [
+            'active_tabs' => [
+              'operator' => '==',
+              'value' => ['custom'],
+              'glue' => '||'
+            ],
+          ],
+        ],
+        '#to_js_settings' => true
+      ],
+      'custom_content' => [
+        '#type' => 'textarea',
+        '#title' => 'Custom tab content',
+        '#description' => 'Add and HTML content, including an iFrame embed.',
+        '#states' => [
+          'visible' => [
+            'active_tabs' => [
+              'operator' => '==',
+              'value' => ['custom'],
+              'glue' => '||'
+            ],
+          ],
+        ],
         '#to_js_settings' => true
       ],
       'category_section' => [

@@ -1,0 +1,6 @@
+<div ng-repeat="contest in contests">
+  <a ng-href="{{contest.referendumUrl}}" target="_blank" class="hidden-xs btn btn-primary pull-right"><i class="fa fa-fw fa-info-circle"></i>Impartial analysis</a>
+  <h3><a ng-href="{{contest.referendumUrl}}" target="_blank" title="Learn more about {{contest.referendumTitle}}">{{contest.referendumTitle}}</a></h3>
+  <h5>{{contest.referendumSubtitle}} <small><i class="fa fa-fw fa-map-marker"></i>{{contest.district.name}}</small></h5>
+  <hr/>
+</div>

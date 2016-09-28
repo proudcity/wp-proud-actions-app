@@ -17,10 +17,10 @@ angular.module('311App')
       // Only run once
       if(!active311Items) {
         active311Items = _.get(Proud, 'settings.proud_actions_app.instances.' + appId + '.active_tabs') || {
-            'faq': true, 
-            'payments': true, 
-            'report': true, 
-            'status': true
+          'faq': true, 
+          'payments': true, 
+          'report': true, 
+          'status': true
         };
 
         var issue = _.get(Proud, 'settings.proud_actions_app.global.issue') || {'service': 'seeclickfix'};
@@ -71,6 +71,16 @@ angular.module('311App')
                 menu.push(item);
                 if(!default311Url) {
                   default311Url = '/city/status';
+                }
+              }
+              break;
+            case 'vote':
+              if(item && item !== '0') {
+                var item = {title: 'Vote', icon: 'fa-check-square-o'};
+                item.state = 'vote';
+                menu.push(item);
+                if(!default311Url) {
+                  default311Url = '/city/vote/address';
                 }
               }
               break;
