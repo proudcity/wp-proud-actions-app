@@ -116,10 +116,9 @@ function attach_actions_meta(&$post) {
         $post->action_attr = 'report';
         $post->action_hash = '/embed/' . $post->post_name;
         break;
-      // case 'form':
-      //   $post->action_attr = 'report';
-      //   $post->action_hash = '/form/' . $post->post_name;
-      //   break;
+      case 'form':
+        $post->action_url = $post->guid;
+        break;
     }
   }
   return;
