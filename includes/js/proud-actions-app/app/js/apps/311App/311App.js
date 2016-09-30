@@ -24,7 +24,7 @@ angular.module('311App', [
       $rootScope.proudcitySiteId = _.get(Proud, 'settings.global.proudcity_site_id') || 'san-rafael-ca.proudcity.com';
       $rootScope.paymentUrl = _.get(Proud, 'settings.proud_actions_app.global.payment_url') || 'https://demo-api.proudcity.com/api/proudcity/invoice-example';//$rootScope.proudcityApi + 'invoice-example';
       $rootScope.trackUrl = _.get(Proud, 'settings.proud_actions_app.global.track_url') || 'http://markaspot.helmcivic.com/georeport/v2';
-      $rootScope.googleKey = _.get(Proud, 'settings.proud_actions_app.global.google_key') || '';
+      $rootScope.googleKey = _.get(Proud, 'settings.global.google_key') || '';
       $rootScope.googleElectionId = _.get(Proud, 'settings.proud_actions_app.global.google_election_id') || '2000';
 
       // Global options

@@ -45,6 +45,7 @@
             },
             'proudcity_api': 'http://localhost:4000',
             'proudcity_site_id': 'san-rafael-ca.proudcity.com',
+            'google_key': 'AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI',
         },
         "proud_actions_app": {
             "instances": {
@@ -53,7 +54,7 @@
                         "vote": "vote",
                         //"faq": "faq",
                         //"payments": "payments",
-                        //"report": "report",
+                        "report": "report",
                         //"status": "status",
                         //"custom": "custom"
                     },
@@ -86,7 +87,6 @@
                     "service": "link",
                     "stripe_key": ""
                 },
-                'google_key': 'AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI',
                 'google_election_id': 2000 // @todo: change to 5000 for 2016 election
             }
         },
@@ -159,11 +159,11 @@
     <script src="js/apps/311App/routes/issuesRoutes.js"></script>
     <script src="js/apps/311App/routes/paymentRoutes.js"></script>
     <script src="js/apps/311App/routes/customRoutes.js"></script>
-    <!-- endbuild -->
-    <!-- build:js js/vote.min.js -->
     <script src="js/apps/311App/directives/googlePlace.js"></script>
     <script src="js/apps/311App/providers/googleCivicInfoService.js"></script>
     <script src="js/apps/311App/routes/voteRoutes.js"></script>
+    <!-- endbuild -->
+    <!-- build:js js/vote.min.js -->
     <!-- endbuild -->
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI"></script>
 
