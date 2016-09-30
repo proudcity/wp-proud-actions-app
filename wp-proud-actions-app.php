@@ -78,11 +78,7 @@ new ActionsApp;
  *  Attach information about a question's topic 
  */
 function attach_actions_meta(&$post) {
-  // No alter
-  if( $post->post_type != 'question' && $post->post_type != 'payment' ) {
-    return;
-  }
-  if( $post->post_type == 'question' ) {
+  if( $post->post_type === 'question' ) {
     // Try to get tax
     // Term cache should already be primed by 'update_post_term_cache'.
     $terms = get_object_term_cache( $post->ID, 'faq-topic' );
@@ -104,13 +100,27 @@ function attach_actions_meta(&$post) {
     }
     $post->action_attr = 'answers';
     $post->action_hash = '/' . $post->term . '/' . $post->post_name;
-    $post->action_url = '#/city/answers' . $post->action_hash;
   }
-  elseif ( $post->post_type == 'payment' ) {
+  elseif ( $post->post_type === 'payment' ) {
     $post->action_attr = 'payments';
     $post->action_hash = '/' . $post->post_name;
-    $post->action_url = '#/city/payments'. $post->action_hash;
   }
-
+  elseif ( $post->post_type === 'issue' ) {
+    $issue_type = get_post_meta( $post->ID,  'issue_category_type', true );
+    switch ( $issue_type ) {
+      case 'link':
+        $post->action_url = get_post_meta( $post->ID,  'url', true );
+        return;
+      case 'iframe':
+        $post->action_attr = 'report';
+        $post->action_hash = '/embed/' . $post->post_name;
+        break;
+      // case 'form':
+      //   $post->action_attr = 'report';
+      //   $post->action_hash = '/form/' . $post->post_name;
+      //   break;
+    }
+  }
+  return;
 }
 
