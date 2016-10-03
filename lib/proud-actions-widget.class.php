@@ -75,7 +75,7 @@ class ActionsBox extends Core\ProudWidget {
       'custom_content' => [
         '#type' => 'textarea',
         '#title' => 'Custom tab content',
-        '#description' => 'Add and HTML content, including an iFrame embed.',
+        '#description' => 'Add any HTML content, including an iFrame embed.',
         '#states' => [
           'visible' => [
             'active_tabs' => [
