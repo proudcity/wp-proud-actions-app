@@ -62,7 +62,7 @@ class ActionsApp extends \ProudPlugin {
             'service' => get_option('payment_service', 'stripe'),
             'stripe_key' => get_option('payment_stripe_key'), 
           ),
-          'google_election_id' => get_option( 'google_election_id', '2000' ),// @todo: change to 5000 for 2016 election
+          'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
         ]
       ]
     ]);
