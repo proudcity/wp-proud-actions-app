@@ -79,12 +79,27 @@ angular.module('311App')
               return GoogleCivicInfo.query({
                 address: $stateParams.address
               }).$promise.then(function(data) {
+                if (data.election) {
+                  var date = new Date(data.election.electionDay);
+                  var monthNames = ["Jan", "Feb", "March", "April", "May", "June","July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                  data.election.date = {
+                    days: Math.round((date - new Date())/(1000*60*60*24)),
+                    month: monthNames[date.getUTCMonth()],
+                    day: date.getUTCDate(),
+                    year: date.getUTCFullYear()
+                  }
+                }
                 return data;
               });
             }
           },
           controller: function($scope, $rootScope, $state, $window, data){
             $state.go('city.vote.location.how');
+
+            if (data.election) {
+              $scope.date = data.election.date;
+            }
+            
           }
         })
 
@@ -168,9 +183,11 @@ angular.module('311App')
             }
 
             $scope.links = data.state ? data.state[0].electionAdministrationBody : null;
+            $scope.date = data.election.date;
 
             $scope.disclaimer = false;
-            $scope.toggleDisclaimer = function() {
+            $scope.toggleDisclaimer = function($e) {
+              $e.preventDefault();
               $scope.disclaimer = !$scope.disclaimer;
             }
 
