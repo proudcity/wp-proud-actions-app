@@ -24,12 +24,16 @@
 
 <div class="slide-left-2 column">
   <div ui-view></div>
+  <p class="pull-md-right hidden-xs hidden-sm">Election day is {{date.month}} {{date.day}} {{date.year}}.</p>
+  <p>
+    Share: <span share-block title="Be sure to vote!" summary="Enter your address to find out where to vote and learn more about the issues."></span>
+  </p>
 
-  <span class="pull-md-right">
+  <p class="pull-md-right">
    Powered by <a href="//proudcity.com" target="_blank">ProudCity</a> and the 
    <a href="https://developers.google.com/civic-information/" target="_blank">Google Civic Information API</a>.
-  </span>
-  <a ui-sref="city.vote.embed"><i class="fa fa-fw fa-plus-circle"></i>Add ProudCity Vote to your website</a>
+  </p>
+  <p class="pull-md-left"><a ui-sref="city.vote.embed"><i class="fa fa-fw fa-plus-circle"></i>Add ProudCity Vote to your website</a></p>
 </div>
 
 
