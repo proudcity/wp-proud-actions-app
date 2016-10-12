@@ -5,11 +5,11 @@
     <div ng-repeat="candidate in contest.candidates" class="col-md-4 col-xs-6">
       <div><strong><a ng-click="googleSearch(candidate.name, contest.district.name, $event)" href="#" title="Search Google for {{candidate.name}}">{{candidate.name}}</a></strong></div>
       <div>{{candidate.party}}</div>
-      <div>
+      <p>
         <a ng-repeat="channel in candidate.channels" ng-if="channel.type != 'GooglePlus'" href="{{channel.id}}">
           <i class="fa fa-fw fa-{{channel.type|lowercase}}-square"></i>
         </a>
-      </div>
+      </p>
     </div>
   </div>
 
