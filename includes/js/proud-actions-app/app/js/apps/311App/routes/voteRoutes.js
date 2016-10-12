@@ -145,9 +145,7 @@ angular.module('311App')
             // Add polling place pins
             data.pollingLocations = typeof data.pollingLocations == 'array' ? data.pollingLocations : [];
             var combinedLocations = data.pollingLocations.concat(data.earlyVoteSites);
-            combinedLocations = combinedLocations[0] == undefined ? [] : combinedLocations;
-            console.log(combinedLocations.length);
-            console.log(combinedLocations);
+            //combinedLocations = combinedLocations[0] == undefined ? [] : combinedLocations;
             if (combinedLocations != undefined && combinedLocations.length > 0) {
               var addr;
               var address;
@@ -211,7 +209,6 @@ angular.module('311App')
 
             $scope.active = null;
             $scope.setActive = function(val, $e) {
-              console.log(val);
               $e.preventDefault();
               $scope.active = val;
             }
@@ -235,7 +232,6 @@ angular.module('311App')
 
             $scope.googleSearch = function(name, loc, $e) {
               $e.preventDefault();
-              console.log(name);
               window.open('//google.com/search?q=' + encodeURIComponent(name)); // +' '+ loc
             }
           }
