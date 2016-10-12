@@ -8,8 +8,11 @@
     </h3>
 
     <div ng-if="!address">
-      Sorry, we could not find any polling location for your address.  Please try searching on the
+      <p>
+      Sorry, we could not find any polling location for your address.  Please try again closer to the election. You can also try searching on the
       <a ng-href="{{links.votingLocationFinderUrl}}" target="_blank">{{links.name}} polling location finder</a>.
+      </p>
+      <p>In the meantime, you can browse the issues and candidates above.</p>
     </div>
 
     <div ng-if="address">
@@ -74,24 +77,26 @@
 
     </div><!-- if address -->
 
-    <h3 style="margin-top:36px;">Helpful links from the {{links.name}}</h3>
-    <div class="card-columns card-columns-xs-2 card-columns-sm-2 card-columns-md-2 card-columns-equalize">
-      <div class="card-wrap"><a ng-href="{{links.electionInfoUrl}}" class="card text-center card-btn card-block" target="_blank">
-        <i class="fa fa-info-circle fa-2x"></i>
-        <h4>Election info</h4>
-      </a></div>
-      <div class="card-wrap"><a ng-href="{{links.electionRegistrationUrl}}" class="card text-center card-btn card-block" target="_blank">
-        <i class="fa fa-pencil-square-o fa-2x"></i>
-        <h4>Register to vote</h4>
-      </a></div>
-      <div class="card-wrap"><a ng-href="{{links.electionRegistrationConfirmationUrl}}" class="card text-center card-btn card-block" target="_blank">
-        <i class="fa fa-check-circle-o fa-2x"></i>
-        <h4>Confirm registration</h4>
-      </a></div>
-      <div class="card-wrap"><a ng-href="{{links.absenteeVotingInfoUrl}}" class="card text-center card-btn card-block" target="_blank">
-        <i class="fa fa-globe fa-2x"></i>
-        <h4>Absentee voting info</h4>
-      </a></div>
+    <div ng-if="links">
+      <h3 style="margin-top:36px;">Helpful links from the {{links.name}}</h3>
+      <div class="card-columns card-columns-xs-2 card-columns-sm-2 card-columns-md-2 card-columns-equalize">
+        <div class="card-wrap"><a ng-href="{{links.electionInfoUrl}}" class="card text-center card-btn card-block" target="_blank">
+          <i class="fa fa-info-circle fa-2x"></i>
+          <h4>Election info</h4>
+        </a></div>
+        <div class="card-wrap"><a ng-href="{{links.electionRegistrationUrl}}" class="card text-center card-btn card-block" target="_blank">
+          <i class="fa fa-pencil-square-o fa-2x"></i>
+          <h4>Register to vote</h4>
+        </a></div>
+        <div class="card-wrap"><a ng-href="{{links.electionRegistrationConfirmationUrl}}" class="card text-center card-btn card-block" target="_blank">
+          <i class="fa fa-check-circle-o fa-2x"></i>
+          <h4>Confirm registration</h4>
+        </a></div>
+        <div class="card-wrap"><a ng-href="{{links.absenteeVotingInfoUrl}}" class="card text-center card-btn card-block" target="_blank">
+          <i class="fa fa-globe fa-2x"></i>
+          <h4>Absentee voting info</h4>
+        </a></div>
+      </div>
     </div>
 
   </div>
