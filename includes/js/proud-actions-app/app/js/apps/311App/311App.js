@@ -24,7 +24,7 @@ angular.module('311App', [
       $rootScope.proudcitySiteId = _.get(Proud, 'settings.global.proudcity_site_id') || 'san-rafael-ca.proudcity.com';
       $rootScope.paymentUrl = _.get(Proud, 'settings.proud_actions_app.global.payment_url') || 'https://demo-api.proudcity.com/api/proudcity/invoice-example';//$rootScope.proudcityApi + 'invoice-example';
       $rootScope.trackUrl = _.get(Proud, 'settings.proud_actions_app.global.track_url') || 'http://markaspot.helmcivic.com/georeport/v2';
-      $rootScope.googleKey = _.get(Proud, 'settings.proud_actions_app.global.google_key') || '';
+      $rootScope.googleKey = _.get(Proud, 'settings.global.google_key') || '';
       $rootScope.googleElectionId = _.get(Proud, 'settings.proud_actions_app.global.google_election_id') || '2000';
 
       // Global options
@@ -32,10 +32,8 @@ angular.module('311App', [
       $rootScope.activeCity = _.get(Proud, 'settings.global.location.city') || 'Huntsville';
       $rootScope.activeState = _.get(Proud, 'settings.global.location.state') || 'Alabama';
       $rootScope.location = _.get(Proud, 'settings.global.location') || {lat: 0, lng: 0};
-      // $rootScope.mapboxAccessToken = _.get(Proud, 'settings.global.mapbox.token') || 'pk.eyJ1IjoicHJvdWRjaXR5IiwiYSI6ImNpa2JsN2h4eTBtM3N2NGt1ZWltdmRwM3gifQ.yMFhYzprJEYIecChP-rJAg';
-      // $rootScope.mapboxMap = _.get(Proud, 'settings.global.mapbox.map') || 'https://api.mapbox.com/v3/mapbox.streets.json';
-      $rootScope.mapboxAccessToken = 'pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw';
-      $rootScope.mapboxMap = 'albatrossdigital.lpkdpcjb';
+      $rootScope.mapboxAccessToken = _.get(Proud, 'settings.global.mapbox.token') || '';
+      $rootScope.mapboxMap = _.get(Proud, 'settings.global.mapbox.map') || '';
 
       // Helper function returns boolean for if we're in "full page mode"
       $rootScope.displayExpanded = function(section) {

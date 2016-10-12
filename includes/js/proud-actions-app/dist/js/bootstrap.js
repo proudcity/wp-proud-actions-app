@@ -29,7 +29,7 @@ module.exports=global.document?factory(global,!0):function(w){if(!w.document)thr
 // `in` check used to prevent JIT error (gh-2145)
 // hasOwn isn't used here due to false negatives
 // regarding Nodelist length in IE
-var length="length"in obj&&obj.length,type=jQuery.type(obj);return"function"===type||jQuery.isWindow(obj)?!1:1===obj.nodeType&&length?!0:"array"===type||0===length||"number"==typeof length&&length>0&&length-1 in obj}
+var length="length"in obj&&obj.length,type=jQuery.type(obj);return"function"!==type&&!jQuery.isWindow(obj)&&(!(1!==obj.nodeType||!length)||("array"===type||0===length||"number"==typeof length&&length>0&&length-1 in obj))}
 // Implement the identical functionality for filter and not
 function winnow(elements,qualifier,not){if(jQuery.isFunction(qualifier))return jQuery.grep(elements,function(elem,i){/* jshint -W018 */
 return!!qualifier.call(elem,i,elem)!==not});if(qualifier.nodeType)return jQuery.grep(elements,function(elem){return elem===qualifier!==not});if("string"==typeof qualifier){if(risSimple.test(qualifier))return jQuery.filter(qualifier,elements,not);qualifier=jQuery.filter(qualifier,elements)}return jQuery.grep(elements,function(elem){return indexOf.call(qualifier,elem)>=0!==not})}function sibling(cur,dir){for(;(cur=cur[dir])&&1!==cur.nodeType;);return cur}
@@ -44,7 +44,9 @@ function completed(){document.removeEventListener("DOMContentLoaded",completed,!
 Object.defineProperty(this.cache={},0,{get:function(){return{}}}),this.expando=jQuery.expando+Data.uid++}function dataAttr(elem,key,data){var name;
 // If nothing was found internally, try to fetch any
 // data from the HTML5 data-* attribute
-if(void 0===data&&1===elem.nodeType)if(name="data-"+key.replace(rmultiDash,"-$1").toLowerCase(),data=elem.getAttribute(name),"string"==typeof data){try{data="true"===data?!0:"false"===data?!1:"null"===data?null:+data+""===data?+data:rbrace.test(data)?jQuery.parseJSON(data):data}catch(e){}
+if(void 0===data&&1===elem.nodeType)if(name="data-"+key.replace(rmultiDash,"-$1").toLowerCase(),data=elem.getAttribute(name),"string"==typeof data){try{data="true"===data||"false"!==data&&("null"===data?null:
+// Only convert to a number if it doesn't change the string
++data+""===data?+data:rbrace.test(data)?jQuery.parseJSON(data):data)}catch(e){}
 // Make sure we set the data so it isn't changed later
 data_user.set(elem,key,data)}else data=void 0;return data}function returnTrue(){return!0}function returnFalse(){return!1}function safeActiveElement(){try{return document.activeElement}catch(err){}}
 // Support: 1.x compatibility
@@ -53,15 +55,15 @@ function manipulationTarget(elem,content){return jQuery.nodeName(elem,"table")&&
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript(elem){return elem.type=(null!==elem.getAttribute("type"))+"/"+elem.type,elem}function restoreScript(elem){var match=rscriptTypeMasked.exec(elem.type);return match?elem.type=match[1]:elem.removeAttribute("type"),elem}
 // Mark scripts as having already been evaluated
-function setGlobalEval(elems,refElements){for(var i=0,l=elems.length;l>i;i++)data_priv.set(elems[i],"globalEval",!refElements||data_priv.get(refElements[i],"globalEval"))}function cloneCopyEvent(src,dest){var i,l,type,pdataOld,pdataCur,udataOld,udataCur,events;if(1===dest.nodeType){
+function setGlobalEval(elems,refElements){for(var i=0,l=elems.length;i<l;i++)data_priv.set(elems[i],"globalEval",!refElements||data_priv.get(refElements[i],"globalEval"))}function cloneCopyEvent(src,dest){var i,l,type,pdataOld,pdataCur,udataOld,udataCur,events;if(1===dest.nodeType){
 // 1. Copy private data: events, handlers, etc.
-if(data_priv.hasData(src)&&(pdataOld=data_priv.access(src),pdataCur=data_priv.set(dest,pdataOld),events=pdataOld.events)){delete pdataCur.handle,pdataCur.events={};for(type in events)for(i=0,l=events[type].length;l>i;i++)jQuery.event.add(dest,type,events[type][i])}
+if(data_priv.hasData(src)&&(pdataOld=data_priv.access(src),pdataCur=data_priv.set(dest,pdataOld),events=pdataOld.events)){delete pdataCur.handle,pdataCur.events={};for(type in events)for(i=0,l=events[type].length;i<l;i++)jQuery.event.add(dest,type,events[type][i])}
 // 2. Copy user data
 data_user.hasData(src)&&(udataOld=data_user.access(src),udataCur=jQuery.extend({},udataOld),data_user.set(dest,udataCur))}}function getAll(context,tag){var ret=context.getElementsByTagName?context.getElementsByTagName(tag||"*"):context.querySelectorAll?context.querySelectorAll(tag||"*"):[];return void 0===tag||tag&&jQuery.nodeName(context,tag)?jQuery.merge([context],ret):ret}
 // Fix IE bugs, see support tests
 function fixInput(src,dest){var nodeName=dest.nodeName.toLowerCase();
 // Fails to persist the checked state of a cloned checkbox or radio button.
-"input"===nodeName&&rcheckableType.test(src.type)?dest.checked=src.checked:("input"===nodeName||"textarea"===nodeName)&&(dest.defaultValue=src.defaultValue)}/**
+"input"===nodeName&&rcheckableType.test(src.type)?dest.checked=src.checked:"input"!==nodeName&&"textarea"!==nodeName||(dest.defaultValue=src.defaultValue)}/**
  * Retrieve the actual display of a element
  * @param {String} name nodeName of the element
  * @param {Object} doc Document object
@@ -112,50 +114,72 @@ var capName=name[0].toUpperCase()+name.slice(1),origName=name,i=cssPrefixes.leng
 // Guard against undefined "subtract", e.g., when used as in cssHooks
 return matches?Math.max(0,matches[1]-(subtract||0))+(matches[2]||"px"):value}function augmentWidthOrHeight(elem,name,extra,isBorderBox,styles){for(var i=extra===(isBorderBox?"border":"content")?
 // If we already have the right measurement, avoid augmentation
-4:"width"===name?1:0,val=0;4>i;i+=2)
+4:
+// Otherwise initialize for horizontal or vertical properties
+"width"===name?1:0,val=0;i<4;i+=2)
 // Both box models exclude margin, so add it if we want it
 "margin"===extra&&(val+=jQuery.css(elem,extra+cssExpand[i],!0,styles)),isBorderBox?(
 // border-box includes padding, so remove it if we want content
 "content"===extra&&(val-=jQuery.css(elem,"padding"+cssExpand[i],!0,styles)),
 // At this point, extra isn't border nor margin, so remove border
-"margin"!==extra&&(val-=jQuery.css(elem,"border"+cssExpand[i]+"Width",!0,styles))):(val+=jQuery.css(elem,"padding"+cssExpand[i],!0,styles),"padding"!==extra&&(val+=jQuery.css(elem,"border"+cssExpand[i]+"Width",!0,styles)));return val}function getWidthOrHeight(elem,name,extra){
+"margin"!==extra&&(val-=jQuery.css(elem,"border"+cssExpand[i]+"Width",!0,styles))):(
+// At this point, extra isn't content, so add padding
+val+=jQuery.css(elem,"padding"+cssExpand[i],!0,styles),
+// At this point, extra isn't content nor padding, so add border
+"padding"!==extra&&(val+=jQuery.css(elem,"border"+cssExpand[i]+"Width",!0,styles)));return val}function getWidthOrHeight(elem,name,extra){
 // Start with offset property, which is equivalent to the border-box value
 var valueIsBorderBox=!0,val="width"===name?elem.offsetWidth:elem.offsetHeight,styles=getStyles(elem),isBorderBox="border-box"===jQuery.css(elem,"boxSizing",!1,styles);
 // Some non-html elements return undefined for offsetWidth, so check for null/undefined
 // svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
 // MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
-if(0>=val||null==val){
+if(val<=0||null==val){
 // Computed unit is not pixels. Stop here and return.
-if(val=curCSS(elem,name,styles),(0>val||null==val)&&(val=elem.style[name]),rnumnonpx.test(val))return val;
+if(
+// Fall back to computed then uncomputed css if necessary
+val=curCSS(elem,name,styles),(val<0||null==val)&&(val=elem.style[name]),rnumnonpx.test(val))return val;
 // Check for style in case a browser which returns unreliable values
 // for getComputedStyle silently falls back to the reliable elem.style
 valueIsBorderBox=isBorderBox&&(support.boxSizingReliable()||val===elem.style[name]),
 // Normalize "", auto, and prepare for extra
 val=parseFloat(val)||0}
 // Use the active box-sizing model to add/subtract irrelevant styles
-return val+augmentWidthOrHeight(elem,name,extra||(isBorderBox?"border":"content"),valueIsBorderBox,styles)+"px"}function showHide(elements,show){for(var display,elem,hidden,values=[],index=0,length=elements.length;length>index;index++)elem=elements[index],elem.style&&(values[index]=data_priv.get(elem,"olddisplay"),display=elem.style.display,show?(values[index]||"none"!==display||(elem.style.display=""),""===elem.style.display&&isHidden(elem)&&(values[index]=data_priv.access(elem,"olddisplay",defaultDisplay(elem.nodeName)))):(hidden=isHidden(elem),"none"===display&&hidden||data_priv.set(elem,"olddisplay",hidden?display:jQuery.css(elem,"display"))));
+return val+augmentWidthOrHeight(elem,name,extra||(isBorderBox?"border":"content"),valueIsBorderBox,styles)+"px"}function showHide(elements,show){for(var display,elem,hidden,values=[],index=0,length=elements.length;index<length;index++)elem=elements[index],elem.style&&(values[index]=data_priv.get(elem,"olddisplay"),display=elem.style.display,show?(
+// Reset the inline display of this element to learn if it is
+// being hidden by cascaded rules or not
+values[index]||"none"!==display||(elem.style.display=""),
+// Set elements which have been overridden with display: none
+// in a stylesheet to whatever the default browser style is
+// for such an element
+""===elem.style.display&&isHidden(elem)&&(values[index]=data_priv.access(elem,"olddisplay",defaultDisplay(elem.nodeName)))):(hidden=isHidden(elem),"none"===display&&hidden||data_priv.set(elem,"olddisplay",hidden?display:jQuery.css(elem,"display"))));
 // Set the display of most of the elements in a second loop
 // to avoid the constant reflow
-for(index=0;length>index;index++)elem=elements[index],elem.style&&(show&&"none"!==elem.style.display&&""!==elem.style.display||(elem.style.display=show?values[index]||"":"none"));return elements}function Tween(elem,options,prop,end,easing){return new Tween.prototype.init(elem,options,prop,end,easing)}
+for(index=0;index<length;index++)elem=elements[index],elem.style&&(show&&"none"!==elem.style.display&&""!==elem.style.display||(elem.style.display=show?values[index]||"":"none"));return elements}function Tween(elem,options,prop,end,easing){return new Tween.prototype.init(elem,options,prop,end,easing)}
 // Animations created synchronously will run synchronously
 function createFxNow(){return setTimeout(function(){fxNow=void 0}),fxNow=jQuery.now()}
 // Generate parameters to create a standard animation
 function genFx(type,includeWidth){var which,i=0,attrs={height:type};for(
 // If we include width, step value is 1 to do all cssExpand values,
 // otherwise step value is 2 to skip over Left and Right
-includeWidth=includeWidth?1:0;4>i;i+=2-includeWidth)which=cssExpand[i],attrs["margin"+which]=attrs["padding"+which]=type;return includeWidth&&(attrs.opacity=attrs.width=type),attrs}function createTween(value,prop,animation){for(var tween,collection=(tweeners[prop]||[]).concat(tweeners["*"]),index=0,length=collection.length;length>index;index++)if(tween=collection[index].call(animation,prop,value))
+includeWidth=includeWidth?1:0;i<4;i+=2-includeWidth)which=cssExpand[i],attrs["margin"+which]=attrs["padding"+which]=type;return includeWidth&&(attrs.opacity=attrs.width=type),attrs}function createTween(value,prop,animation){for(var tween,collection=(tweeners[prop]||[]).concat(tweeners["*"]),index=0,length=collection.length;index<length;index++)if(tween=collection[index].call(animation,prop,value))
 // We're done with this property
 return tween}function defaultPrefilter(elem,props,opts){/* jshint validthis: true */
 var prop,value,toggle,tween,hooks,oldfire,display,checkDisplay,anim=this,orig={},style=elem.style,hidden=elem.nodeType&&isHidden(elem),dataShow=data_priv.get(elem,"fxshow");
 // Handle queue: false promises
-opts.queue||(hooks=jQuery._queueHooks(elem,"fx"),null==hooks.unqueued&&(hooks.unqueued=0,oldfire=hooks.empty.fire,hooks.empty.fire=function(){hooks.unqueued||oldfire()}),hooks.unqueued++,anim.always(function(){anim.always(function(){hooks.unqueued--,jQuery.queue(elem,"fx").length||hooks.empty.fire()})})),
+opts.queue||(hooks=jQuery._queueHooks(elem,"fx"),null==hooks.unqueued&&(hooks.unqueued=0,oldfire=hooks.empty.fire,hooks.empty.fire=function(){hooks.unqueued||oldfire()}),hooks.unqueued++,anim.always(function(){
+// Ensure the complete handler is called before this completes
+anim.always(function(){hooks.unqueued--,jQuery.queue(elem,"fx").length||hooks.empty.fire()})})),
 // Height/width overflow pass
 1===elem.nodeType&&("height"in props||"width"in props)&&(
 // Make sure that nothing sneaks out
 // Record all 3 overflow attributes because IE9-10 do not
 // change the overflow attribute when overflowX and
 // overflowY are set to the same value
-opts.overflow=[style.overflow,style.overflowX,style.overflowY],display=jQuery.css(elem,"display"),checkDisplay="none"===display?data_priv.get(elem,"olddisplay")||defaultDisplay(elem.nodeName):display,"inline"===checkDisplay&&"none"===jQuery.css(elem,"float")&&(style.display="inline-block")),opts.overflow&&(style.overflow="hidden",anim.always(function(){style.overflow=opts.overflow[0],style.overflowX=opts.overflow[1],style.overflowY=opts.overflow[2]}));
+opts.overflow=[style.overflow,style.overflowX,style.overflowY],
+// Set display property to inline-block for height/width
+// animations on inline elements that are having width/height animated
+display=jQuery.css(elem,"display"),
+// Test default display if display is currently "none"
+checkDisplay="none"===display?data_priv.get(elem,"olddisplay")||defaultDisplay(elem.nodeName):display,"inline"===checkDisplay&&"none"===jQuery.css(elem,"float")&&(style.display="inline-block")),opts.overflow&&(style.overflow="hidden",anim.always(function(){style.overflow=opts.overflow[0],style.overflowX=opts.overflow[1],style.overflowY=opts.overflow[2]}));
 // show/hide pass
 for(prop in props)if(value=props[prop],rfxtypes.exec(value)){if(delete props[prop],toggle=toggle||"toggle"===value,value===(hidden?"hide":"show")){
 // If there is dataShow left over from a stopped hide or show and we are going to proceed with show, we should pretend to be hidden
@@ -171,12 +195,12 @@ for(index in value)index in props||(props[index]=value[index],specialEasing[inde
 delete tick.elem}),tick=function(){if(stopped)return!1;for(var currentTime=fxNow||createFxNow(),remaining=Math.max(0,animation.startTime+animation.duration-currentTime),
 // Support: Android 2.3
 // Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
-temp=remaining/animation.duration||0,percent=1-temp,index=0,length=animation.tweens.length;length>index;index++)animation.tweens[index].run(percent);return deferred.notifyWith(elem,[animation,percent,remaining]),1>percent&&length?remaining:(deferred.resolveWith(elem,[animation]),!1)},animation=deferred.promise({elem:elem,props:jQuery.extend({},properties),opts:jQuery.extend(!0,{specialEasing:{}},options),originalProperties:properties,originalOptions:options,startTime:fxNow||createFxNow(),duration:options.duration,tweens:[],createTween:function(prop,end){var tween=jQuery.Tween(elem,animation.opts,prop,end,animation.opts.specialEasing[prop]||animation.opts.easing);return animation.tweens.push(tween),tween},stop:function(gotoEnd){var index=0,
+temp=remaining/animation.duration||0,percent=1-temp,index=0,length=animation.tweens.length;index<length;index++)animation.tweens[index].run(percent);return deferred.notifyWith(elem,[animation,percent,remaining]),percent<1&&length?remaining:(deferred.resolveWith(elem,[animation]),!1)},animation=deferred.promise({elem:elem,props:jQuery.extend({},properties),opts:jQuery.extend(!0,{specialEasing:{}},options),originalProperties:properties,originalOptions:options,startTime:fxNow||createFxNow(),duration:options.duration,tweens:[],createTween:function(prop,end){var tween=jQuery.Tween(elem,animation.opts,prop,end,animation.opts.specialEasing[prop]||animation.opts.easing);return animation.tweens.push(tween),tween},stop:function(gotoEnd){var index=0,
 // If we are going to the end, we want to run all the tweens
 // otherwise we skip this part
-length=gotoEnd?animation.tweens.length:0;if(stopped)return this;for(stopped=!0;length>index;index++)animation.tweens[index].run(1);
+length=gotoEnd?animation.tweens.length:0;if(stopped)return this;for(stopped=!0;index<length;index++)animation.tweens[index].run(1);
 // Resolve when we played the last frame; otherwise, reject
-return gotoEnd?deferred.resolveWith(elem,[animation,gotoEnd]):deferred.rejectWith(elem,[animation,gotoEnd]),this}}),props=animation.props;for(propFilter(props,animation.opts.specialEasing);length>index;index++)if(result=animationPrefilters[index].call(animation,elem,props,animation.opts))return result;
+return gotoEnd?deferred.resolveWith(elem,[animation,gotoEnd]):deferred.rejectWith(elem,[animation,gotoEnd]),this}}),props=animation.props;for(propFilter(props,animation.opts.specialEasing);index<length;index++)if(result=animationPrefilters[index].call(animation,elem,props,animation.opts))return result;
 // attach callbacks from options
 return jQuery.map(props,createTween,animation),jQuery.isFunction(animation.opts.start)&&animation.opts.start.call(elem,animation),jQuery.fx.timer(jQuery.extend(tick,{elem:elem,anim:animation,queue:animation.opts.queue})),animation.progress(animation.opts.progress).done(animation.opts.done,animation.opts.complete).fail(animation.opts.fail).always(animation.opts.always)}
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
@@ -210,10 +234,7 @@ finalDataType=finalDataType||firstDataType}
 // If we found a dataType
 // We add the dataType to the list if needed
 // and return the corresponding response
-// If we found a dataType
-// We add the dataType to the list if needed
-// and return the corresponding response
-return finalDataType?(finalDataType!==dataTypes[0]&&dataTypes.unshift(finalDataType),responses[finalDataType]):void 0}/* Chain conversions given the request and the original response
+if(finalDataType)return finalDataType!==dataTypes[0]&&dataTypes.unshift(finalDataType),responses[finalDataType]}/* Chain conversions given the request and the original response
  * Also sets the responseXXX fields on the jqXHR instance
  */
 function ajaxConvert(s,response,jqXHR,isSuccess){var conv2,current,conv,tmp,prev,converters={},
@@ -228,7 +249,13 @@ for(current=dataTypes.shift();current;)if(s.responseFields[current]&&(jqXHR[s.re
 // There's only work to do if current dataType is non-auto
 if("*"===current)current=prev;else if("*"!==prev&&prev!==current){
 // If none found, seek a pair
-if(conv=converters[prev+" "+current]||converters["* "+current],!conv)for(conv2 in converters)if(tmp=conv2.split(" "),tmp[1]===current&&(conv=converters[prev+" "+tmp[0]]||converters["* "+tmp[0]])){
+if(
+// Seek a direct converter
+conv=converters[prev+" "+current]||converters["* "+current],!conv)for(conv2 in converters)if(
+// If conv2 outputs current
+tmp=conv2.split(" "),tmp[1]===current&&(
+// If prev can be converted to accepted input
+conv=converters[prev+" "+tmp[0]]||converters["* "+tmp[0]])){
 // Condense equivalence converters
 conv===!0?conv=converters[conv2]:converters[conv2]!==!0&&(current=tmp[0],dataTypes.unshift(tmp[1]));break}
 // Apply converter (if not an equivalence)
@@ -279,7 +306,7 @@ length:0,toArray:function(){return slice.call(this)},
 get:function(num){
 // Return just the one element from the set
 // Return all the elements in a clean array
-return null!=num?0>num?this[num+this.length]:this[num]:slice.call(this)},
+return null!=num?num<0?this[num+this.length]:this[num]:slice.call(this)},
 // Take an array of elements and push it onto the stack
 // (returning the new matched element set)
 pushStack:function(elems){
@@ -291,20 +318,28 @@ return ret.prevObject=this,ret.context=this.context,ret},
 // Execute a callback for every element in the matched set.
 // (You can seed the arguments with an array of args, but this is
 // only used internally.)
-each:function(callback,args){return jQuery.each(this,callback,args)},map:function(callback){return this.pushStack(jQuery.map(this,function(elem,i){return callback.call(elem,i,elem)}))},slice:function(){return this.pushStack(slice.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(i){var len=this.length,j=+i+(0>i?len:0);return this.pushStack(j>=0&&len>j?[this[j]]:[])},end:function(){return this.prevObject||this.constructor(null)},
+each:function(callback,args){return jQuery.each(this,callback,args)},map:function(callback){return this.pushStack(jQuery.map(this,function(elem,i){return callback.call(elem,i,elem)}))},slice:function(){return this.pushStack(slice.apply(this,arguments))},first:function(){return this.eq(0)},last:function(){return this.eq(-1)},eq:function(i){var len=this.length,j=+i+(i<0?len:0);return this.pushStack(j>=0&&j<len?[this[j]]:[])},end:function(){return this.prevObject||this.constructor(null)},
 // For internal use only.
 // Behaves like an Array's method, not like a jQuery method.
 push:push,sort:arr.sort,splice:arr.splice},jQuery.extend=jQuery.fn.extend=function(){var options,name,src,copy,copyIsArray,clone,target=arguments[0]||{},i=1,length=arguments.length,deep=!1;for(
 // Handle a deep copy situation
-"boolean"==typeof target&&(deep=target,target=arguments[i]||{},i++),
+"boolean"==typeof target&&(deep=target,
+// Skip the boolean and the target
+target=arguments[i]||{},i++),
 // Handle case when target is a string or something (possible in deep copy)
 "object"==typeof target||jQuery.isFunction(target)||(target={}),
 // Extend jQuery itself if only one argument is passed
-i===length&&(target=this,i--);length>i;i++)
+i===length&&(target=this,i--);i<length;i++)
 // Only deal with non-null/undefined values
 if(null!=(options=arguments[i]))
 // Extend the base object
-for(name in options)src=target[name],copy=options[name],target!==copy&&(deep&&copy&&(jQuery.isPlainObject(copy)||(copyIsArray=jQuery.isArray(copy)))?(copyIsArray?(copyIsArray=!1,clone=src&&jQuery.isArray(src)?src:[]):clone=src&&jQuery.isPlainObject(src)?src:{},target[name]=jQuery.extend(deep,clone,copy)):void 0!==copy&&(target[name]=copy));
+for(name in options)src=target[name],copy=options[name],
+// Prevent never-ending loop
+target!==copy&&(
+// Recurse if we're merging plain objects or arrays
+deep&&copy&&(jQuery.isPlainObject(copy)||(copyIsArray=jQuery.isArray(copy)))?(copyIsArray?(copyIsArray=!1,clone=src&&jQuery.isArray(src)?src:[]):clone=src&&jQuery.isPlainObject(src)?src:{},
+// Never move original objects, clone them
+target[name]=jQuery.extend(deep,clone,copy)):void 0!==copy&&(target[name]=copy));
 // Return the modified object
 return target},jQuery.extend({
 // Unique for each copy of jQuery on the page
@@ -324,26 +359,33 @@ return!jQuery.isArray(obj)&&obj-parseFloat(obj)+1>=0},isPlainObject:function(obj
 // - Any object or value whose internal [[Class]] property is not "[object Object]"
 // - DOM nodes
 // - window
-return"object"!==jQuery.type(obj)||obj.nodeType||jQuery.isWindow(obj)?!1:obj.constructor&&!hasOwn.call(obj.constructor.prototype,"isPrototypeOf")?!1:!0},isEmptyObject:function(obj){var name;for(name in obj)return!1;return!0},type:function(obj){return null==obj?obj+"":"object"==typeof obj||"function"==typeof obj?class2type[toString.call(obj)]||"object":typeof obj},
+return"object"===jQuery.type(obj)&&!obj.nodeType&&!jQuery.isWindow(obj)&&!(obj.constructor&&!hasOwn.call(obj.constructor.prototype,"isPrototypeOf"))},isEmptyObject:function(obj){var name;for(name in obj)return!1;return!0},type:function(obj){return null==obj?obj+"":"object"==typeof obj||"function"==typeof obj?class2type[toString.call(obj)]||"object":typeof obj},
 // Evaluates a script in a global context
-globalEval:function(code){var script,indirect=eval;code=jQuery.trim(code),code&&(1===code.indexOf("use strict")?(script=document.createElement("script"),script.text=code,document.head.appendChild(script).parentNode.removeChild(script)):indirect(code))},
+globalEval:function(code){var script,indirect=eval;code=jQuery.trim(code),code&&(
+// If the code includes a valid, prologue position
+// strict mode pragma, execute code by injecting a
+// script tag into the document.
+1===code.indexOf("use strict")?(script=document.createElement("script"),script.text=code,document.head.appendChild(script).parentNode.removeChild(script)):
+// Otherwise, avoid the DOM node creation, insertion
+// and removal by using an indirect global eval
+indirect(code))},
 // Convert dashed to camelCase; used by the css and data modules
 // Support: IE9-11+
 // Microsoft forgot to hump their vendor prefix (#9572)
 camelCase:function(string){return string.replace(rmsPrefix,"ms-").replace(rdashAlpha,fcamelCase)},nodeName:function(elem,name){return elem.nodeName&&elem.nodeName.toLowerCase()===name.toLowerCase()},
 // args is for internal usage only
-each:function(obj,callback,args){var value,i=0,length=obj.length,isArray=isArraylike(obj);if(args){if(isArray)for(;length>i&&(value=callback.apply(obj[i],args),value!==!1);i++);else for(i in obj)if(value=callback.apply(obj[i],args),value===!1)break}else if(isArray)for(;length>i&&(value=callback.call(obj[i],i,obj[i]),value!==!1);i++);else for(i in obj)if(value=callback.call(obj[i],i,obj[i]),value===!1)break;return obj},
+each:function(obj,callback,args){var value,i=0,length=obj.length,isArray=isArraylike(obj);if(args){if(isArray)for(;i<length&&(value=callback.apply(obj[i],args),value!==!1);i++);else for(i in obj)if(value=callback.apply(obj[i],args),value===!1)break}else if(isArray)for(;i<length&&(value=callback.call(obj[i],i,obj[i]),value!==!1);i++);else for(i in obj)if(value=callback.call(obj[i],i,obj[i]),value===!1)break;return obj},
 // Support: Android<4.1
 trim:function(text){return null==text?"":(text+"").replace(rtrim,"")},
 // results is for internal usage only
-makeArray:function(arr,results){var ret=results||[];return null!=arr&&(isArraylike(Object(arr))?jQuery.merge(ret,"string"==typeof arr?[arr]:arr):push.call(ret,arr)),ret},inArray:function(elem,arr,i){return null==arr?-1:indexOf.call(arr,elem,i)},merge:function(first,second){for(var len=+second.length,j=0,i=first.length;len>j;j++)first[i++]=second[j];return first.length=i,first},grep:function(elems,callback,invert){
+makeArray:function(arr,results){var ret=results||[];return null!=arr&&(isArraylike(Object(arr))?jQuery.merge(ret,"string"==typeof arr?[arr]:arr):push.call(ret,arr)),ret},inArray:function(elem,arr,i){return null==arr?-1:indexOf.call(arr,elem,i)},merge:function(first,second){for(var len=+second.length,j=0,i=first.length;j<len;j++)first[i++]=second[j];return first.length=i,first},grep:function(elems,callback,invert){
 // Go through the array, only saving the items
 // that pass the validator function
-for(var callbackInverse,matches=[],i=0,length=elems.length,callbackExpect=!invert;length>i;i++)callbackInverse=!callback(elems[i],i),callbackInverse!==callbackExpect&&matches.push(elems[i]);return matches},
+for(var callbackInverse,matches=[],i=0,length=elems.length,callbackExpect=!invert;i<length;i++)callbackInverse=!callback(elems[i],i),callbackInverse!==callbackExpect&&matches.push(elems[i]);return matches},
 // arg is for internal usage only
 map:function(elems,callback,arg){var value,i=0,length=elems.length,isArray=isArraylike(elems),ret=[];
 // Go through the array, translating each of the items to their new values
-if(isArray)for(;length>i;i++)value=callback(elems[i],i,arg),null!=value&&ret.push(value);else for(i in elems)value=callback(elems[i],i,arg),null!=value&&ret.push(value);
+if(isArray)for(;i<length;i++)value=callback(elems[i],i,arg),null!=value&&ret.push(value);else for(i in elems)value=callback(elems[i],i,arg),null!=value&&ret.push(value);
 // Flatten any nested arrays
 return concat.apply([],ret)},
 // A global GUID counter for objects
@@ -353,11 +395,10 @@ guid:1,
 proxy:function(fn,context){var tmp,args,proxy;
 // Quick check to determine if target is callable, in the spec
 // this throws a TypeError, but we will just return undefined.
-// Quick check to determine if target is callable, in the spec
-// this throws a TypeError, but we will just return undefined.
+if("string"==typeof context&&(tmp=fn[context],context=fn,fn=tmp),jQuery.isFunction(fn))
 // Simulated bind
 // Set the guid of unique handler to the same of original handler, so it can be removed
-return"string"==typeof context&&(tmp=fn[context],context=fn,fn=tmp),jQuery.isFunction(fn)?(args=slice.call(arguments,2),proxy=function(){return fn.apply(context||this,args.concat(slice.call(arguments)))},proxy.guid=fn.guid=fn.guid||jQuery.guid++,proxy):void 0},now:Date.now,
+return args=slice.call(arguments,2),proxy=function(){return fn.apply(context||this,args.concat(slice.call(arguments)))},proxy.guid=fn.guid=fn.guid||jQuery.guid++,proxy},now:Date.now,
 // jQuery.support is not used in Core but other projects attach their
 // properties to it so it needs to exist.
 support:support}),
@@ -443,14 +484,16 @@ function createButtonPseudo(type){return function(elem){var name=elem.nodeName.t
  * Returns a function to use in pseudos for positionals
  * @param {Function} fn
  */
-function createPositionalPseudo(fn){return markFunction(function(argument){return argument=+argument,markFunction(function(seed,matches){for(var j,matchIndexes=fn([],seed.length,argument),i=matchIndexes.length;i--;)seed[j=matchIndexes[i]]&&(seed[j]=!(matches[j]=seed[j]))})})}/**
+function createPositionalPseudo(fn){return markFunction(function(argument){return argument=+argument,markFunction(function(seed,matches){
+// Match elements found at the specified indexes
+for(var j,matchIndexes=fn([],seed.length,argument),i=matchIndexes.length;i--;)seed[j=matchIndexes[i]]&&(seed[j]=!(matches[j]=seed[j]))})})}/**
  * Checks a node for validity as a Sizzle context
  * @param {Element|Object=} context
  * @returns {Element|Object|Boolean} The input node if acceptable, otherwise a falsy value
  */
 function testContext(context){return context&&"undefined"!=typeof context.getElementsByTagName&&context}
 // Easy API for creating new setFilters
-function setFilters(){}function toSelector(tokens){for(var i=0,len=tokens.length,selector="";len>i;i++)selector+=tokens[i].value;return selector}function addCombinator(matcher,combinator,base){var dir=combinator.dir,checkNonElements=base&&"parentNode"===dir,doneName=done++;
+function setFilters(){}function toSelector(tokens){for(var i=0,len=tokens.length,selector="";i<len;i++)selector+=tokens[i].value;return selector}function addCombinator(matcher,combinator,base){var dir=combinator.dir,checkNonElements=base&&"parentNode"===dir,doneName=done++;
 // Check against closest ancestor/preceding element
 // Check against all ancestor/preceding elements
 return combinator.first?function(elem,context,xml){for(;elem=elem[dir];)if(1===elem.nodeType||checkNonElements)return matcher(elem,context,xml)}:function(elem,context,xml){var oldCache,outerCache,newCache=[dirruns,doneName];
@@ -461,13 +504,17 @@ return newCache[2]=oldCache[2];
 // A match means we're done; a fail means we have to keep checking
 if(
 // Reuse newcache so results back-propagate to previous elements
-outerCache[dir]=newCache,newCache[2]=matcher(elem,context,xml))return!0}}}function elementMatcher(matchers){return matchers.length>1?function(elem,context,xml){for(var i=matchers.length;i--;)if(!matchers[i](elem,context,xml))return!1;return!0}:matchers[0]}function multipleContexts(selector,contexts,results){for(var i=0,len=contexts.length;len>i;i++)Sizzle(selector,contexts[i],results);return results}function condense(unmatched,map,filter,context,xml){for(var elem,newUnmatched=[],i=0,len=unmatched.length,mapped=null!=map;len>i;i++)(elem=unmatched[i])&&(!filter||filter(elem,context,xml))&&(newUnmatched.push(elem),mapped&&map.push(i));return newUnmatched}function setMatcher(preFilter,selector,matcher,postFilter,postFinder,postSelector){return postFilter&&!postFilter[expando]&&(postFilter=setMatcher(postFilter)),postFinder&&!postFinder[expando]&&(postFinder=setMatcher(postFinder,postSelector)),markFunction(function(seed,results,context,xml){var temp,i,elem,preMap=[],postMap=[],preexisting=results.length,
+outerCache[dir]=newCache,newCache[2]=matcher(elem,context,xml))return!0}}}function elementMatcher(matchers){return matchers.length>1?function(elem,context,xml){for(var i=matchers.length;i--;)if(!matchers[i](elem,context,xml))return!1;return!0}:matchers[0]}function multipleContexts(selector,contexts,results){for(var i=0,len=contexts.length;i<len;i++)Sizzle(selector,contexts[i],results);return results}function condense(unmatched,map,filter,context,xml){for(var elem,newUnmatched=[],i=0,len=unmatched.length,mapped=null!=map;i<len;i++)(elem=unmatched[i])&&(filter&&!filter(elem,context,xml)||(newUnmatched.push(elem),mapped&&map.push(i)));return newUnmatched}function setMatcher(preFilter,selector,matcher,postFilter,postFinder,postSelector){return postFilter&&!postFilter[expando]&&(postFilter=setMatcher(postFilter)),postFinder&&!postFinder[expando]&&(postFinder=setMatcher(postFinder,postSelector)),markFunction(function(seed,results,context,xml){var temp,i,elem,preMap=[],postMap=[],preexisting=results.length,
 // Get initial elements from seed or context
 elems=seed||multipleContexts(selector||"*",context.nodeType?[context]:context,[]),
 // Prefilter to get matcher input, preserving a map for seed-results synchronization
-matcherIn=!preFilter||!seed&&selector?elems:condense(elems,preMap,preFilter,context,xml),matcherOut=matcher?postFinder||(seed?preFilter:preexisting||postFilter)?
+matcherIn=!preFilter||!seed&&selector?elems:condense(elems,preMap,preFilter,context,xml),matcherOut=matcher?
+// If we have a postFinder, or filtered seed, or non-seed postFilter or preexisting results,
+postFinder||(seed?preFilter:preexisting||postFilter)?
 // ...intermediate processing is necessary
-[]:results:matcherIn;
+[]:
+// ...otherwise use results directly
+results:matcherIn;
 // Apply postFilter
 if(
 // Find primary matches
@@ -483,13 +530,13 @@ i=matcherOut.length;i--;)(elem=matcherOut[i])&&(temp=postFinder?indexOf(seed,ele
 // The foundational matcher ensures that elements are reachable from top-level context(s)
 matchContext=addCombinator(function(elem){return elem===checkContext},implicitRelative,!0),matchAnyContext=addCombinator(function(elem){return indexOf(checkContext,elem)>-1},implicitRelative,!0),matchers=[function(elem,context,xml){var ret=!leadingRelative&&(xml||context!==outermostContext)||((checkContext=context).nodeType?matchContext(elem,context,xml):matchAnyContext(elem,context,xml));
 // Avoid hanging onto element (issue #299)
-return checkContext=null,ret}];len>i;i++)if(matcher=Expr.relative[tokens[i].type])matchers=[addCombinator(elementMatcher(matchers),matcher)];else{
+return checkContext=null,ret}];i<len;i++)if(matcher=Expr.relative[tokens[i].type])matchers=[addCombinator(elementMatcher(matchers),matcher)];else{
 // Return special upon seeing a positional matcher
 if(matcher=Expr.filter[tokens[i].type].apply(null,tokens[i].matches),matcher[expando]){for(
 // Find the next relative operator (if any) for proper handling
-j=++i;len>j&&!Expr.relative[tokens[j].type];j++);
+j=++i;j<len&&!Expr.relative[tokens[j].type];j++);
 // If the preceding token was a descendant combinator, insert an implicit any-element `*`
-return setMatcher(i>1&&elementMatcher(matchers),i>1&&toSelector(tokens.slice(0,i-1).concat({value:" "===tokens[i-2].type?"*":""})).replace(rtrim,"$1"),matcher,j>i&&matcherFromTokens(tokens.slice(i,j)),len>j&&matcherFromTokens(tokens=tokens.slice(j)),len>j&&toSelector(tokens))}matchers.push(matcher)}return elementMatcher(matchers)}function matcherFromGroupMatchers(elementMatchers,setMatchers){var bySet=setMatchers.length>0,byElement=elementMatchers.length>0,superMatcher=function(seed,context,xml,results,outermost){var elem,j,matcher,matchedCount=0,i="0",unmatched=seed&&[],setMatched=[],contextBackup=outermostContext,
+return setMatcher(i>1&&elementMatcher(matchers),i>1&&toSelector(tokens.slice(0,i-1).concat({value:" "===tokens[i-2].type?"*":""})).replace(rtrim,"$1"),matcher,i<j&&matcherFromTokens(tokens.slice(i,j)),j<len&&matcherFromTokens(tokens=tokens.slice(j)),j<len&&toSelector(tokens))}matchers.push(matcher)}return elementMatcher(matchers)}function matcherFromGroupMatchers(elementMatchers,setMatchers){var bySet=setMatchers.length>0,byElement=elementMatchers.length>0,superMatcher=function(seed,context,xml,results,outermost){var elem,j,matcher,matchedCount=0,i="0",unmatched=seed&&[],setMatched=[],contextBackup=outermostContext,
 // We must always have either seed elements or outermost context
 elems=seed||byElement&&Expr.find.TAG("*",outermost),
 // Use integer dirruns iff this is the outermost matcher
@@ -504,7 +551,9 @@ bySet&&(
 // They will have gone through all possible matchers
 (elem=!matcher&&elem)&&matchedCount--,
 // Lengthen the array for every element, matched or not
-seed&&unmatched.push(elem))}if(matchedCount+=i,bySet&&i!==matchedCount){for(j=0;matcher=setMatchers[j++];)matcher(unmatched,setMatched,context,xml);if(seed){
+seed&&unmatched.push(elem))}if(
+// Apply set filters to unmatched elements
+matchedCount+=i,bySet&&i!==matchedCount){for(j=0;matcher=setMatchers[j++];)matcher(unmatched,setMatched,context,xml);if(seed){
 // Reintegrate element matches to eliminate the need for sorting
 if(matchedCount>0)for(;i--;)unmatched[i]||setMatched[i]||(setMatched[i]=pop.call(results));
 // Discard index placeholder values to get only actual matches
@@ -525,7 +574,7 @@ MAX_NEGATIVE=1<<31,
 hasOwn={}.hasOwnProperty,arr=[],pop=arr.pop,push_native=arr.push,push=arr.push,slice=arr.slice,
 // Use a stripped-down indexOf as it's faster than native
 // http://jsperf.com/thor-indexof-vs-for/5
-indexOf=function(list,elem){for(var i=0,len=list.length;len>i;i++)if(list[i]===elem)return i;return-1},booleans="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+indexOf=function(list,elem){for(var i=0,len=list.length;i<len;i++)if(list[i]===elem)return i;return-1},booleans="checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
 // Regular expressions
 // Whitespace characters http://www.w3.org/TR/css3-selectors/#whitespace
 whitespace="[\\x20\\t\\r\\n\\f]",
@@ -555,7 +604,7 @@ runescape=new RegExp("\\\\([\\da-f]{1,6}"+whitespace+"?|("+whitespace+")|.)","ig
 // Workaround erroneous numeric interpretation of +"0x"
 // BMP codepoint
 // Supplemental Plane codepoint (surrogate pair)
-return high!==high||escapedWhitespace?escaped:0>high?String.fromCharCode(high+65536):String.fromCharCode(high>>10|55296,1023&high|56320)},
+return high!==high||escapedWhitespace?escaped:high<0?String.fromCharCode(high+65536):String.fromCharCode(high>>10|55296,1023&high|56320)},
 // Used for iframes
 // See setDocument()
 // Removing the function wrapper causes a "Permission Denied"
@@ -572,7 +621,276 @@ function(target,els){push_native.apply(target,slice.call(els))}:
 // Otherwise append directly
 function(target,els){
 // Can't trust NodeList.length
-for(var j=target.length,i=0;target[j++]=els[i++];);target.length=j-1}}}support=Sizzle.support={},isXML=Sizzle.isXML=function(elem){var documentElement=elem&&(elem.ownerDocument||elem).documentElement;return documentElement?"HTML"!==documentElement.nodeName:!1},setDocument=Sizzle.setDocument=function(node){var hasCompare,parent,doc=node?node.ownerDocument||node:preferredDoc;return doc!==document&&9===doc.nodeType&&doc.documentElement?(document=doc,docElem=doc.documentElement,parent=doc.defaultView,parent&&parent!==parent.top&&(parent.addEventListener?parent.addEventListener("unload",unloadHandler,!1):parent.attachEvent&&parent.attachEvent("onunload",unloadHandler)),documentIsHTML=!isXML(doc),support.attributes=assert(function(div){return div.className="i",!div.getAttribute("className")}),support.getElementsByTagName=assert(function(div){return div.appendChild(doc.createComment("")),!div.getElementsByTagName("*").length}),support.getElementsByClassName=rnative.test(doc.getElementsByClassName),support.getById=assert(function(div){return docElem.appendChild(div).id=expando,!doc.getElementsByName||!doc.getElementsByName(expando).length}),support.getById?(Expr.find.ID=function(id,context){if("undefined"!=typeof context.getElementById&&documentIsHTML){var m=context.getElementById(id);return m&&m.parentNode?[m]:[]}},Expr.filter.ID=function(id){var attrId=id.replace(runescape,funescape);return function(elem){return elem.getAttribute("id")===attrId}}):(delete Expr.find.ID,Expr.filter.ID=function(id){var attrId=id.replace(runescape,funescape);return function(elem){var node="undefined"!=typeof elem.getAttributeNode&&elem.getAttributeNode("id");return node&&node.value===attrId}}),Expr.find.TAG=support.getElementsByTagName?function(tag,context){return"undefined"!=typeof context.getElementsByTagName?context.getElementsByTagName(tag):support.qsa?context.querySelectorAll(tag):void 0}:function(tag,context){var elem,tmp=[],i=0,results=context.getElementsByTagName(tag);if("*"===tag){for(;elem=results[i++];)1===elem.nodeType&&tmp.push(elem);return tmp}return results},Expr.find.CLASS=support.getElementsByClassName&&function(className,context){return documentIsHTML?context.getElementsByClassName(className):void 0},rbuggyMatches=[],rbuggyQSA=[],(support.qsa=rnative.test(doc.querySelectorAll))&&(assert(function(div){docElem.appendChild(div).innerHTML="<a id='"+expando+"'></a><select id='"+expando+"-\f]' msallowcapture=''><option selected=''></option></select>",div.querySelectorAll("[msallowcapture^='']").length&&rbuggyQSA.push("[*^$]="+whitespace+"*(?:''|\"\")"),div.querySelectorAll("[selected]").length||rbuggyQSA.push("\\["+whitespace+"*(?:value|"+booleans+")"),div.querySelectorAll("[id~="+expando+"-]").length||rbuggyQSA.push("~="),div.querySelectorAll(":checked").length||rbuggyQSA.push(":checked"),div.querySelectorAll("a#"+expando+"+*").length||rbuggyQSA.push(".#.+[+~]")}),assert(function(div){var input=doc.createElement("input");input.setAttribute("type","hidden"),div.appendChild(input).setAttribute("name","D"),div.querySelectorAll("[name=d]").length&&rbuggyQSA.push("name"+whitespace+"*[*^$|!~]?="),div.querySelectorAll(":enabled").length||rbuggyQSA.push(":enabled",":disabled"),div.querySelectorAll("*,:x"),rbuggyQSA.push(",.*:")})),(support.matchesSelector=rnative.test(matches=docElem.matches||docElem.webkitMatchesSelector||docElem.mozMatchesSelector||docElem.oMatchesSelector||docElem.msMatchesSelector))&&assert(function(div){support.disconnectedMatch=matches.call(div,"div"),matches.call(div,"[s!='']:x"),rbuggyMatches.push("!=",pseudos)}),rbuggyQSA=rbuggyQSA.length&&new RegExp(rbuggyQSA.join("|")),rbuggyMatches=rbuggyMatches.length&&new RegExp(rbuggyMatches.join("|")),hasCompare=rnative.test(docElem.compareDocumentPosition),contains=hasCompare||rnative.test(docElem.contains)?function(a,b){var adown=9===a.nodeType?a.documentElement:a,bup=b&&b.parentNode;return a===bup||!(!bup||1!==bup.nodeType||!(adown.contains?adown.contains(bup):a.compareDocumentPosition&&16&a.compareDocumentPosition(bup)))}:function(a,b){if(b)for(;b=b.parentNode;)if(b===a)return!0;return!1},sortOrder=hasCompare?function(a,b){if(a===b)return hasDuplicate=!0,0;var compare=!a.compareDocumentPosition-!b.compareDocumentPosition;return compare?compare:(compare=(a.ownerDocument||a)===(b.ownerDocument||b)?a.compareDocumentPosition(b):1,1&compare||!support.sortDetached&&b.compareDocumentPosition(a)===compare?a===doc||a.ownerDocument===preferredDoc&&contains(preferredDoc,a)?-1:b===doc||b.ownerDocument===preferredDoc&&contains(preferredDoc,b)?1:sortInput?indexOf(sortInput,a)-indexOf(sortInput,b):0:4&compare?-1:1)}:function(a,b){if(a===b)return hasDuplicate=!0,0;var cur,i=0,aup=a.parentNode,bup=b.parentNode,ap=[a],bp=[b];if(!aup||!bup)return a===doc?-1:b===doc?1:aup?-1:bup?1:sortInput?indexOf(sortInput,a)-indexOf(sortInput,b):0;if(aup===bup)return siblingCheck(a,b);for(cur=a;cur=cur.parentNode;)ap.unshift(cur);for(cur=b;cur=cur.parentNode;)bp.unshift(cur);for(;ap[i]===bp[i];)i++;return i?siblingCheck(ap[i],bp[i]):ap[i]===preferredDoc?-1:bp[i]===preferredDoc?1:0},doc):document},Sizzle.matches=function(expr,elements){return Sizzle(expr,null,null,elements)},Sizzle.matchesSelector=function(elem,expr){if((elem.ownerDocument||elem)!==document&&setDocument(elem),expr=expr.replace(rattributeQuotes,"='$1']"),support.matchesSelector&&documentIsHTML&&(!rbuggyMatches||!rbuggyMatches.test(expr))&&(!rbuggyQSA||!rbuggyQSA.test(expr)))try{var ret=matches.call(elem,expr);if(ret||support.disconnectedMatch||elem.document&&11!==elem.document.nodeType)return ret}catch(e){}return Sizzle(expr,document,null,[elem]).length>0},Sizzle.contains=function(context,elem){return(context.ownerDocument||context)!==document&&setDocument(context),contains(context,elem)},Sizzle.attr=function(elem,name){(elem.ownerDocument||elem)!==document&&setDocument(elem);var fn=Expr.attrHandle[name.toLowerCase()],val=fn&&hasOwn.call(Expr.attrHandle,name.toLowerCase())?fn(elem,name,!documentIsHTML):void 0;return void 0!==val?val:support.attributes||!documentIsHTML?elem.getAttribute(name):(val=elem.getAttributeNode(name))&&val.specified?val.value:null},Sizzle.error=function(msg){throw new Error("Syntax error, unrecognized expression: "+msg)},Sizzle.uniqueSort=function(results){var elem,duplicates=[],j=0,i=0;if(hasDuplicate=!support.detectDuplicates,sortInput=!support.sortStable&&results.slice(0),results.sort(sortOrder),hasDuplicate){for(;elem=results[i++];)elem===results[i]&&(j=duplicates.push(i));for(;j--;)results.splice(duplicates[j],1)}return sortInput=null,results},getText=Sizzle.getText=function(elem){var node,ret="",i=0,nodeType=elem.nodeType;if(nodeType){if(1===nodeType||9===nodeType||11===nodeType){if("string"==typeof elem.textContent)return elem.textContent;for(elem=elem.firstChild;elem;elem=elem.nextSibling)ret+=getText(elem)}else if(3===nodeType||4===nodeType)return elem.nodeValue}else for(;node=elem[i++];)ret+=getText(node);return ret},Expr=Sizzle.selectors={cacheLength:50,createPseudo:markFunction,match:matchExpr,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(match){return match[1]=match[1].replace(runescape,funescape),match[3]=(match[3]||match[4]||match[5]||"").replace(runescape,funescape),"~="===match[2]&&(match[3]=" "+match[3]+" "),match.slice(0,4)},CHILD:function(match){return match[1]=match[1].toLowerCase(),"nth"===match[1].slice(0,3)?(match[3]||Sizzle.error(match[0]),match[4]=+(match[4]?match[5]+(match[6]||1):2*("even"===match[3]||"odd"===match[3])),match[5]=+(match[7]+match[8]||"odd"===match[3])):match[3]&&Sizzle.error(match[0]),match},PSEUDO:function(match){var excess,unquoted=!match[6]&&match[2];return matchExpr.CHILD.test(match[0])?null:(match[3]?match[2]=match[4]||match[5]||"":unquoted&&rpseudo.test(unquoted)&&(excess=tokenize(unquoted,!0))&&(excess=unquoted.indexOf(")",unquoted.length-excess)-unquoted.length)&&(match[0]=match[0].slice(0,excess),match[2]=unquoted.slice(0,excess)),match.slice(0,3))}},filter:{TAG:function(nodeNameSelector){var nodeName=nodeNameSelector.replace(runescape,funescape).toLowerCase();return"*"===nodeNameSelector?function(){return!0}:function(elem){return elem.nodeName&&elem.nodeName.toLowerCase()===nodeName}},CLASS:function(className){var pattern=classCache[className+" "];return pattern||(pattern=new RegExp("(^|"+whitespace+")"+className+"("+whitespace+"|$)"))&&classCache(className,function(elem){return pattern.test("string"==typeof elem.className&&elem.className||"undefined"!=typeof elem.getAttribute&&elem.getAttribute("class")||"")})},ATTR:function(name,operator,check){return function(elem){var result=Sizzle.attr(elem,name);return null==result?"!="===operator:operator?(result+="","="===operator?result===check:"!="===operator?result!==check:"^="===operator?check&&0===result.indexOf(check):"*="===operator?check&&result.indexOf(check)>-1:"$="===operator?check&&result.slice(-check.length)===check:"~="===operator?(" "+result.replace(rwhitespace," ")+" ").indexOf(check)>-1:"|="===operator?result===check||result.slice(0,check.length+1)===check+"-":!1):!0}},CHILD:function(type,what,argument,first,last){var simple="nth"!==type.slice(0,3),forward="last"!==type.slice(-4),ofType="of-type"===what;return 1===first&&0===last?function(elem){return!!elem.parentNode}:function(elem,context,xml){var cache,outerCache,node,diff,nodeIndex,start,dir=simple!==forward?"nextSibling":"previousSibling",parent=elem.parentNode,name=ofType&&elem.nodeName.toLowerCase(),useCache=!xml&&!ofType;if(parent){if(simple){for(;dir;){for(node=elem;node=node[dir];)if(ofType?node.nodeName.toLowerCase()===name:1===node.nodeType)return!1;start=dir="only"===type&&!start&&"nextSibling"}return!0}if(start=[forward?parent.firstChild:parent.lastChild],forward&&useCache){for(outerCache=parent[expando]||(parent[expando]={}),cache=outerCache[type]||[],nodeIndex=cache[0]===dirruns&&cache[1],diff=cache[0]===dirruns&&cache[2],node=nodeIndex&&parent.childNodes[nodeIndex];node=++nodeIndex&&node&&node[dir]||(diff=nodeIndex=0)||start.pop();)if(1===node.nodeType&&++diff&&node===elem){outerCache[type]=[dirruns,nodeIndex,diff];break}}else if(useCache&&(cache=(elem[expando]||(elem[expando]={}))[type])&&cache[0]===dirruns)diff=cache[1];else for(;(node=++nodeIndex&&node&&node[dir]||(diff=nodeIndex=0)||start.pop())&&((ofType?node.nodeName.toLowerCase()!==name:1!==node.nodeType)||!++diff||(useCache&&((node[expando]||(node[expando]={}))[type]=[dirruns,diff]),node!==elem)););return diff-=last,diff===first||diff%first===0&&diff/first>=0}}},PSEUDO:function(pseudo,argument){var args,fn=Expr.pseudos[pseudo]||Expr.setFilters[pseudo.toLowerCase()]||Sizzle.error("unsupported pseudo: "+pseudo);return fn[expando]?fn(argument):fn.length>1?(args=[pseudo,pseudo,"",argument],Expr.setFilters.hasOwnProperty(pseudo.toLowerCase())?markFunction(function(seed,matches){for(var idx,matched=fn(seed,argument),i=matched.length;i--;)idx=indexOf(seed,matched[i]),seed[idx]=!(matches[idx]=matched[i])}):function(elem){return fn(elem,0,args)}):fn}},pseudos:{not:markFunction(function(selector){var input=[],results=[],matcher=compile(selector.replace(rtrim,"$1"));return matcher[expando]?markFunction(function(seed,matches,context,xml){for(var elem,unmatched=matcher(seed,null,xml,[]),i=seed.length;i--;)(elem=unmatched[i])&&(seed[i]=!(matches[i]=elem))}):function(elem,context,xml){return input[0]=elem,matcher(input,null,xml,results),input[0]=null,!results.pop()}}),has:markFunction(function(selector){return function(elem){return Sizzle(selector,elem).length>0}}),contains:markFunction(function(text){return text=text.replace(runescape,funescape),function(elem){return(elem.textContent||elem.innerText||getText(elem)).indexOf(text)>-1}}),lang:markFunction(function(lang){return ridentifier.test(lang||"")||Sizzle.error("unsupported lang: "+lang),lang=lang.replace(runescape,funescape).toLowerCase(),function(elem){var elemLang;do if(elemLang=documentIsHTML?elem.lang:elem.getAttribute("xml:lang")||elem.getAttribute("lang"))return elemLang=elemLang.toLowerCase(),elemLang===lang||0===elemLang.indexOf(lang+"-");while((elem=elem.parentNode)&&1===elem.nodeType);return!1}}),target:function(elem){var hash=window.location&&window.location.hash;return hash&&hash.slice(1)===elem.id},root:function(elem){return elem===docElem},focus:function(elem){return elem===document.activeElement&&(!document.hasFocus||document.hasFocus())&&!!(elem.type||elem.href||~elem.tabIndex)},enabled:function(elem){return elem.disabled===!1},disabled:function(elem){return elem.disabled===!0},checked:function(elem){var nodeName=elem.nodeName.toLowerCase();return"input"===nodeName&&!!elem.checked||"option"===nodeName&&!!elem.selected},selected:function(elem){return elem.parentNode&&elem.parentNode.selectedIndex,elem.selected===!0},empty:function(elem){for(elem=elem.firstChild;elem;elem=elem.nextSibling)if(elem.nodeType<6)return!1;return!0},parent:function(elem){return!Expr.pseudos.empty(elem)},header:function(elem){return rheader.test(elem.nodeName)},input:function(elem){return rinputs.test(elem.nodeName)},button:function(elem){var name=elem.nodeName.toLowerCase();return"input"===name&&"button"===elem.type||"button"===name},text:function(elem){var attr;return"input"===elem.nodeName.toLowerCase()&&"text"===elem.type&&(null==(attr=elem.getAttribute("type"))||"text"===attr.toLowerCase())},first:createPositionalPseudo(function(){return[0]}),last:createPositionalPseudo(function(matchIndexes,length){return[length-1]}),eq:createPositionalPseudo(function(matchIndexes,length,argument){return[0>argument?argument+length:argument]}),even:createPositionalPseudo(function(matchIndexes,length){for(var i=0;length>i;i+=2)matchIndexes.push(i);return matchIndexes}),odd:createPositionalPseudo(function(matchIndexes,length){for(var i=1;length>i;i+=2)matchIndexes.push(i);return matchIndexes}),lt:createPositionalPseudo(function(matchIndexes,length,argument){for(var i=0>argument?argument+length:argument;--i>=0;)matchIndexes.push(i);return matchIndexes}),gt:createPositionalPseudo(function(matchIndexes,length,argument){for(var i=0>argument?argument+length:argument;++i<length;)matchIndexes.push(i);return matchIndexes})}},Expr.pseudos.nth=Expr.pseudos.eq;
+for(var j=target.length,i=0;target[j++]=els[i++];);target.length=j-1}}}
+// Expose support vars for convenience
+support=Sizzle.support={},/**
+ * Detects XML nodes
+ * @param {Element|Object} elem An element or a document
+ * @returns {Boolean} True iff elem is a non-HTML XML node
+ */
+isXML=Sizzle.isXML=function(elem){
+// documentElement is verified for cases where it doesn't yet exist
+// (such as loading iframes in IE - #4833)
+var documentElement=elem&&(elem.ownerDocument||elem).documentElement;return!!documentElement&&"HTML"!==documentElement.nodeName},/**
+ * Sets document-related variables once based on the current document
+ * @param {Element|Object} [doc] An element or document object to use to set the document
+ * @returns {Object} Returns the current document
+ */
+setDocument=Sizzle.setDocument=function(node){var hasCompare,parent,doc=node?node.ownerDocument||node:preferredDoc;
+// If no document and documentElement is available, return
+// If no document and documentElement is available, return
+// Set our document
+// Support: IE>8
+// If iframe document is assigned to "document" variable and if iframe has been reloaded,
+// IE will throw "permission denied" error when accessing "document" variable, see jQuery #13936
+// IE6-8 do not support the defaultView property so parent will be undefined
+// IE11 does not have attachEvent, so all must suffer
+/* Support tests
+	---------------------------------------------------------------------- */
+/* Attributes
+	---------------------------------------------------------------------- */
+// Support: IE<8
+// Verify that getAttribute really returns attributes and not properties
+// (excepting IE8 booleans)
+/* getElement(s)By*
+	---------------------------------------------------------------------- */
+// Check if getElementsByTagName("*") returns only elements
+// Support: IE<9
+// Support: IE<10
+// Check if getElementById returns elements by name
+// The broken getElementById methods don't pick up programatically-set names,
+// so use a roundabout getElementsByName test
+// ID find and filter
+// Support: IE6/7
+// getElementById is not reliable as a find shortcut
+// Tag
+// Class
+/* QSA/matchesSelector
+	---------------------------------------------------------------------- */
+// QSA and matchesSelector support
+// matchesSelector(:active) reports false when true (IE9/Opera 11.5)
+// qSa(:focus) reports false when true (Chrome 21)
+// We allow this because of a bug in IE8/9 that throws an error
+// whenever `document.activeElement` is accessed on an iframe
+// So, we allow :focus to pass through QSA all the time to avoid the IE error
+// See http://bugs.jquery.com/ticket/13378
+// Build QSA regex
+// Regex strategy adopted from Diego Perini
+/* Contains
+	---------------------------------------------------------------------- */
+// Element contains another
+// Purposefully does not implement inclusive descendent
+// As in, an element does not contain itself
+/* Sorting
+	---------------------------------------------------------------------- */
+// Document order sorting
+return doc!==document&&9===doc.nodeType&&doc.documentElement?(document=doc,docElem=doc.documentElement,parent=doc.defaultView,parent&&parent!==parent.top&&(parent.addEventListener?parent.addEventListener("unload",unloadHandler,!1):parent.attachEvent&&parent.attachEvent("onunload",unloadHandler)),documentIsHTML=!isXML(doc),support.attributes=assert(function(div){return div.className="i",!div.getAttribute("className")}),support.getElementsByTagName=assert(function(div){return div.appendChild(doc.createComment("")),!div.getElementsByTagName("*").length}),support.getElementsByClassName=rnative.test(doc.getElementsByClassName),support.getById=assert(function(div){return docElem.appendChild(div).id=expando,!doc.getElementsByName||!doc.getElementsByName(expando).length}),support.getById?(Expr.find.ID=function(id,context){if("undefined"!=typeof context.getElementById&&documentIsHTML){var m=context.getElementById(id);
+// Check parentNode to catch when Blackberry 4.6 returns
+// nodes that are no longer in the document #6963
+return m&&m.parentNode?[m]:[]}},Expr.filter.ID=function(id){var attrId=id.replace(runescape,funescape);return function(elem){return elem.getAttribute("id")===attrId}}):(delete Expr.find.ID,Expr.filter.ID=function(id){var attrId=id.replace(runescape,funescape);return function(elem){var node="undefined"!=typeof elem.getAttributeNode&&elem.getAttributeNode("id");return node&&node.value===attrId}}),Expr.find.TAG=support.getElementsByTagName?function(tag,context){return"undefined"!=typeof context.getElementsByTagName?context.getElementsByTagName(tag):support.qsa?context.querySelectorAll(tag):void 0}:function(tag,context){var elem,tmp=[],i=0,
+// By happy coincidence, a (broken) gEBTN appears on DocumentFragment nodes too
+results=context.getElementsByTagName(tag);
+// Filter out possible comments
+if("*"===tag){for(;elem=results[i++];)1===elem.nodeType&&tmp.push(elem);return tmp}return results},Expr.find.CLASS=support.getElementsByClassName&&function(className,context){if(documentIsHTML)return context.getElementsByClassName(className)},rbuggyMatches=[],rbuggyQSA=[],(support.qsa=rnative.test(doc.querySelectorAll))&&(assert(function(div){
+// Select is set to empty string on purpose
+// This is to test IE's treatment of not explicitly
+// setting a boolean content attribute,
+// since its presence should be enough
+// http://bugs.jquery.com/ticket/12359
+docElem.appendChild(div).innerHTML="<a id='"+expando+"'></a><select id='"+expando+"-\f]' msallowcapture=''><option selected=''></option></select>",
+// Support: IE8, Opera 11-12.16
+// Nothing should be selected when empty strings follow ^= or $= or *=
+// The test attribute must be unknown in Opera but "safe" for WinRT
+// http://msdn.microsoft.com/en-us/library/ie/hh465388.aspx#attribute_section
+div.querySelectorAll("[msallowcapture^='']").length&&rbuggyQSA.push("[*^$]="+whitespace+"*(?:''|\"\")"),
+// Support: IE8
+// Boolean attributes and "value" are not treated correctly
+div.querySelectorAll("[selected]").length||rbuggyQSA.push("\\["+whitespace+"*(?:value|"+booleans+")"),
+// Support: Chrome<29, Android<4.2+, Safari<7.0+, iOS<7.0+, PhantomJS<1.9.7+
+div.querySelectorAll("[id~="+expando+"-]").length||rbuggyQSA.push("~="),
+// Webkit/Opera - :checked should return selected option elements
+// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
+// IE8 throws error here and will not see later tests
+div.querySelectorAll(":checked").length||rbuggyQSA.push(":checked"),
+// Support: Safari 8+, iOS 8+
+// https://bugs.webkit.org/show_bug.cgi?id=136851
+// In-page `selector#id sibing-combinator selector` fails
+div.querySelectorAll("a#"+expando+"+*").length||rbuggyQSA.push(".#.+[+~]")}),assert(function(div){
+// Support: Windows 8 Native Apps
+// The type and name attributes are restricted during .innerHTML assignment
+var input=doc.createElement("input");input.setAttribute("type","hidden"),div.appendChild(input).setAttribute("name","D"),
+// Support: IE8
+// Enforce case-sensitivity of name attribute
+div.querySelectorAll("[name=d]").length&&rbuggyQSA.push("name"+whitespace+"*[*^$|!~]?="),
+// FF 3.5 - :enabled/:disabled and hidden elements (hidden elements are still enabled)
+// IE8 throws error here and will not see later tests
+div.querySelectorAll(":enabled").length||rbuggyQSA.push(":enabled",":disabled"),
+// Opera 10-11 does not throw on post-comma invalid pseudos
+div.querySelectorAll("*,:x"),rbuggyQSA.push(",.*:")})),(support.matchesSelector=rnative.test(matches=docElem.matches||docElem.webkitMatchesSelector||docElem.mozMatchesSelector||docElem.oMatchesSelector||docElem.msMatchesSelector))&&assert(function(div){
+// Check to see if it's possible to do matchesSelector
+// on a disconnected node (IE 9)
+support.disconnectedMatch=matches.call(div,"div"),
+// This should fail with an exception
+// Gecko does not error, returns false instead
+matches.call(div,"[s!='']:x"),rbuggyMatches.push("!=",pseudos)}),rbuggyQSA=rbuggyQSA.length&&new RegExp(rbuggyQSA.join("|")),rbuggyMatches=rbuggyMatches.length&&new RegExp(rbuggyMatches.join("|")),hasCompare=rnative.test(docElem.compareDocumentPosition),contains=hasCompare||rnative.test(docElem.contains)?function(a,b){var adown=9===a.nodeType?a.documentElement:a,bup=b&&b.parentNode;return a===bup||!(!bup||1!==bup.nodeType||!(adown.contains?adown.contains(bup):a.compareDocumentPosition&&16&a.compareDocumentPosition(bup)))}:function(a,b){if(b)for(;b=b.parentNode;)if(b===a)return!0;return!1},sortOrder=hasCompare?function(a,b){
+// Flag for duplicate removal
+if(a===b)return hasDuplicate=!0,0;
+// Sort on method existence if only one input has compareDocumentPosition
+var compare=!a.compareDocumentPosition-!b.compareDocumentPosition;
+// Calculate position if both inputs belong to the same document
+// Otherwise we know they are disconnected
+// Disconnected nodes
+// Choose the first element that is related to our preferred document
+return compare?compare:(compare=(a.ownerDocument||a)===(b.ownerDocument||b)?a.compareDocumentPosition(b):1,1&compare||!support.sortDetached&&b.compareDocumentPosition(a)===compare?a===doc||a.ownerDocument===preferredDoc&&contains(preferredDoc,a)?-1:b===doc||b.ownerDocument===preferredDoc&&contains(preferredDoc,b)?1:sortInput?indexOf(sortInput,a)-indexOf(sortInput,b):0:4&compare?-1:1)}:function(a,b){
+// Exit early if the nodes are identical
+if(a===b)return hasDuplicate=!0,0;var cur,i=0,aup=a.parentNode,bup=b.parentNode,ap=[a],bp=[b];
+// Parentless nodes are either documents or disconnected
+if(!aup||!bup)return a===doc?-1:b===doc?1:aup?-1:bup?1:sortInput?indexOf(sortInput,a)-indexOf(sortInput,b):0;if(aup===bup)return siblingCheck(a,b);for(
+// Otherwise we need full lists of their ancestors for comparison
+cur=a;cur=cur.parentNode;)ap.unshift(cur);for(cur=b;cur=cur.parentNode;)bp.unshift(cur);
+// Walk down the tree looking for a discrepancy
+for(;ap[i]===bp[i];)i++;
+// Do a sibling check if the nodes have a common ancestor
+// Otherwise nodes in our document sort first
+return i?siblingCheck(ap[i],bp[i]):ap[i]===preferredDoc?-1:bp[i]===preferredDoc?1:0},doc):document},Sizzle.matches=function(expr,elements){return Sizzle(expr,null,null,elements)},Sizzle.matchesSelector=function(elem,expr){if(
+// Set document vars if needed
+(elem.ownerDocument||elem)!==document&&setDocument(elem),
+// Make sure that attribute selectors are quoted
+expr=expr.replace(rattributeQuotes,"='$1']"),support.matchesSelector&&documentIsHTML&&(!rbuggyMatches||!rbuggyMatches.test(expr))&&(!rbuggyQSA||!rbuggyQSA.test(expr)))try{var ret=matches.call(elem,expr);
+// IE 9's matchesSelector returns false on disconnected nodes
+if(ret||support.disconnectedMatch||
+// As well, disconnected nodes are said to be in a document
+// fragment in IE 9
+elem.document&&11!==elem.document.nodeType)return ret}catch(e){}return Sizzle(expr,document,null,[elem]).length>0},Sizzle.contains=function(context,elem){
+// Set document vars if needed
+return(context.ownerDocument||context)!==document&&setDocument(context),contains(context,elem)},Sizzle.attr=function(elem,name){
+// Set document vars if needed
+(elem.ownerDocument||elem)!==document&&setDocument(elem);var fn=Expr.attrHandle[name.toLowerCase()],
+// Don't get fooled by Object.prototype properties (jQuery #13807)
+val=fn&&hasOwn.call(Expr.attrHandle,name.toLowerCase())?fn(elem,name,!documentIsHTML):void 0;return void 0!==val?val:support.attributes||!documentIsHTML?elem.getAttribute(name):(val=elem.getAttributeNode(name))&&val.specified?val.value:null},Sizzle.error=function(msg){throw new Error("Syntax error, unrecognized expression: "+msg)},/**
+ * Document sorting and removing duplicates
+ * @param {ArrayLike} results
+ */
+Sizzle.uniqueSort=function(results){var elem,duplicates=[],j=0,i=0;if(
+// Unless we *know* we can detect duplicates, assume their presence
+hasDuplicate=!support.detectDuplicates,sortInput=!support.sortStable&&results.slice(0),results.sort(sortOrder),hasDuplicate){for(;elem=results[i++];)elem===results[i]&&(j=duplicates.push(i));for(;j--;)results.splice(duplicates[j],1)}
+// Clear input after sorting to release objects
+// See https://github.com/jquery/sizzle/pull/225
+return sortInput=null,results},/**
+ * Utility function for retrieving the text value of an array of DOM nodes
+ * @param {Array|Element} elem
+ */
+getText=Sizzle.getText=function(elem){var node,ret="",i=0,nodeType=elem.nodeType;if(nodeType){if(1===nodeType||9===nodeType||11===nodeType){
+// Use textContent for elements
+// innerText usage removed for consistency of new lines (jQuery #11153)
+if("string"==typeof elem.textContent)return elem.textContent;
+// Traverse its children
+for(elem=elem.firstChild;elem;elem=elem.nextSibling)ret+=getText(elem)}else if(3===nodeType||4===nodeType)return elem.nodeValue}else
+// If no nodeType, this is expected to be an array
+for(;node=elem[i++];)
+// Do not traverse comment nodes
+ret+=getText(node);
+// Do not include comment or processing instruction nodes
+return ret},Expr=Sizzle.selectors={
+// Can be adjusted by the user
+cacheLength:50,createPseudo:markFunction,match:matchExpr,attrHandle:{},find:{},relative:{">":{dir:"parentNode",first:!0}," ":{dir:"parentNode"},"+":{dir:"previousSibling",first:!0},"~":{dir:"previousSibling"}},preFilter:{ATTR:function(match){
+// Move the given value to match[3] whether quoted or unquoted
+return match[1]=match[1].replace(runescape,funescape),match[3]=(match[3]||match[4]||match[5]||"").replace(runescape,funescape),"~="===match[2]&&(match[3]=" "+match[3]+" "),match.slice(0,4)},CHILD:function(match){/* matches from matchExpr["CHILD"]
+				1 type (only|nth|...)
+				2 what (child|of-type)
+				3 argument (even|odd|\d*|\d*n([+-]\d+)?|...)
+				4 xn-component of xn+y argument ([+-]?\d*n|)
+				5 sign of xn-component
+				6 x of xn-component
+				7 sign of y-component
+				8 y of y-component
+			*/
+// nth-* requires argument
+// numeric x and y parameters for Expr.filter.CHILD
+// remember that false/true cast respectively to 0/1
+return match[1]=match[1].toLowerCase(),"nth"===match[1].slice(0,3)?(match[3]||Sizzle.error(match[0]),match[4]=+(match[4]?match[5]+(match[6]||1):2*("even"===match[3]||"odd"===match[3])),match[5]=+(match[7]+match[8]||"odd"===match[3])):match[3]&&Sizzle.error(match[0]),match},PSEUDO:function(match){var excess,unquoted=!match[6]&&match[2];
+// Accept quoted arguments as-is
+// Get excess from tokenize (recursively)
+// advance to the next closing parenthesis
+// excess is a negative index
+return matchExpr.CHILD.test(match[0])?null:(match[3]?match[2]=match[4]||match[5]||"":unquoted&&rpseudo.test(unquoted)&&(excess=tokenize(unquoted,!0))&&(excess=unquoted.indexOf(")",unquoted.length-excess)-unquoted.length)&&(match[0]=match[0].slice(0,excess),match[2]=unquoted.slice(0,excess)),match.slice(0,3))}},filter:{TAG:function(nodeNameSelector){var nodeName=nodeNameSelector.replace(runescape,funescape).toLowerCase();return"*"===nodeNameSelector?function(){return!0}:function(elem){return elem.nodeName&&elem.nodeName.toLowerCase()===nodeName}},CLASS:function(className){var pattern=classCache[className+" "];return pattern||(pattern=new RegExp("(^|"+whitespace+")"+className+"("+whitespace+"|$)"))&&classCache(className,function(elem){return pattern.test("string"==typeof elem.className&&elem.className||"undefined"!=typeof elem.getAttribute&&elem.getAttribute("class")||"")})},ATTR:function(name,operator,check){return function(elem){var result=Sizzle.attr(elem,name);return null==result?"!="===operator:!operator||(result+="","="===operator?result===check:"!="===operator?result!==check:"^="===operator?check&&0===result.indexOf(check):"*="===operator?check&&result.indexOf(check)>-1:"$="===operator?check&&result.slice(-check.length)===check:"~="===operator?(" "+result.replace(rwhitespace," ")+" ").indexOf(check)>-1:"|="===operator&&(result===check||result.slice(0,check.length+1)===check+"-"))}},CHILD:function(type,what,argument,first,last){var simple="nth"!==type.slice(0,3),forward="last"!==type.slice(-4),ofType="of-type"===what;
+// Shortcut for :nth-*(n)
+return 1===first&&0===last?function(elem){return!!elem.parentNode}:function(elem,context,xml){var cache,outerCache,node,diff,nodeIndex,start,dir=simple!==forward?"nextSibling":"previousSibling",parent=elem.parentNode,name=ofType&&elem.nodeName.toLowerCase(),useCache=!xml&&!ofType;if(parent){
+// :(first|last|only)-(child|of-type)
+if(simple){for(;dir;){for(node=elem;node=node[dir];)if(ofType?node.nodeName.toLowerCase()===name:1===node.nodeType)return!1;
+// Reverse direction for :only-* (if we haven't yet done so)
+start=dir="only"===type&&!start&&"nextSibling"}return!0}
+// non-xml :nth-child(...) stores cache data on `parent`
+if(start=[forward?parent.firstChild:parent.lastChild],forward&&useCache){for(
+// Seek `elem` from a previously-cached index
+outerCache=parent[expando]||(parent[expando]={}),cache=outerCache[type]||[],nodeIndex=cache[0]===dirruns&&cache[1],diff=cache[0]===dirruns&&cache[2],node=nodeIndex&&parent.childNodes[nodeIndex];node=++nodeIndex&&node&&node[dir]||(
+// Fallback to seeking `elem` from the start
+diff=nodeIndex=0)||start.pop();)
+// When found, cache indexes on `parent` and break
+if(1===node.nodeType&&++diff&&node===elem){outerCache[type]=[dirruns,nodeIndex,diff];break}}else if(useCache&&(cache=(elem[expando]||(elem[expando]={}))[type])&&cache[0]===dirruns)diff=cache[1];else
+// Use the same loop as above to seek `elem` from the start
+for(;(node=++nodeIndex&&node&&node[dir]||(diff=nodeIndex=0)||start.pop())&&((ofType?node.nodeName.toLowerCase()!==name:1!==node.nodeType)||!++diff||(
+// Cache the index of each encountered element
+useCache&&((node[expando]||(node[expando]={}))[type]=[dirruns,diff]),node!==elem)););
+// Incorporate the offset, then check against cycle size
+return diff-=last,diff===first||diff%first===0&&diff/first>=0}}},PSEUDO:function(pseudo,argument){
+// pseudo-class names are case-insensitive
+// http://www.w3.org/TR/selectors/#pseudo-classes
+// Prioritize by case sensitivity in case custom pseudos are added with uppercase letters
+// Remember that setFilters inherits from pseudos
+var args,fn=Expr.pseudos[pseudo]||Expr.setFilters[pseudo.toLowerCase()]||Sizzle.error("unsupported pseudo: "+pseudo);
+// The user may use createPseudo to indicate that
+// arguments are needed to create the filter function
+// just as Sizzle does
+// The user may use createPseudo to indicate that
+// arguments are needed to create the filter function
+// just as Sizzle does
+// But maintain support for old signatures
+return fn[expando]?fn(argument):fn.length>1?(args=[pseudo,pseudo,"",argument],Expr.setFilters.hasOwnProperty(pseudo.toLowerCase())?markFunction(function(seed,matches){for(var idx,matched=fn(seed,argument),i=matched.length;i--;)idx=indexOf(seed,matched[i]),seed[idx]=!(matches[idx]=matched[i])}):function(elem){return fn(elem,0,args)}):fn}},pseudos:{
+// Potentially complex pseudos
+not:markFunction(function(selector){
+// Trim the selector passed to compile
+// to avoid treating leading and trailing
+// spaces as combinators
+var input=[],results=[],matcher=compile(selector.replace(rtrim,"$1"));return matcher[expando]?markFunction(function(seed,matches,context,xml){
+// Match elements unmatched by `matcher`
+for(var elem,unmatched=matcher(seed,null,xml,[]),i=seed.length;i--;)(elem=unmatched[i])&&(seed[i]=!(matches[i]=elem))}):function(elem,context,xml){
+// Don't keep the element (issue #299)
+return input[0]=elem,matcher(input,null,xml,results),input[0]=null,!results.pop()}}),has:markFunction(function(selector){return function(elem){return Sizzle(selector,elem).length>0}}),contains:markFunction(function(text){return text=text.replace(runescape,funescape),function(elem){return(elem.textContent||elem.innerText||getText(elem)).indexOf(text)>-1}}),
+// "Whether an element is represented by a :lang() selector
+// is based solely on the element's language value
+// being equal to the identifier C,
+// or beginning with the identifier C immediately followed by "-".
+// The matching of C against the element's language value is performed case-insensitively.
+// The identifier C does not have to be a valid language name."
+// http://www.w3.org/TR/selectors/#lang-pseudo
+lang:markFunction(function(lang){
+// lang value must be a valid identifier
+return ridentifier.test(lang||"")||Sizzle.error("unsupported lang: "+lang),lang=lang.replace(runescape,funescape).toLowerCase(),function(elem){var elemLang;do if(elemLang=documentIsHTML?elem.lang:elem.getAttribute("xml:lang")||elem.getAttribute("lang"))return elemLang=elemLang.toLowerCase(),elemLang===lang||0===elemLang.indexOf(lang+"-");while((elem=elem.parentNode)&&1===elem.nodeType);return!1}}),
+// Miscellaneous
+target:function(elem){var hash=window.location&&window.location.hash;return hash&&hash.slice(1)===elem.id},root:function(elem){return elem===docElem},focus:function(elem){return elem===document.activeElement&&(!document.hasFocus||document.hasFocus())&&!!(elem.type||elem.href||~elem.tabIndex)},
+// Boolean properties
+enabled:function(elem){return elem.disabled===!1},disabled:function(elem){return elem.disabled===!0},checked:function(elem){
+// In CSS3, :checked should return both checked and selected elements
+// http://www.w3.org/TR/2011/REC-css3-selectors-20110929/#checked
+var nodeName=elem.nodeName.toLowerCase();return"input"===nodeName&&!!elem.checked||"option"===nodeName&&!!elem.selected},selected:function(elem){
+// Accessing this property makes selected-by-default
+// options in Safari work properly
+return elem.parentNode&&elem.parentNode.selectedIndex,elem.selected===!0},
+// Contents
+empty:function(elem){
+// http://www.w3.org/TR/selectors/#empty-pseudo
+// :empty is negated by element (1) or content nodes (text: 3; cdata: 4; entity ref: 5),
+//   but not by others (comment: 8; processing instruction: 7; etc.)
+// nodeType < 6 works because attributes (2) do not appear as children
+for(elem=elem.firstChild;elem;elem=elem.nextSibling)if(elem.nodeType<6)return!1;return!0},parent:function(elem){return!Expr.pseudos.empty(elem)},
+// Element/input types
+header:function(elem){return rheader.test(elem.nodeName)},input:function(elem){return rinputs.test(elem.nodeName)},button:function(elem){var name=elem.nodeName.toLowerCase();return"input"===name&&"button"===elem.type||"button"===name},text:function(elem){var attr;
+// Support: IE<8
+// New HTML5 attribute values (e.g., "search") appear with elem.type === "text"
+return"input"===elem.nodeName.toLowerCase()&&"text"===elem.type&&(null==(attr=elem.getAttribute("type"))||"text"===attr.toLowerCase())},
+// Position-in-collection
+first:createPositionalPseudo(function(){return[0]}),last:createPositionalPseudo(function(matchIndexes,length){return[length-1]}),eq:createPositionalPseudo(function(matchIndexes,length,argument){return[argument<0?argument+length:argument]}),even:createPositionalPseudo(function(matchIndexes,length){for(var i=0;i<length;i+=2)matchIndexes.push(i);return matchIndexes}),odd:createPositionalPseudo(function(matchIndexes,length){for(var i=1;i<length;i+=2)matchIndexes.push(i);return matchIndexes}),lt:createPositionalPseudo(function(matchIndexes,length,argument){for(var i=argument<0?argument+length:argument;--i>=0;)matchIndexes.push(i);return matchIndexes}),gt:createPositionalPseudo(function(matchIndexes,length,argument){for(var i=argument<0?argument+length:argument;++i<length;)matchIndexes.push(i);return matchIndexes})}},Expr.pseudos.nth=Expr.pseudos.eq;
 // Add button/input type pseudos
 for(i in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})Expr.pseudos[i]=createInputPseudo(i);for(i in{submit:!0,reset:!0})Expr.pseudos[i]=createButtonPseudo(i);/**
  * A low-level selection function that works with Sizzle's compiled
@@ -599,18 +917,39 @@ for(i in{radio:!0,checkbox:!0,file:!0,password:!0,image:!0})Expr.pseudos[i]=crea
 // Use getAttributeNode to fetch booleans when getAttribute lies
 return setFilters.prototype=Expr.filters=Expr.pseudos,Expr.setFilters=new setFilters,tokenize=Sizzle.tokenize=function(selector,parseOnly){var matched,match,tokens,type,soFar,groups,preFilters,cached=tokenCache[selector+" "];if(cached)return parseOnly?0:cached.slice(0);for(soFar=selector,groups=[],preFilters=Expr.preFilter;soFar;){
 // Comma and first run
-(!matched||(match=rcomma.exec(soFar)))&&(match&&(
+matched&&!(match=rcomma.exec(soFar))||(match&&(
 // Don't consume trailing commas as valid
 soFar=soFar.slice(match[0].length)||soFar),groups.push(tokens=[])),matched=!1,
 // Combinators
-(match=rcombinators.exec(soFar))&&(matched=match.shift(),tokens.push({value:matched,type:match[0].replace(rtrim," ")}),soFar=soFar.slice(matched.length));
+(match=rcombinators.exec(soFar))&&(matched=match.shift(),tokens.push({value:matched,
+// Cast descendant combinators to space
+type:match[0].replace(rtrim," ")}),soFar=soFar.slice(matched.length));
 // Filters
 for(type in Expr.filter)!(match=matchExpr[type].exec(soFar))||preFilters[type]&&!(match=preFilters[type](match))||(matched=match.shift(),tokens.push({value:matched,type:type,matches:match}),soFar=soFar.slice(matched.length));if(!matched)break}
 // Return the length of the invalid excess
 // if we're just parsing
 // Otherwise, throw an error or return tokens
 // Cache the tokens
-return parseOnly?soFar.length:soFar?Sizzle.error(selector):tokenCache(selector,groups).slice(0)},compile=Sizzle.compile=function(selector,match){var i,setMatchers=[],elementMatchers=[],cached=compilerCache[selector+" "];if(!cached){for(match||(match=tokenize(selector)),i=match.length;i--;)cached=matcherFromTokens(match[i]),cached[expando]?setMatchers.push(cached):elementMatchers.push(cached);cached=compilerCache(selector,matcherFromGroupMatchers(elementMatchers,setMatchers)),cached.selector=selector}return cached},select=Sizzle.select=function(selector,context,results,seed){var i,tokens,token,type,find,compiled="function"==typeof selector&&selector,match=!seed&&tokenize(selector=compiled.selector||selector);if(results=results||[],1===match.length){if(tokens=match[0]=match[0].slice(0),tokens.length>2&&"ID"===(token=tokens[0]).type&&support.getById&&9===context.nodeType&&documentIsHTML&&Expr.relative[tokens[1].type]){if(context=(Expr.find.ID(token.matches[0].replace(runescape,funescape),context)||[])[0],!context)return results;compiled&&(context=context.parentNode),selector=selector.slice(tokens.shift().value.length)}for(i=matchExpr.needsContext.test(selector)?0:tokens.length;i--&&(token=tokens[i],!Expr.relative[type=token.type]);)if((find=Expr.find[type])&&(seed=find(token.matches[0].replace(runescape,funescape),rsibling.test(tokens[0].type)&&testContext(context.parentNode)||context))){if(tokens.splice(i,1),selector=seed.length&&toSelector(tokens),!selector)return push.apply(results,seed),results;break}}return(compiled||compile(selector,match))(seed,context,!documentIsHTML,results,rsibling.test(selector)&&testContext(context.parentNode)||context),results},support.sortStable=expando.split("").sort(sortOrder).join("")===expando,support.detectDuplicates=!!hasDuplicate,setDocument(),support.sortDetached=assert(function(div1){return 1&div1.compareDocumentPosition(document.createElement("div"))}),assert(function(div){return div.innerHTML="<a href='#'></a>","#"===div.firstChild.getAttribute("href")})||addHandle("type|href|height|width",function(elem,name,isXML){return isXML?void 0:elem.getAttribute(name,"type"===name.toLowerCase()?1:2)}),support.attributes&&assert(function(div){return div.innerHTML="<input/>",div.firstChild.setAttribute("value",""),""===div.firstChild.getAttribute("value")})||addHandle("value",function(elem,name,isXML){return isXML||"input"!==elem.nodeName.toLowerCase()?void 0:elem.defaultValue}),assert(function(div){return null==div.getAttribute("disabled")})||addHandle(booleans,function(elem,name,isXML){var val;return isXML?void 0:elem[name]===!0?name.toLowerCase():(val=elem.getAttributeNode(name))&&val.specified?val.value:null}),Sizzle}(window);jQuery.find=Sizzle,jQuery.expr=Sizzle.selectors,jQuery.expr[":"]=jQuery.expr.pseudos,jQuery.unique=Sizzle.uniqueSort,jQuery.text=Sizzle.getText,jQuery.isXMLDoc=Sizzle.isXML,jQuery.contains=Sizzle.contains;var rneedsContext=jQuery.expr.match.needsContext,rsingleTag=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,risSimple=/^.[^:#\[\.,]*$/;jQuery.filter=function(expr,elems,not){var elem=elems[0];return not&&(expr=":not("+expr+")"),1===elems.length&&1===elem.nodeType?jQuery.find.matchesSelector(elem,expr)?[elem]:[]:jQuery.find.matches(expr,jQuery.grep(elems,function(elem){return 1===elem.nodeType}))},jQuery.fn.extend({find:function(selector){var i,len=this.length,ret=[],self=this;if("string"!=typeof selector)return this.pushStack(jQuery(selector).filter(function(){for(i=0;len>i;i++)if(jQuery.contains(self[i],this))return!0}));for(i=0;len>i;i++)jQuery.find(selector,self[i],ret);
+return parseOnly?soFar.length:soFar?Sizzle.error(selector):tokenCache(selector,groups).slice(0)},compile=Sizzle.compile=function(selector,match){var i,setMatchers=[],elementMatchers=[],cached=compilerCache[selector+" "];if(!cached){for(
+// Generate a function of recursive functions that can be used to check each element
+match||(match=tokenize(selector)),i=match.length;i--;)cached=matcherFromTokens(match[i]),cached[expando]?setMatchers.push(cached):elementMatchers.push(cached);
+// Cache the compiled function
+cached=compilerCache(selector,matcherFromGroupMatchers(elementMatchers,setMatchers)),
+// Save selector and tokenization
+cached.selector=selector}return cached},select=Sizzle.select=function(selector,context,results,seed){var i,tokens,token,type,find,compiled="function"==typeof selector&&selector,match=!seed&&tokenize(selector=compiled.selector||selector);
+// Try to minimize operations if there is no seed and only one group
+if(results=results||[],1===match.length){if(
+// Take a shortcut and set the context if the root selector is an ID
+tokens=match[0]=match[0].slice(0),tokens.length>2&&"ID"===(token=tokens[0]).type&&support.getById&&9===context.nodeType&&documentIsHTML&&Expr.relative[tokens[1].type]){if(context=(Expr.find.ID(token.matches[0].replace(runescape,funescape),context)||[])[0],!context)return results;compiled&&(context=context.parentNode),selector=selector.slice(tokens.shift().value.length)}for(
+// Fetch a seed set for right-to-left matching
+i=matchExpr.needsContext.test(selector)?0:tokens.length;i--&&(token=tokens[i],!Expr.relative[type=token.type]);)if((find=Expr.find[type])&&(seed=find(token.matches[0].replace(runescape,funescape),rsibling.test(tokens[0].type)&&testContext(context.parentNode)||context))){if(
+// If seed is empty or no tokens remain, we can return early
+tokens.splice(i,1),selector=seed.length&&toSelector(tokens),!selector)return push.apply(results,seed),results;break}}
+// Compile and execute a filtering function if one is not provided
+// Provide `match` to avoid retokenization if we modified the selector above
+return(compiled||compile(selector,match))(seed,context,!documentIsHTML,results,rsibling.test(selector)&&testContext(context.parentNode)||context),results},support.sortStable=expando.split("").sort(sortOrder).join("")===expando,support.detectDuplicates=!!hasDuplicate,setDocument(),support.sortDetached=assert(function(div1){
+// Should return 1, but returns 4 (following)
+return 1&div1.compareDocumentPosition(document.createElement("div"))}),assert(function(div){return div.innerHTML="<a href='#'></a>","#"===div.firstChild.getAttribute("href")})||addHandle("type|href|height|width",function(elem,name,isXML){if(!isXML)return elem.getAttribute(name,"type"===name.toLowerCase()?1:2)}),support.attributes&&assert(function(div){return div.innerHTML="<input/>",div.firstChild.setAttribute("value",""),""===div.firstChild.getAttribute("value")})||addHandle("value",function(elem,name,isXML){if(!isXML&&"input"===elem.nodeName.toLowerCase())return elem.defaultValue}),assert(function(div){return null==div.getAttribute("disabled")})||addHandle(booleans,function(elem,name,isXML){var val;if(!isXML)return elem[name]===!0?name.toLowerCase():(val=elem.getAttributeNode(name))&&val.specified?val.value:null}),Sizzle}(window);jQuery.find=Sizzle,jQuery.expr=Sizzle.selectors,jQuery.expr[":"]=jQuery.expr.pseudos,jQuery.unique=Sizzle.uniqueSort,jQuery.text=Sizzle.getText,jQuery.isXMLDoc=Sizzle.isXML,jQuery.contains=Sizzle.contains;var rneedsContext=jQuery.expr.match.needsContext,rsingleTag=/^<(\w+)\s*\/?>(?:<\/\1>|)$/,risSimple=/^.[^:#\[\.,]*$/;jQuery.filter=function(expr,elems,not){var elem=elems[0];return not&&(expr=":not("+expr+")"),1===elems.length&&1===elem.nodeType?jQuery.find.matchesSelector(elem,expr)?[elem]:[]:jQuery.find.matches(expr,jQuery.grep(elems,function(elem){return 1===elem.nodeType}))},jQuery.fn.extend({find:function(selector){var i,len=this.length,ret=[],self=this;if("string"!=typeof selector)return this.pushStack(jQuery(selector).filter(function(){for(i=0;i<len;i++)if(jQuery.contains(self[i],this))return!0}));for(i=0;i<len;i++)jQuery.find(selector,self[i],ret);
 // Needed because $( selector, context ) becomes $( context ).find( selector )
 return ret=this.pushStack(len>1?jQuery.unique(ret):ret),ret.selector=this.selector?this.selector+" "+selector:selector,ret},filter:function(selector){return this.pushStack(winnow(this,selector||[],!1))},not:function(selector){return this.pushStack(winnow(this,selector||[],!0))},is:function(selector){
 // If this is a positional/relative selector, check membership in the returned set
@@ -628,11 +967,16 @@ if(!selector)return this;
 // Handle HTML strings
 if("string"==typeof selector){
 // Match html or make sure no context is specified for #id
-if(match="<"===selector[0]&&">"===selector[selector.length-1]&&selector.length>=3?[null,selector,null]:rquickExpr.exec(selector),!match||!match[1]&&context)return!context||context.jquery?(context||rootjQuery).find(selector):this.constructor(context).find(selector);
+if(
+// Assume that strings that start and end with <> are HTML and skip the regex check
+match="<"===selector[0]&&">"===selector[selector.length-1]&&selector.length>=3?[null,selector,null]:rquickExpr.exec(selector),!match||!match[1]&&context)return!context||context.jquery?(context||rootjQuery).find(selector):this.constructor(context).find(selector);
 // HANDLE: $(html) -> $(array)
 if(match[1]){
 // HANDLE: $(html, props)
-if(context=context instanceof jQuery?context[0]:context,jQuery.merge(this,jQuery.parseHTML(match[1],context&&context.nodeType?context.ownerDocument||context:document,!0)),rsingleTag.test(match[1])&&jQuery.isPlainObject(context))for(match in context)
+if(context=context instanceof jQuery?context[0]:context,
+// Option to run scripts is true for back-compat
+// Intentionally let the error be thrown if parseHTML is not present
+jQuery.merge(this,jQuery.parseHTML(match[1],context&&context.nodeType?context.ownerDocument||context:document,!0)),rsingleTag.test(match[1])&&jQuery.isPlainObject(context))for(match in context)
 // Properties of context are called as methods if possible
 jQuery.isFunction(this[match])?this[match](context[match]):this.attr(match,context[match]);return this}
 // Support: Blackberry 4.6
@@ -646,9 +990,11 @@ init.prototype=jQuery.fn,
 // Initialize central reference
 rootjQuery=jQuery(document);var rparentsprev=/^(?:parents|prev(?:Until|All))/,
 // Methods guaranteed to produce a unique set when starting from a unique set
-guaranteedUnique={children:!0,contents:!0,next:!0,prev:!0};jQuery.extend({dir:function(elem,dir,until){for(var matched=[],truncate=void 0!==until;(elem=elem[dir])&&9!==elem.nodeType;)if(1===elem.nodeType){if(truncate&&jQuery(elem).is(until))break;matched.push(elem)}return matched},sibling:function(n,elem){for(var matched=[];n;n=n.nextSibling)1===n.nodeType&&n!==elem&&matched.push(n);return matched}}),jQuery.fn.extend({has:function(target){var targets=jQuery(target,this),l=targets.length;return this.filter(function(){for(var i=0;l>i;i++)if(jQuery.contains(this,targets[i]))return!0})},closest:function(selectors,context){for(var cur,i=0,l=this.length,matched=[],pos=rneedsContext.test(selectors)||"string"!=typeof selectors?jQuery(selectors,context||this.context):0;l>i;i++)for(cur=this[i];cur&&cur!==context;cur=cur.parentNode)
+guaranteedUnique={children:!0,contents:!0,next:!0,prev:!0};jQuery.extend({dir:function(elem,dir,until){for(var matched=[],truncate=void 0!==until;(elem=elem[dir])&&9!==elem.nodeType;)if(1===elem.nodeType){if(truncate&&jQuery(elem).is(until))break;matched.push(elem)}return matched},sibling:function(n,elem){for(var matched=[];n;n=n.nextSibling)1===n.nodeType&&n!==elem&&matched.push(n);return matched}}),jQuery.fn.extend({has:function(target){var targets=jQuery(target,this),l=targets.length;return this.filter(function(){for(var i=0;i<l;i++)if(jQuery.contains(this,targets[i]))return!0})},closest:function(selectors,context){for(var cur,i=0,l=this.length,matched=[],pos=rneedsContext.test(selectors)||"string"!=typeof selectors?jQuery(selectors,context||this.context):0;i<l;i++)for(cur=this[i];cur&&cur!==context;cur=cur.parentNode)
 // Always skip document fragments
-if(cur.nodeType<11&&(pos?pos.index(cur)>-1:1===cur.nodeType&&jQuery.find.matchesSelector(cur,selectors))){matched.push(cur);break}return this.pushStack(matched.length>1?jQuery.unique(matched):matched)},
+if(cur.nodeType<11&&(pos?pos.index(cur)>-1:
+// Don't pass non-elements to Sizzle
+1===cur.nodeType&&jQuery.find.matchesSelector(cur,selectors))){matched.push(cur);break}return this.pushStack(matched.length>1?jQuery.unique(matched):matched)},
 // Determine the position of an element within the set
 index:function(elem){
 // No argument, return index in parent
@@ -700,7 +1046,7 @@ list=[],
 // Stack of fire calls for repeatable lists
 stack=!options.once&&[],
 // Fire callbacks
-fire=function(data){for(memory=options.memory&&data,fired=!0,firingIndex=firingStart||0,firingStart=0,firingLength=list.length,firing=!0;list&&firingLength>firingIndex;firingIndex++)if(list[firingIndex].apply(data[0],data[1])===!1&&options.stopOnFalse){memory=!1;// To prevent further calls using add
+fire=function(data){for(memory=options.memory&&data,fired=!0,firingIndex=firingStart||0,firingStart=0,firingLength=list.length,firing=!0;list&&firingIndex<firingLength;firingIndex++)if(list[firingIndex].apply(data[0],data[1])===!1&&options.stopOnFalse){memory=!1;// To prevent further calls using add
 break}firing=!1,list&&(stack?stack.length&&fire(stack.shift()):memory?list=[]:self.disable())},
 // Actual Callbacks object
 self={
@@ -716,7 +1062,7 @@ firing?firingLength=list.length:memory&&(firingStart=start,fire(memory))}return 
 // Remove a callback from the list
 remove:function(){return list&&jQuery.each(arguments,function(_,arg){for(var index;(index=jQuery.inArray(arg,list,index))>-1;)list.splice(index,1),
 // Handle firing indexes
-firing&&(firingLength>=index&&firingLength--,firingIndex>=index&&firingIndex--)}),this},
+firing&&(index<=firingLength&&firingLength--,index<=firingIndex&&firingIndex--)}),this},
 // Check if a given callback is in the list.
 // If no argument is given, return whether or not list has callbacks attached.
 has:function(fn){return fn?jQuery.inArray(fn,list)>-1:!(!list||!list.length)},
@@ -766,7 +1112,7 @@ deferred=1===remaining?subordinate:jQuery.Deferred(),
 // Update function for both resolve and progress values
 updateFunc=function(i,contexts,values){return function(value){contexts[i]=this,values[i]=arguments.length>1?slice.call(arguments):value,values===progressValues?deferred.notifyWith(contexts,values):--remaining||deferred.resolveWith(contexts,values)}};
 // Add listeners to Deferred subordinates; treat others as resolved
-if(length>1)for(progressValues=new Array(length),progressContexts=new Array(length),resolveContexts=new Array(length);length>i;i++)resolveValues[i]&&jQuery.isFunction(resolveValues[i].promise)?resolveValues[i].promise().done(updateFunc(i,resolveContexts,resolveValues)).fail(deferred.reject).progress(updateFunc(i,progressContexts,progressValues)):--remaining;
+if(length>1)for(progressValues=new Array(length),progressContexts=new Array(length),resolveContexts=new Array(length);i<length;i++)resolveValues[i]&&jQuery.isFunction(resolveValues[i].promise)?resolveValues[i].promise().done(updateFunc(i,resolveContexts,resolveValues)).fail(deferred.reject).progress(updateFunc(i,progressContexts,progressValues)):--remaining;
 // If we're not waiting on anything, resolve the master
 return remaining||deferred.resolveWith(resolveContexts,resolveValues),deferred.promise()}});
 // The deferred used on DOM ready
@@ -805,7 +1151,9 @@ jQuery.ready.promise();
 // The value/s can optionally be executed if it's a function
 var access=jQuery.access=function(elems,fn,key,value,chainable,emptyGet,raw){var i=0,len=elems.length,bulk=null==key;
 // Sets many values
-if("object"===jQuery.type(key)){chainable=!0;for(i in key)jQuery.access(elems,fn,i,key[i],!0,emptyGet,raw)}else if(void 0!==value&&(chainable=!0,jQuery.isFunction(value)||(raw=!0),bulk&&(raw?(fn.call(elems,value),fn=null):(bulk=fn,fn=function(elem,key,value){return bulk.call(jQuery(elem),value)})),fn))for(;len>i;i++)fn(elems[i],key,raw?value:value.call(elems[i],i,fn(elems[i],key)));
+if("object"===jQuery.type(key)){chainable=!0;for(i in key)jQuery.access(elems,fn,i,key[i],!0,emptyGet,raw)}else if(void 0!==value&&(chainable=!0,jQuery.isFunction(value)||(raw=!0),bulk&&(
+// Bulk operations run against the entire set
+raw?(fn.call(elems,value),fn=null):(bulk=fn,fn=function(elem,key,value){return bulk.call(jQuery(elem),value)})),fn))for(;i<len;i++)fn(elems[i],key,raw?value:value.call(elems[i],i,fn(elems[i],key)));
 // Gets
 return chainable?elems:bulk?fn.call(elems):len?fn(elems[0],key):emptyGet};/**
  * Determines whether an object can have data
@@ -881,7 +1229,12 @@ jQuery.isArray(key)?
 // Since there is no way to tell _how_ a key was added, remove
 // both plain key and camelCase key. #12786
 // This will only penalize the array argument path.
-name=key.concat(key.map(jQuery.camelCase)):(camel=jQuery.camelCase(key),key in cache?name=[key,camel]:(name=camel,name=name in cache?[name]:name.match(rnotwhite)||[])),i=name.length;for(;i--;)delete cache[name[i]]}},hasData:function(owner){return!jQuery.isEmptyObject(this.cache[owner[this.expando]]||{})},discard:function(owner){owner[this.expando]&&delete this.cache[owner[this.expando]]}};var data_priv=new Data,data_user=new Data,rbrace=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,rmultiDash=/([A-Z])/g;jQuery.extend({hasData:function(elem){return data_user.hasData(elem)||data_priv.hasData(elem)},data:function(elem,name,data){return data_user.access(elem,name,data)},removeData:function(elem,name){data_user.remove(elem,name)},
+name=key.concat(key.map(jQuery.camelCase)):(camel=jQuery.camelCase(key),
+// Try the string as a key before any manipulation
+key in cache?name=[key,camel]:(
+// If a key with the spaces exists, use it.
+// Otherwise, create an array by matching non-whitespace
+name=camel,name=name in cache?[name]:name.match(rnotwhite)||[])),i=name.length;for(;i--;)delete cache[name[i]]}},hasData:function(owner){return!jQuery.isEmptyObject(this.cache[owner[this.expando]]||{})},discard:function(owner){owner[this.expando]&&delete this.cache[owner[this.expando]]}};var data_priv=new Data,data_user=new Data,rbrace=/^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,rmultiDash=/([A-Z])/g;jQuery.extend({hasData:function(elem){return data_user.hasData(elem)||data_priv.hasData(elem)},data:function(elem,name,data){return data_user.access(elem,name,data)},removeData:function(elem,name){data_user.remove(elem,name)},
 // TODO: Now that all calls to _data and _removeData have been replaced
 // with direct calls to data_priv methods, these can be deprecated.
 _data:function(elem,name,data){return data_priv.access(elem,name,data)},_removeData:function(elem,name){data_priv.remove(elem,name)}}),jQuery.fn.extend({data:function(key,value){var i,name,data,elem=this[0],attrs=elem&&elem.attributes;
@@ -898,7 +1251,16 @@ return"object"==typeof key?this.each(function(){data_user.set(this,key)}):access
 // `value` parameter was not undefined. An empty jQuery object
 // will result in `undefined` for elem = this[ 0 ] which will
 // throw an exception if an attempt to read a data cache is made.
-if(elem&&void 0===value){if(data=data_user.get(elem,key),void 0!==data)return data;if(data=data_user.get(elem,camelKey),void 0!==data)return data;if(data=dataAttr(elem,camelKey,void 0),void 0!==data)return data}else
+if(elem&&void 0===value){if(
+// Attempt to get data from the cache
+// with the key as-is
+data=data_user.get(elem,key),void 0!==data)return data;if(
+// Attempt to get data from the cache
+// with the key camelized
+data=data_user.get(elem,camelKey),void 0!==data)return data;if(
+// Attempt to "discover" the data in
+// HTML5 custom data-* attrs
+data=dataAttr(elem,camelKey,void 0),void 0!==data)return data}else
 // Set the data...
 this.each(function(){
 // First, attempt to store a copy or reference of any
@@ -911,9 +1273,9 @@ data_user.set(this,camelKey,value),
 // *... In the case of properties that might _actually_
 // have dashes, we need to also store a copy of that
 // unchanged property.
--1!==key.indexOf("-")&&void 0!==data&&data_user.set(this,key,value)})},null,value,arguments.length>1,null,!0)},removeData:function(key){return this.each(function(){data_user.remove(this,key)})}}),jQuery.extend({queue:function(elem,type,data){var queue;
+key.indexOf("-")!==-1&&void 0!==data&&data_user.set(this,key,value)})},null,value,arguments.length>1,null,!0)},removeData:function(key){return this.each(function(){data_user.remove(this,key)})}}),jQuery.extend({queue:function(elem,type,data){var queue;if(elem)
 // Speed up dequeue by getting out quickly if this is just a lookup
-return elem?(type=(type||"fx")+"queue",queue=data_priv.get(elem,type),data&&(!queue||jQuery.isArray(data)?queue=data_priv.access(elem,type,jQuery.makeArray(data)):queue.push(data)),queue||[]):void 0},dequeue:function(elem,type){type=type||"fx";var queue=jQuery.queue(elem,type),startLength=queue.length,fn=queue.shift(),hooks=jQuery._queueHooks(elem,type),next=function(){jQuery.dequeue(elem,type)};
+return type=(type||"fx")+"queue",queue=data_priv.get(elem,type),data&&(!queue||jQuery.isArray(data)?queue=data_priv.access(elem,type,jQuery.makeArray(data)):queue.push(data)),queue||[]},dequeue:function(elem,type){type=type||"fx";var queue=jQuery.queue(elem,type),startLength=queue.length,fn=queue.shift(),hooks=jQuery._queueHooks(elem,type),next=function(){jQuery.dequeue(elem,type)};
 // If the fx queue is dequeued, always remove the progress sentinel
 "inprogress"===fn&&(fn=queue.shift(),startLength--),fn&&(
 // Add a progress sentinel to prevent the fx queue from being
@@ -958,7 +1320,25 @@ handler.guid||(handler.guid=jQuery.guid++),
 // when an event is called after a page has unloaded
 return typeof jQuery!==strundefined&&jQuery.event.triggered!==e.type?jQuery.event.dispatch.apply(elem,arguments):void 0}),
 // Handle multiple events separated by a space
-types=(types||"").match(rnotwhite)||[""],t=types.length;t--;)tmp=rtypenamespace.exec(types[t])||[],type=origType=tmp[1],namespaces=(tmp[2]||"").split(".").sort(),type&&(special=jQuery.event.special[type]||{},type=(selector?special.delegateType:special.bindType)||type,special=jQuery.event.special[type]||{},handleObj=jQuery.extend({type:type,origType:origType,data:data,handler:handler,guid:handler.guid,selector:selector,needsContext:selector&&jQuery.expr.match.needsContext.test(selector),namespace:namespaces.join(".")},handleObjIn),(handlers=events[type])||(handlers=events[type]=[],handlers.delegateCount=0,special.setup&&special.setup.call(elem,data,namespaces,eventHandle)!==!1||elem.addEventListener&&elem.addEventListener(type,eventHandle,!1)),special.add&&(special.add.call(elem,handleObj),handleObj.handler.guid||(handleObj.handler.guid=handler.guid)),selector?handlers.splice(handlers.delegateCount++,0,handleObj):handlers.push(handleObj),jQuery.event.global[type]=!0)},
+types=(types||"").match(rnotwhite)||[""],t=types.length;t--;)tmp=rtypenamespace.exec(types[t])||[],type=origType=tmp[1],namespaces=(tmp[2]||"").split(".").sort(),
+// There *must* be a type, no attaching namespace-only handlers
+type&&(
+// If event changes its type, use the special event handlers for the changed type
+special=jQuery.event.special[type]||{},
+// If selector defined, determine special event api type, otherwise given type
+type=(selector?special.delegateType:special.bindType)||type,
+// Update special based on newly reset type
+special=jQuery.event.special[type]||{},
+// handleObj is passed to all event handlers
+handleObj=jQuery.extend({type:type,origType:origType,data:data,handler:handler,guid:handler.guid,selector:selector,needsContext:selector&&jQuery.expr.match.needsContext.test(selector),namespace:namespaces.join(".")},handleObjIn),
+// Init the event handler queue if we're the first
+(handlers=events[type])||(handlers=events[type]=[],handlers.delegateCount=0,
+// Only use addEventListener if the special events handler returns false
+special.setup&&special.setup.call(elem,data,namespaces,eventHandle)!==!1||elem.addEventListener&&elem.addEventListener(type,eventHandle,!1)),special.add&&(special.add.call(elem,handleObj),handleObj.handler.guid||(handleObj.handler.guid=handler.guid)),
+// Add to the element's handler list, delegates in front
+selector?handlers.splice(handlers.delegateCount++,0,handleObj):handlers.push(handleObj),
+// Keep track of which events have ever been used, for event optimization
+jQuery.event.global[type]=!0)},
 // Detach an event or set of events from an element
 remove:function(elem,types,handler,selector,mappedTypes){var j,origCount,tmp,events,t,handleObj,special,handlers,type,namespaces,origType,elemData=data_priv.hasData(elem)&&data_priv.get(elem);if(elemData&&(events=elemData.events)){for(
 // Once for each type.namespace in types; type may be omitted
@@ -973,14 +1353,30 @@ origCount&&!handlers.length&&(special.teardown&&special.teardown.call(elem,names
 // Remove the expando if it's no longer used
 jQuery.isEmptyObject(events)&&(delete elemData.handle,data_priv.remove(elem,"events"))}},trigger:function(event,data,elem,onlyHandlers){var i,cur,tmp,bubbleType,ontype,handle,special,eventPath=[elem||document],type=hasOwn.call(event,"type")?event.type:event,namespaces=hasOwn.call(event,"namespace")?event.namespace.split("."):[];
 // Don't do events on text and comment nodes
-if(cur=tmp=elem=elem||document,3!==elem.nodeType&&8!==elem.nodeType&&!rfocusMorph.test(type+jQuery.event.triggered)&&(type.indexOf(".")>=0&&(namespaces=type.split("."),type=namespaces.shift(),namespaces.sort()),ontype=type.indexOf(":")<0&&"on"+type,event=event[jQuery.expando]?event:new jQuery.Event(type,"object"==typeof event&&event),event.isTrigger=onlyHandlers?2:3,event.namespace=namespaces.join("."),event.namespace_re=event.namespace?new RegExp("(^|\\.)"+namespaces.join("\\.(?:.*\\.|)")+"(\\.|$)"):null,event.result=void 0,event.target||(event.target=elem),data=null==data?[event]:jQuery.makeArray(data,[event]),special=jQuery.event.special[type]||{},onlyHandlers||!special.trigger||special.trigger.apply(elem,data)!==!1)){
+if(cur=tmp=elem=elem||document,3!==elem.nodeType&&8!==elem.nodeType&&!rfocusMorph.test(type+jQuery.event.triggered)&&(type.indexOf(".")>=0&&(
+// Namespaced trigger; create a regexp to match event type in handle()
+namespaces=type.split("."),type=namespaces.shift(),namespaces.sort()),ontype=type.indexOf(":")<0&&"on"+type,
+// Caller can pass in a jQuery.Event object, Object, or just an event type string
+event=event[jQuery.expando]?event:new jQuery.Event(type,"object"==typeof event&&event),
+// Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
+event.isTrigger=onlyHandlers?2:3,event.namespace=namespaces.join("."),event.namespace_re=event.namespace?new RegExp("(^|\\.)"+namespaces.join("\\.(?:.*\\.|)")+"(\\.|$)"):null,
+// Clean up the event in case it is being reused
+event.result=void 0,event.target||(event.target=elem),
+// Clone any incoming data and prepend the event, creating the handler arg list
+data=null==data?[event]:jQuery.makeArray(data,[event]),
+// Allow special events to draw outside the lines
+special=jQuery.event.special[type]||{},onlyHandlers||!special.trigger||special.trigger.apply(elem,data)!==!1)){
 // Determine event propagation path in advance, per W3C events spec (#9951)
 // Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
 if(!onlyHandlers&&!special.noBubble&&!jQuery.isWindow(elem)){for(bubbleType=special.delegateType||type,rfocusMorph.test(bubbleType+type)||(cur=cur.parentNode);cur;cur=cur.parentNode)eventPath.push(cur),tmp=cur;
 // Only add window if we got to document (e.g., not plain obj or detached DOM)
 tmp===(elem.ownerDocument||document)&&eventPath.push(tmp.defaultView||tmp.parentWindow||window)}for(
 // Fire handlers on the event path
-i=0;(cur=eventPath[i++])&&!event.isPropagationStopped();)event.type=i>1?bubbleType:special.bindType||type,handle=(data_priv.get(cur,"events")||{})[event.type]&&data_priv.get(cur,"handle"),handle&&handle.apply(cur,data),handle=ontype&&cur[ontype],handle&&handle.apply&&jQuery.acceptData(cur)&&(event.result=handle.apply(cur,data),event.result===!1&&event.preventDefault());
+i=0;(cur=eventPath[i++])&&!event.isPropagationStopped();)event.type=i>1?bubbleType:special.bindType||type,
+// jQuery handler
+handle=(data_priv.get(cur,"events")||{})[event.type]&&data_priv.get(cur,"handle"),handle&&handle.apply(cur,data),
+// Native handler
+handle=ontype&&cur[ontype],handle&&handle.apply&&jQuery.acceptData(cur)&&(event.result=handle.apply(cur,data),event.result===!1&&event.preventDefault());
 // If nobody prevented the default action, do it now
 // Call a native DOM method on the target with the same name name as the event.
 // Don't do default actions on window, that's where global variables be (#6170)
@@ -999,7 +1395,7 @@ handlerQueue=jQuery.event.handlers.call(this,event,handlers),
 i=0;(matched=handlerQueue[i++])&&!event.isPropagationStopped();)for(event.currentTarget=matched.elem,j=0;(handleObj=matched.handlers[j++])&&!event.isImmediatePropagationStopped();)
 // Triggered event must either 1) have no namespace, or 2) have namespace(s)
 // a subset or equal to those in the bound event (both can have no namespace).
-(!event.namespace_re||event.namespace_re.test(handleObj.namespace))&&(event.handleObj=handleObj,event.data=handleObj.data,ret=((jQuery.event.special[handleObj.origType]||{}).handle||handleObj.handler).apply(matched.elem,args),void 0!==ret&&(event.result=ret)===!1&&(event.preventDefault(),event.stopPropagation()));
+event.namespace_re&&!event.namespace_re.test(handleObj.namespace)||(event.handleObj=handleObj,event.data=handleObj.data,ret=((jQuery.event.special[handleObj.origType]||{}).handle||handleObj.handler).apply(matched.elem,args),void 0!==ret&&(event.result=ret)===!1&&(event.preventDefault(),event.stopPropagation()));
 // Call the postDispatch hook for the mapped type
 return special.postDispatch&&special.postDispatch.call(this,event),event.result}},handlers:function(event,handlers){var i,matches,sel,handleObj,handlerQueue=[],delegateCount=handlers.delegateCount,cur=event.target;
 // Find delegate handlers
@@ -1007,7 +1403,9 @@ return special.postDispatch&&special.postDispatch.call(this,event),event.result}
 // Avoid non-left-click bubbling in Firefox (#3861)
 if(delegateCount&&cur.nodeType&&(!event.button||"click"!==event.type))for(;cur!==this;cur=cur.parentNode||this)
 // Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-if(cur.disabled!==!0||"click"!==event.type){for(matches=[],i=0;delegateCount>i;i++)handleObj=handlers[i],sel=handleObj.selector+" ",void 0===matches[sel]&&(matches[sel]=handleObj.needsContext?jQuery(sel,this).index(cur)>=0:jQuery.find(sel,this,null,[cur]).length),matches[sel]&&matches.push(handleObj);matches.length&&handlerQueue.push({elem:cur,handlers:matches})}
+if(cur.disabled!==!0||"click"!==event.type){for(matches=[],i=0;i<delegateCount;i++)handleObj=handlers[i],
+// Don't conflict with Object.prototype properties (#13203)
+sel=handleObj.selector+" ",void 0===matches[sel]&&(matches[sel]=handleObj.needsContext?jQuery(sel,this).index(cur)>=0:jQuery.find(sel,this,null,[cur]).length),matches[sel]&&matches.push(handleObj);matches.length&&handlerQueue.push({elem:cur,handlers:matches})}
 // Add the remaining (directly-bound) handlers
 return delegateCount<handlers.length&&handlerQueue.push({elem:this,handlers:handlers.slice(delegateCount)}),handlerQueue},
 // Includes some event props shared by KeyEvent and MouseEvent
@@ -1028,9 +1426,9 @@ return event.target||(event.target=document),3===event.target.nodeType&&(event.t
 // Prevent triggered image.load events from bubbling to window.load
 noBubble:!0},focus:{
 // Fire native event if possible so blur/focus sequence is correct
-trigger:function(){return this!==safeActiveElement()&&this.focus?(this.focus(),!1):void 0},delegateType:"focusin"},blur:{trigger:function(){return this===safeActiveElement()&&this.blur?(this.blur(),!1):void 0},delegateType:"focusout"},click:{
+trigger:function(){if(this!==safeActiveElement()&&this.focus)return this.focus(),!1},delegateType:"focusin"},blur:{trigger:function(){if(this===safeActiveElement()&&this.blur)return this.blur(),!1},delegateType:"focusout"},click:{
 // For checkbox, fire native event so checked state will be right
-trigger:function(){return"checkbox"===this.type&&this.click&&jQuery.nodeName(this,"input")?(this.click(),!1):void 0},
+trigger:function(){if("checkbox"===this.type&&this.click&&jQuery.nodeName(this,"input"))return this.click(),!1},
 // For cross-browser consistency, don't fire native .click() on links
 _default:function(event){return jQuery.nodeName(event.target,"a")}},beforeunload:{postDispatch:function(event){
 // Support: Firefox 20+
@@ -1058,7 +1456,7 @@ jQuery.Event.prototype={isDefaultPrevented:returnFalse,isPropagationStopped:retu
 jQuery.each({mouseenter:"mouseover",mouseleave:"mouseout",pointerenter:"pointerover",pointerleave:"pointerout"},function(orig,fix){jQuery.event.special[orig]={delegateType:fix,bindType:fix,handle:function(event){var ret,target=this,related=event.relatedTarget,handleObj=event.handleObj;
 // For mousenter/leave call the handler if related is outside the target.
 // NB: No relatedTarget if the mouse left/entered the browser window
-return(!related||related!==target&&!jQuery.contains(target,related))&&(event.type=handleObj.origType,ret=handleObj.handler.apply(this,arguments),event.type=fix),ret}}}),
+return related&&(related===target||jQuery.contains(target,related))||(event.type=handleObj.origType,ret=handleObj.handler.apply(this,arguments),event.type=fix),ret}}}),
 // Support: Firefox, Chrome, Safari
 // Create "bubbling" focus and blur events
 support.focusinBubbles||jQuery.each({focus:"focusin",blur:"focusout"},function(orig,fix){
@@ -1067,15 +1465,25 @@ var handler=function(event){jQuery.event.simulate(fix,event.target,jQuery.event.
 // Types can be a map of types/handlers
 if("object"==typeof types){
 // ( types-Object, selector, data )
-"string"!=typeof selector&&(data=data||selector,selector=void 0);for(type in types)this.on(type,selector,data,types[type],one);return this}if(null==data&&null==fn?(fn=selector,data=selector=void 0):null==fn&&("string"==typeof selector?(fn=data,data=void 0):(fn=data,data=selector,selector=void 0)),fn===!1)fn=returnFalse;else if(!fn)return this;
+"string"!=typeof selector&&(
+// ( types-Object, data )
+data=data||selector,selector=void 0);for(type in types)this.on(type,selector,data,types[type],one);return this}if(null==data&&null==fn?(
+// ( types, fn )
+fn=selector,data=selector=void 0):null==fn&&("string"==typeof selector?(
+// ( types, selector, fn )
+fn=data,data=void 0):(
+// ( types, data, fn )
+fn=data,data=selector,selector=void 0)),fn===!1)fn=returnFalse;else if(!fn)return this;
 // Use same guid so caller can remove using origFn
-return 1===one&&(origFn=fn,fn=function(event){return jQuery().off(event),origFn.apply(this,arguments)},fn.guid=origFn.guid||(origFn.guid=jQuery.guid++)),this.each(function(){jQuery.event.add(this,types,fn,data,selector)})},one:function(types,selector,data,fn){return this.on(types,selector,data,fn,1)},off:function(types,selector,fn){var handleObj,type;if(types&&types.preventDefault&&types.handleObj)
+return 1===one&&(origFn=fn,fn=function(event){
+// Can use an empty set, since event contains the info
+return jQuery().off(event),origFn.apply(this,arguments)},fn.guid=origFn.guid||(origFn.guid=jQuery.guid++)),this.each(function(){jQuery.event.add(this,types,fn,data,selector)})},one:function(types,selector,data,fn){return this.on(types,selector,data,fn,1)},off:function(types,selector,fn){var handleObj,type;if(types&&types.preventDefault&&types.handleObj)
 // ( event )  dispatched jQuery.Event
 return handleObj=types.handleObj,jQuery(types.delegateTarget).off(handleObj.namespace?handleObj.origType+"."+handleObj.namespace:handleObj.origType,handleObj.selector,handleObj.handler),this;if("object"==typeof types){
 // ( types-object [, selector] )
 for(type in types)this.off(type,selector,types[type]);return this}
 // ( types [, fn] )
-return(selector===!1||"function"==typeof selector)&&(fn=selector,selector=void 0),fn===!1&&(fn=returnFalse),this.each(function(){jQuery.event.remove(this,types,fn,selector)})},trigger:function(type,data){return this.each(function(){jQuery.event.trigger(type,data,this)})},triggerHandler:function(type,data){var elem=this[0];return elem?jQuery.event.trigger(type,data,elem,!0):void 0}});var rxhtmlTag=/<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,rtagName=/<([\w:]+)/,rhtml=/<|&#?\w+;/,rnoInnerhtml=/<(?:script|style|link)/i,
+return selector!==!1&&"function"!=typeof selector||(fn=selector,selector=void 0),fn===!1&&(fn=returnFalse),this.each(function(){jQuery.event.remove(this,types,fn,selector)})},trigger:function(type,data){return this.each(function(){jQuery.event.trigger(type,data,this)})},triggerHandler:function(type,data){var elem=this[0];if(elem)return jQuery.event.trigger(type,data,elem,!0)}});var rxhtmlTag=/<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,rtagName=/<([\w:]+)/,rhtml=/<|&#?\w+;/,rnoInnerhtml=/<(?:script|style|link)/i,
 // checked="checked" or checked
 rchecked=/checked\s*(?:[^=]|=\s*.checked.)/i,rscriptType=/^$|\/(?:java|ecma)script/i,rscriptTypeMasked=/^true\/(.*)/,rcleanScript=/^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
 // We have to close these tags to support XHTML (#13200)
@@ -1085,12 +1493,14 @@ option:[1,"<select multiple='multiple'>","</select>"],thead:[1,"<table>","</tabl
 // Support: IE9
 wrapMap.optgroup=wrapMap.option,wrapMap.tbody=wrapMap.tfoot=wrapMap.colgroup=wrapMap.caption=wrapMap.thead,wrapMap.th=wrapMap.td,jQuery.extend({clone:function(elem,dataAndEvents,deepDataAndEvents){var i,l,srcElements,destElements,clone=elem.cloneNode(!0),inPage=jQuery.contains(elem.ownerDocument,elem);
 // Fix IE cloning issues
-if(!(support.noCloneChecked||1!==elem.nodeType&&11!==elem.nodeType||jQuery.isXMLDoc(elem)))for(destElements=getAll(clone),srcElements=getAll(elem),i=0,l=srcElements.length;l>i;i++)fixInput(srcElements[i],destElements[i]);
+if(!(support.noCloneChecked||1!==elem.nodeType&&11!==elem.nodeType||jQuery.isXMLDoc(elem)))for(
+// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
+destElements=getAll(clone),srcElements=getAll(elem),i=0,l=srcElements.length;i<l;i++)fixInput(srcElements[i],destElements[i]);
 // Copy the events from the original to the clone
-if(dataAndEvents)if(deepDataAndEvents)for(srcElements=srcElements||getAll(elem),destElements=destElements||getAll(clone),i=0,l=srcElements.length;l>i;i++)cloneCopyEvent(srcElements[i],destElements[i]);else cloneCopyEvent(elem,clone);
+if(dataAndEvents)if(deepDataAndEvents)for(srcElements=srcElements||getAll(elem),destElements=destElements||getAll(clone),i=0,l=srcElements.length;i<l;i++)cloneCopyEvent(srcElements[i],destElements[i]);else cloneCopyEvent(elem,clone);
 // Return the cloned set
 // Preserve script evaluation history
-return destElements=getAll(clone,"script"),destElements.length>0&&setGlobalEval(destElements,!inPage&&getAll(elem,"script")),clone},buildFragment:function(elems,context,scripts,selection){for(var elem,tmp,tag,wrap,contains,j,fragment=context.createDocumentFragment(),nodes=[],i=0,l=elems.length;l>i;i++)if(elem=elems[i],elem||0===elem)
+return destElements=getAll(clone,"script"),destElements.length>0&&setGlobalEval(destElements,!inPage&&getAll(elem,"script")),clone},buildFragment:function(elems,context,scripts,selection){for(var elem,tmp,tag,wrap,contains,j,fragment=context.createDocumentFragment(),nodes=[],i=0,l=elems.length;i<l;i++)if(elem=elems[i],elem||0===elem)
 // Add nodes directly
 if("object"===jQuery.type(elem))
 // Support: QtWebKit, PhantomJS
@@ -1111,17 +1521,23 @@ tmp.textContent=""}else nodes.push(context.createTextNode(elem));for(
 fragment.textContent="",i=0;elem=nodes[i++];)
 // #4087 - If origin and destination elements are the same, and this is
 // that element, do not do anything
-if((!selection||-1===jQuery.inArray(elem,selection))&&(contains=jQuery.contains(elem.ownerDocument,elem),tmp=getAll(fragment.appendChild(elem),"script"),contains&&setGlobalEval(tmp),scripts))for(j=0;elem=tmp[j++];)rscriptType.test(elem.type||"")&&scripts.push(elem);return fragment},cleanData:function(elems){for(var data,elem,type,key,special=jQuery.event.special,i=0;void 0!==(elem=elems[i]);i++){if(jQuery.acceptData(elem)&&(key=elem[data_priv.expando],key&&(data=data_priv.cache[key]))){if(data.events)for(type in data.events)special[type]?jQuery.event.remove(elem,type):jQuery.removeEvent(elem,type,data.handle);data_priv.cache[key]&&
+if((!selection||jQuery.inArray(elem,selection)===-1)&&(contains=jQuery.contains(elem.ownerDocument,elem),
+// Append to fragment
+tmp=getAll(fragment.appendChild(elem),"script"),
+// Preserve script evaluation history
+contains&&setGlobalEval(tmp),scripts))for(j=0;elem=tmp[j++];)rscriptType.test(elem.type||"")&&scripts.push(elem);return fragment},cleanData:function(elems){for(var data,elem,type,key,special=jQuery.event.special,i=0;void 0!==(elem=elems[i]);i++){if(jQuery.acceptData(elem)&&(key=elem[data_priv.expando],key&&(data=data_priv.cache[key]))){if(data.events)for(type in data.events)special[type]?jQuery.event.remove(elem,type):jQuery.removeEvent(elem,type,data.handle);data_priv.cache[key]&&
 // Discard any remaining `private` data
 delete data_priv.cache[key]}
 // Discard any remaining `user` data
-delete data_user.cache[elem[data_user.expando]]}}}),jQuery.fn.extend({text:function(value){return access(this,function(value){return void 0===value?jQuery.text(this):this.empty().each(function(){(1===this.nodeType||11===this.nodeType||9===this.nodeType)&&(this.textContent=value)})},null,value,arguments.length)},append:function(){return this.domManip(arguments,function(elem){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var target=manipulationTarget(this,elem);target.appendChild(elem)}})},prepend:function(){return this.domManip(arguments,function(elem){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var target=manipulationTarget(this,elem);target.insertBefore(elem,target.firstChild)}})},before:function(){return this.domManip(arguments,function(elem){this.parentNode&&this.parentNode.insertBefore(elem,this)})},after:function(){return this.domManip(arguments,function(elem){this.parentNode&&this.parentNode.insertBefore(elem,this.nextSibling)})},remove:function(selector,keepData){for(var elem,elems=selector?jQuery.filter(selector,this):this,i=0;null!=(elem=elems[i]);i++)keepData||1!==elem.nodeType||jQuery.cleanData(getAll(elem)),elem.parentNode&&(keepData&&jQuery.contains(elem.ownerDocument,elem)&&setGlobalEval(getAll(elem,"script")),elem.parentNode.removeChild(elem));return this},empty:function(){for(var elem,i=0;null!=(elem=this[i]);i++)1===elem.nodeType&&(
+delete data_user.cache[elem[data_user.expando]]}}}),jQuery.fn.extend({text:function(value){return access(this,function(value){return void 0===value?jQuery.text(this):this.empty().each(function(){1!==this.nodeType&&11!==this.nodeType&&9!==this.nodeType||(this.textContent=value)})},null,value,arguments.length)},append:function(){return this.domManip(arguments,function(elem){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var target=manipulationTarget(this,elem);target.appendChild(elem)}})},prepend:function(){return this.domManip(arguments,function(elem){if(1===this.nodeType||11===this.nodeType||9===this.nodeType){var target=manipulationTarget(this,elem);target.insertBefore(elem,target.firstChild)}})},before:function(){return this.domManip(arguments,function(elem){this.parentNode&&this.parentNode.insertBefore(elem,this)})},after:function(){return this.domManip(arguments,function(elem){this.parentNode&&this.parentNode.insertBefore(elem,this.nextSibling)})},remove:function(selector,keepData){for(var elem,elems=selector?jQuery.filter(selector,this):this,i=0;null!=(elem=elems[i]);i++)keepData||1!==elem.nodeType||jQuery.cleanData(getAll(elem)),elem.parentNode&&(keepData&&jQuery.contains(elem.ownerDocument,elem)&&setGlobalEval(getAll(elem,"script")),elem.parentNode.removeChild(elem));return this},empty:function(){for(var elem,i=0;null!=(elem=this[i]);i++)1===elem.nodeType&&(
 // Prevent memory leaks
 jQuery.cleanData(getAll(elem,!1)),
 // Remove any remaining nodes
-elem.textContent="");return this},clone:function(dataAndEvents,deepDataAndEvents){return dataAndEvents=null==dataAndEvents?!1:dataAndEvents,deepDataAndEvents=null==deepDataAndEvents?dataAndEvents:deepDataAndEvents,this.map(function(){return jQuery.clone(this,dataAndEvents,deepDataAndEvents)})},html:function(value){return access(this,function(value){var elem=this[0]||{},i=0,l=this.length;if(void 0===value&&1===elem.nodeType)return elem.innerHTML;
+elem.textContent="");return this},clone:function(dataAndEvents,deepDataAndEvents){return dataAndEvents=null!=dataAndEvents&&dataAndEvents,deepDataAndEvents=null==deepDataAndEvents?dataAndEvents:deepDataAndEvents,this.map(function(){return jQuery.clone(this,dataAndEvents,deepDataAndEvents)})},html:function(value){return access(this,function(value){var elem=this[0]||{},i=0,l=this.length;if(void 0===value&&1===elem.nodeType)return elem.innerHTML;
 // See if we can take a shortcut and just use innerHTML
-if("string"==typeof value&&!rnoInnerhtml.test(value)&&!wrapMap[(rtagName.exec(value)||["",""])[1].toLowerCase()]){value=value.replace(rxhtmlTag,"<$1></$2>");try{for(;l>i;i++)elem=this[i]||{},1===elem.nodeType&&(jQuery.cleanData(getAll(elem,!1)),elem.innerHTML=value);elem=0}catch(e){}}elem&&this.empty().append(value)},null,value,arguments.length)},replaceWith:function(){var arg=arguments[0];
+if("string"==typeof value&&!rnoInnerhtml.test(value)&&!wrapMap[(rtagName.exec(value)||["",""])[1].toLowerCase()]){value=value.replace(rxhtmlTag,"<$1></$2>");try{for(;i<l;i++)elem=this[i]||{},
+// Remove element nodes and prevent memory leaks
+1===elem.nodeType&&(jQuery.cleanData(getAll(elem,!1)),elem.innerHTML=value);elem=0}catch(e){}}elem&&this.empty().append(value)},null,value,arguments.length)},replaceWith:function(){var arg=arguments[0];
 // Force removal if there was no new content (e.g., from empty arguments)
 // Make the changes, replacing each context element with the new content
 return this.domManip(arguments,function(elem){arg=this.parentNode,jQuery.cleanData(getAll(this)),arg&&arg.replaceChild(elem,this)}),arg&&(arg.length||arg.nodeType)?this:this.remove()},detach:function(selector){return this.remove(selector,!0)},domManip:function(args,callback){
@@ -1131,9 +1547,21 @@ args=concat.apply([],args);var fragment,first,scripts,hasScripts,node,doc,i=0,l=
 if(isFunction||l>1&&"string"==typeof value&&!support.checkClone&&rchecked.test(value))return this.each(function(index){var self=set.eq(index);isFunction&&(args[0]=value.call(this,index,self.html())),self.domManip(args,callback)});if(l&&(fragment=jQuery.buildFragment(args,this[0].ownerDocument,!1,this),first=fragment.firstChild,1===fragment.childNodes.length&&(fragment=first),first)){
 // Use the original fragment for the last item instead of the first because it can end up
 // being emptied incorrectly in certain situations (#8070).
-for(scripts=jQuery.map(getAll(fragment,"script"),disableScript),hasScripts=scripts.length;l>i;i++)node=fragment,i!==iNoClone&&(node=jQuery.clone(node,!0,!0),hasScripts&&jQuery.merge(scripts,getAll(node,"script"))),callback.call(this[i],node,i);if(hasScripts)
+for(scripts=jQuery.map(getAll(fragment,"script"),disableScript),hasScripts=scripts.length;i<l;i++)node=fragment,i!==iNoClone&&(node=jQuery.clone(node,!0,!0),
+// Keep references to cloned scripts for later restoration
+hasScripts&&
+// Support: QtWebKit
+// jQuery.merge because push.apply(_, arraylike) throws
+jQuery.merge(scripts,getAll(node,"script"))),callback.call(this[i],node,i);if(hasScripts)
 // Evaluate executable scripts on first document insertion
-for(doc=scripts[scripts.length-1].ownerDocument,jQuery.map(scripts,restoreScript),i=0;hasScripts>i;i++)node=scripts[i],rscriptType.test(node.type||"")&&!data_priv.access(node,"globalEval")&&jQuery.contains(doc,node)&&(node.src?jQuery._evalUrl&&jQuery._evalUrl(node.src):jQuery.globalEval(node.textContent.replace(rcleanScript,"")))}return this}}),jQuery.each({appendTo:"append",prependTo:"prepend",insertBefore:"before",insertAfter:"after",replaceAll:"replaceWith"},function(name,original){jQuery.fn[name]=function(selector){for(var elems,ret=[],insert=jQuery(selector),last=insert.length-1,i=0;last>=i;i++)elems=i===last?this:this.clone(!0),jQuery(insert[i])[original](elems),push.apply(ret,elems.get());return this.pushStack(ret)}});var iframe,elemdisplay={},rmargin=/^margin/,rnumnonpx=new RegExp("^("+pnum+")(?!px)[a-z%]+$","i"),getStyles=function(elem){
+for(doc=scripts[scripts.length-1].ownerDocument,
+// Reenable scripts
+jQuery.map(scripts,restoreScript),i=0;i<hasScripts;i++)node=scripts[i],rscriptType.test(node.type||"")&&!data_priv.access(node,"globalEval")&&jQuery.contains(doc,node)&&(node.src?
+// Optional AJAX dependency, but won't run scripts if not present
+jQuery._evalUrl&&jQuery._evalUrl(node.src):jQuery.globalEval(node.textContent.replace(rcleanScript,"")))}return this}}),jQuery.each({appendTo:"append",prependTo:"prepend",insertBefore:"before",insertAfter:"after",replaceAll:"replaceWith"},function(name,original){jQuery.fn[name]=function(selector){for(var elems,ret=[],insert=jQuery(selector),last=insert.length-1,i=0;i<=last;i++)elems=i===last?this:this.clone(!0),jQuery(insert[i])[original](elems),
+// Support: QtWebKit
+// .get() because push.apply(_, arraylike) throws
+push.apply(ret,elems.get());return this.pushStack(ret)}});var iframe,elemdisplay={},rmargin=/^margin/,rnumnonpx=new RegExp("^("+pnum+")(?!px)[a-z%]+$","i"),getStyles=function(elem){
 // Support: IE<=11+, Firefox<=30+ (#15098, #14150)
 // IE throws on elements created in popups
 // FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
@@ -1143,7 +1571,10 @@ for(doc=scripts[scripts.length-1].ownerDocument,jQuery.map(scripts,restoreScript
 return elem.ownerDocument.defaultView.opener?elem.ownerDocument.defaultView.getComputedStyle(elem,null):window.getComputedStyle(elem,null)};!function(){
 // Executing both pixelPosition & boxSizingReliable tests require only one layout
 // so they're executed at the same time to save the second computation.
-function computePixelPositionAndBoxSizingReliable(){div.style.cssText="-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;margin-top:1%;top:1%;border:1px;padding:1px;width:4px;position:absolute",div.innerHTML="",docElem.appendChild(container);var divStyle=window.getComputedStyle(div,null);pixelPositionVal="1%"!==divStyle.top,boxSizingReliableVal="4px"===divStyle.width,docElem.removeChild(container)}var pixelPositionVal,boxSizingReliableVal,docElem=document.documentElement,container=document.createElement("div"),div=document.createElement("div");div.style&&(
+function computePixelPositionAndBoxSizingReliable(){div.style.cssText=
+// Support: Firefox<29, Android 2.3
+// Vendor-prefix box-sizing
+"-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;display:block;margin-top:1%;top:1%;border:1px;padding:1px;width:4px;position:absolute",div.innerHTML="",docElem.appendChild(container);var divStyle=window.getComputedStyle(div,null);pixelPositionVal="1%"!==divStyle.top,boxSizingReliableVal="4px"===divStyle.width,docElem.removeChild(container)}var pixelPositionVal,boxSizingReliableVal,docElem=document.documentElement,container=document.createElement("div"),div=document.createElement("div");div.style&&(
 // Support: IE9-11+
 // Style of cloned element affects source element cloned (#8908)
 div.style.backgroundClip="content-box",div.cloneNode(!0).style.backgroundClip="",support.clearCloneStyle="content-box"===div.style.backgroundClip,container.style.cssText="border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px;position:absolute",container.appendChild(div),
@@ -1200,13 +1631,24 @@ var ret,type,hooks,origName=jQuery.camelCase(name),style=elem.style;
 // Support: IE9-11+
 // background-* props affect original clone's values
 // If a hook was provided, use that value, otherwise just set the specified value
-return name=jQuery.cssProps[origName]||(jQuery.cssProps[origName]=vendorPropName(style,origName)),hooks=jQuery.cssHooks[name]||jQuery.cssHooks[origName],void 0===value?hooks&&"get"in hooks&&void 0!==(ret=hooks.get(elem,!1,extra))?ret:style[name]:(type=typeof value,"string"===type&&(ret=rrelNum.exec(value))&&(value=(ret[1]+1)*ret[2]+parseFloat(jQuery.css(elem,name)),type="number"),null!=value&&value===value&&("number"!==type||jQuery.cssNumber[origName]||(value+="px"),support.clearCloneStyle||""!==value||0!==name.indexOf("background")||(style[name]="inherit"),hooks&&"set"in hooks&&void 0===(value=hooks.set(elem,value,extra))||(style[name]=value)),void 0)}},css:function(elem,name,extra,styles){var val,num,hooks,origName=jQuery.camelCase(name);return name=jQuery.cssProps[origName]||(jQuery.cssProps[origName]=vendorPropName(elem.style,origName)),hooks=jQuery.cssHooks[name]||jQuery.cssHooks[origName],hooks&&"get"in hooks&&(val=hooks.get(elem,!0,extra)),void 0===val&&(val=curCSS(elem,name,styles)),"normal"===val&&name in cssNormalTransform&&(val=cssNormalTransform[name]),""===extra||extra?(num=parseFloat(val),extra===!0||jQuery.isNumeric(num)?num||0:val):val}}),jQuery.each(["height","width"],function(i,name){jQuery.cssHooks[name]={get:function(elem,computed,extra){return computed?rdisplayswap.test(jQuery.css(elem,"display"))&&0===elem.offsetWidth?jQuery.swap(elem,cssShow,function(){return getWidthOrHeight(elem,name,extra)}):getWidthOrHeight(elem,name,extra):void 0},set:function(elem,value,extra){var styles=extra&&getStyles(elem);return setPositiveNumber(elem,value,extra?augmentWidthOrHeight(elem,name,extra,"border-box"===jQuery.css(elem,"boxSizing",!1,styles),styles):0)}}}),
+return name=jQuery.cssProps[origName]||(jQuery.cssProps[origName]=vendorPropName(style,origName)),hooks=jQuery.cssHooks[name]||jQuery.cssHooks[origName],void 0===value?hooks&&"get"in hooks&&void 0!==(ret=hooks.get(elem,!1,extra))?ret:style[name]:(type=typeof value,"string"===type&&(ret=rrelNum.exec(value))&&(value=(ret[1]+1)*ret[2]+parseFloat(jQuery.css(elem,name)),type="number"),null!=value&&value===value&&("number"!==type||jQuery.cssNumber[origName]||(value+="px"),support.clearCloneStyle||""!==value||0!==name.indexOf("background")||(style[name]="inherit"),hooks&&"set"in hooks&&void 0===(value=hooks.set(elem,value,extra))||(style[name]=value)),void 0)}},css:function(elem,name,extra,styles){var val,num,hooks,origName=jQuery.camelCase(name);
+// Make numeric if forced or a qualifier was provided and val looks numeric
+// Make sure that we're working with the right name
+// Try prefixed name followed by the unprefixed name
+// If a hook was provided get the computed value from there
+// Otherwise, if a way to get the computed value exists, use that
+// Convert "normal" to computed value
+// Make numeric if forced or a qualifier was provided and val looks numeric
+return name=jQuery.cssProps[origName]||(jQuery.cssProps[origName]=vendorPropName(elem.style,origName)),hooks=jQuery.cssHooks[name]||jQuery.cssHooks[origName],hooks&&"get"in hooks&&(val=hooks.get(elem,!0,extra)),void 0===val&&(val=curCSS(elem,name,styles)),"normal"===val&&name in cssNormalTransform&&(val=cssNormalTransform[name]),""===extra||extra?(num=parseFloat(val),extra===!0||jQuery.isNumeric(num)?num||0:val):val}}),jQuery.each(["height","width"],function(i,name){jQuery.cssHooks[name]={get:function(elem,computed,extra){if(computed)
+// Certain elements can have dimension info if we invisibly show them
+// but it must have a current display style that would benefit
+return rdisplayswap.test(jQuery.css(elem,"display"))&&0===elem.offsetWidth?jQuery.swap(elem,cssShow,function(){return getWidthOrHeight(elem,name,extra)}):getWidthOrHeight(elem,name,extra)},set:function(elem,value,extra){var styles=extra&&getStyles(elem);return setPositiveNumber(elem,value,extra?augmentWidthOrHeight(elem,name,extra,"border-box"===jQuery.css(elem,"boxSizing",!1,styles),styles):0)}}}),
 // Support: Android 2.3
-jQuery.cssHooks.marginRight=addGetHookIf(support.reliableMarginRight,function(elem,computed){return computed?jQuery.swap(elem,{display:"inline-block"},curCSS,[elem,"marginRight"]):void 0}),
+jQuery.cssHooks.marginRight=addGetHookIf(support.reliableMarginRight,function(elem,computed){if(computed)return jQuery.swap(elem,{display:"inline-block"},curCSS,[elem,"marginRight"])}),
 // These hooks are used by animate to expand properties
 jQuery.each({margin:"",padding:"",border:"Width"},function(prefix,suffix){jQuery.cssHooks[prefix+suffix]={expand:function(value){for(var i=0,expanded={},
 // Assumes a single number if not a string
-parts="string"==typeof value?value.split(" "):[value];4>i;i++)expanded[prefix+cssExpand[i]+suffix]=parts[i]||parts[i-2]||parts[0];return expanded}},rmargin.test(prefix)||(jQuery.cssHooks[prefix+suffix].set=setPositiveNumber)}),jQuery.fn.extend({css:function(name,value){return access(this,function(elem,name,value){var styles,len,map={},i=0;if(jQuery.isArray(name)){for(styles=getStyles(elem),len=name.length;len>i;i++)map[name[i]]=jQuery.css(elem,name[i],!1,styles);return map}return void 0!==value?jQuery.style(elem,name,value):jQuery.css(elem,name)},name,value,arguments.length>1)},show:function(){return showHide(this,!0)},hide:function(){return showHide(this)},toggle:function(state){return"boolean"==typeof state?state?this.show():this.hide():this.each(function(){isHidden(this)?jQuery(this).show():jQuery(this).hide()})}}),jQuery.Tween=Tween,Tween.prototype={constructor:Tween,init:function(elem,options,prop,end,easing,unit){this.elem=elem,this.prop=prop,this.easing=easing||"swing",this.options=options,this.start=this.now=this.cur(),this.end=end,this.unit=unit||(jQuery.cssNumber[prop]?"":"px")},cur:function(){var hooks=Tween.propHooks[this.prop];return hooks&&hooks.get?hooks.get(this):Tween.propHooks._default.get(this)},run:function(percent){var eased,hooks=Tween.propHooks[this.prop];return this.options.duration?this.pos=eased=jQuery.easing[this.easing](percent,this.options.duration*percent,0,1,this.options.duration):this.pos=eased=percent,this.now=(this.end-this.start)*eased+this.start,this.options.step&&this.options.step.call(this.elem,this.now,this),hooks&&hooks.set?hooks.set(this):Tween.propHooks._default.set(this),this}},Tween.prototype.init.prototype=Tween.prototype,Tween.propHooks={_default:{get:function(tween){var result;
+parts="string"==typeof value?value.split(" "):[value];i<4;i++)expanded[prefix+cssExpand[i]+suffix]=parts[i]||parts[i-2]||parts[0];return expanded}},rmargin.test(prefix)||(jQuery.cssHooks[prefix+suffix].set=setPositiveNumber)}),jQuery.fn.extend({css:function(name,value){return access(this,function(elem,name,value){var styles,len,map={},i=0;if(jQuery.isArray(name)){for(styles=getStyles(elem),len=name.length;i<len;i++)map[name[i]]=jQuery.css(elem,name[i],!1,styles);return map}return void 0!==value?jQuery.style(elem,name,value):jQuery.css(elem,name)},name,value,arguments.length>1)},show:function(){return showHide(this,!0)},hide:function(){return showHide(this)},toggle:function(state){return"boolean"==typeof state?state?this.show():this.hide():this.each(function(){isHidden(this)?jQuery(this).show():jQuery(this).hide()})}}),jQuery.Tween=Tween,Tween.prototype={constructor:Tween,init:function(elem,options,prop,end,easing,unit){this.elem=elem,this.prop=prop,this.easing=easing||"swing",this.options=options,this.start=this.now=this.cur(),this.end=end,this.unit=unit||(jQuery.cssNumber[prop]?"":"px")},cur:function(){var hooks=Tween.propHooks[this.prop];return hooks&&hooks.get?hooks.get(this):Tween.propHooks._default.get(this)},run:function(percent){var eased,hooks=Tween.propHooks[this.prop];return this.options.duration?this.pos=eased=jQuery.easing[this.easing](percent,this.options.duration*percent,0,1,this.options.duration):this.pos=eased=percent,this.now=(this.end-this.start)*eased+this.start,this.options.step&&this.options.step.call(this.elem,this.now,this),hooks&&hooks.set?hooks.set(this):Tween.propHooks._default.set(this),this}},Tween.prototype.init.prototype=Tween.prototype,Tween.propHooks={_default:{get:function(tween){var result;
 // Passing an empty string as a 3rd parameter to .css will automatically
 // attempt a parseFloat and fallback to a string if the parse fails.
 // Simple values such as "10px" are parsed to Float;
@@ -1228,13 +1670,18 @@ unit=unit||start[3],
 // Make sure we update the tween properties later on
 parts=parts||[],
 // Iteratively approximate from a nonzero starting point
-start=+target||1;do scale=scale||".5",start/=scale,jQuery.style(tween.elem,prop,start+unit);while(scale!==(scale=tween.cur()/target)&&1!==scale&&--maxIterations)}
+start=+target||1;do
+// If previous iteration zeroed out, double until we get *something*.
+// Use string for doubling so we don't accidentally see scale as unchanged below
+scale=scale||".5",
+// Adjust and apply
+start/=scale,jQuery.style(tween.elem,prop,start+unit);while(scale!==(scale=tween.cur()/target)&&1!==scale&&--maxIterations)}
 // Update tween properties
 // If a +=/-= token was provided, we're doing a relative animation
-return parts&&(start=tween.start=+start||+target||0,tween.unit=unit,tween.end=parts[1]?start+(parts[1]+1)*parts[2]:+parts[2]),tween}]};jQuery.Animation=jQuery.extend(Animation,{tweener:function(props,callback){jQuery.isFunction(props)?(callback=props,props=["*"]):props=props.split(" ");for(var prop,index=0,length=props.length;length>index;index++)prop=props[index],tweeners[prop]=tweeners[prop]||[],tweeners[prop].unshift(callback)},prefilter:function(callback,prepend){prepend?animationPrefilters.unshift(callback):animationPrefilters.push(callback)}}),jQuery.speed=function(speed,easing,fn){var opt=speed&&"object"==typeof speed?jQuery.extend({},speed):{complete:fn||!fn&&easing||jQuery.isFunction(speed)&&speed,duration:speed,easing:fn&&easing||easing&&!jQuery.isFunction(easing)&&easing};
+return parts&&(start=tween.start=+start||+target||0,tween.unit=unit,tween.end=parts[1]?start+(parts[1]+1)*parts[2]:+parts[2]),tween}]};jQuery.Animation=jQuery.extend(Animation,{tweener:function(props,callback){jQuery.isFunction(props)?(callback=props,props=["*"]):props=props.split(" ");for(var prop,index=0,length=props.length;index<length;index++)prop=props[index],tweeners[prop]=tweeners[prop]||[],tweeners[prop].unshift(callback)},prefilter:function(callback,prepend){prepend?animationPrefilters.unshift(callback):animationPrefilters.push(callback)}}),jQuery.speed=function(speed,easing,fn){var opt=speed&&"object"==typeof speed?jQuery.extend({},speed):{complete:fn||!fn&&easing||jQuery.isFunction(speed)&&speed,duration:speed,easing:fn&&easing||easing&&!jQuery.isFunction(easing)&&easing};
 // Normalize opt.queue - true/undefined/null -> "fx"
 // Queueing
-return opt.duration=jQuery.fx.off?0:"number"==typeof opt.duration?opt.duration:opt.duration in jQuery.fx.speeds?jQuery.fx.speeds[opt.duration]:jQuery.fx.speeds._default,(null==opt.queue||opt.queue===!0)&&(opt.queue="fx"),opt.old=opt.complete,opt.complete=function(){jQuery.isFunction(opt.old)&&opt.old.call(this),opt.queue&&jQuery.dequeue(this,opt.queue)},opt},jQuery.fn.extend({fadeTo:function(speed,to,easing,callback){
+return opt.duration=jQuery.fx.off?0:"number"==typeof opt.duration?opt.duration:opt.duration in jQuery.fx.speeds?jQuery.fx.speeds[opt.duration]:jQuery.fx.speeds._default,null!=opt.queue&&opt.queue!==!0||(opt.queue="fx"),opt.old=opt.complete,opt.complete=function(){jQuery.isFunction(opt.old)&&opt.old.call(this),opt.queue&&jQuery.dequeue(this,opt.queue)},opt},jQuery.fn.extend({fadeTo:function(speed,to,easing,callback){
 // Show any hidden elements after setting opacity to 0
 return this.filter(isHidden).css("opacity",0).show().end().animate({opacity:to},speed,easing,callback)},animate:function(prop,speed,easing,callback){var empty=jQuery.isEmptyObject(prop),optall=jQuery.speed(speed,easing,callback),doAnimation=function(){
 // Operate on a copy of prop so per-property easing won't be lost
@@ -1244,7 +1691,7 @@ var anim=Animation(this,jQuery.extend({},prop),optall);
 // Start the next in the queue if the last step wasn't forced.
 // Timers currently will call their complete callbacks, which
 // will dequeue but only if they were gotoEnd.
-(dequeue||!gotoEnd)&&jQuery.dequeue(this,type)})},finish:function(type){return type!==!1&&(type=type||"fx"),this.each(function(){var index,data=data_priv.get(this),queue=data[type+"queue"],hooks=data[type+"queueHooks"],timers=jQuery.timers,length=queue?queue.length:0;
+!dequeue&&gotoEnd||jQuery.dequeue(this,type)})},finish:function(type){return type!==!1&&(type=type||"fx"),this.each(function(){var index,data=data_priv.get(this),queue=data[type+"queue"],hooks=data[type+"queueHooks"],timers=jQuery.timers,length=queue?queue.length:0;
 // Look for any active animations, and finish them
 for(
 // Enable finishing flag on private data
@@ -1252,11 +1699,13 @@ data.finish=!0,
 // Empty the queue first
 jQuery.queue(this,type,[]),hooks&&hooks.stop&&hooks.stop.call(this,!0),index=timers.length;index--;)timers[index].elem===this&&timers[index].queue===type&&(timers[index].anim.stop(!0),timers.splice(index,1));
 // Look for any animations in the old queue and finish them
-for(index=0;length>index;index++)queue[index]&&queue[index].finish&&queue[index].finish.call(this);
+for(index=0;index<length;index++)queue[index]&&queue[index].finish&&queue[index].finish.call(this);
 // Turn off finishing flag
 delete data.finish})}}),jQuery.each(["toggle","show","hide"],function(i,name){var cssFn=jQuery.fn[name];jQuery.fn[name]=function(speed,easing,callback){return null==speed||"boolean"==typeof speed?cssFn.apply(this,arguments):this.animate(genFx(name,!0),speed,easing,callback)}}),
 // Generate shortcuts for custom animations
-jQuery.each({slideDown:genFx("show"),slideUp:genFx("hide"),slideToggle:genFx("toggle"),fadeIn:{opacity:"show"},fadeOut:{opacity:"hide"},fadeToggle:{opacity:"toggle"}},function(name,props){jQuery.fn[name]=function(speed,easing,callback){return this.animate(props,speed,easing,callback)}}),jQuery.timers=[],jQuery.fx.tick=function(){var timer,i=0,timers=jQuery.timers;for(fxNow=jQuery.now();i<timers.length;i++)timer=timers[i],timer()||timers[i]!==timer||timers.splice(i--,1);timers.length||jQuery.fx.stop(),fxNow=void 0},jQuery.fx.timer=function(timer){jQuery.timers.push(timer),timer()?jQuery.fx.start():jQuery.timers.pop()},jQuery.fx.interval=13,jQuery.fx.start=function(){timerId||(timerId=setInterval(jQuery.fx.tick,jQuery.fx.interval))},jQuery.fx.stop=function(){clearInterval(timerId),timerId=null},jQuery.fx.speeds={slow:600,fast:200,
+jQuery.each({slideDown:genFx("show"),slideUp:genFx("hide"),slideToggle:genFx("toggle"),fadeIn:{opacity:"show"},fadeOut:{opacity:"hide"},fadeToggle:{opacity:"toggle"}},function(name,props){jQuery.fn[name]=function(speed,easing,callback){return this.animate(props,speed,easing,callback)}}),jQuery.timers=[],jQuery.fx.tick=function(){var timer,i=0,timers=jQuery.timers;for(fxNow=jQuery.now();i<timers.length;i++)timer=timers[i],
+// Checks the timer has not already been removed
+timer()||timers[i]!==timer||timers.splice(i--,1);timers.length||jQuery.fx.stop(),fxNow=void 0},jQuery.fx.timer=function(timer){jQuery.timers.push(timer),timer()?jQuery.fx.start():jQuery.timers.pop()},jQuery.fx.interval=13,jQuery.fx.start=function(){timerId||(timerId=setInterval(jQuery.fx.tick,jQuery.fx.interval))},jQuery.fx.stop=function(){clearInterval(timerId),timerId=null},jQuery.fx.speeds={slow:600,fast:200,
 // Default speed
 _default:400},
 // Based off of the plugin by Clint Helfers, with permission.
@@ -1270,26 +1719,56 @@ support.checkOn=""!==input.value,
 support.optSelected=opt.selected,
 // Support: Android<=2.3
 // Options inside disabled selects are incorrectly marked as disabled
-select.disabled=!0,support.optDisabled=!opt.disabled,input=document.createElement("input"),input.value="t",input.type="radio",support.radioValue="t"===input.value}();var nodeHook,boolHook,attrHandle=jQuery.expr.attrHandle;jQuery.fn.extend({attr:function(name,value){return access(this,jQuery.attr,name,value,arguments.length>1)},removeAttr:function(name){return this.each(function(){jQuery.removeAttr(this,name)})}}),jQuery.extend({attr:function(elem,name,value){var hooks,ret,nType=elem.nodeType;
+select.disabled=!0,support.optDisabled=!opt.disabled,
+// Support: IE<=11+
+// An input loses its value after becoming a radio
+input=document.createElement("input"),input.value="t",input.type="radio",support.radioValue="t"===input.value}();var nodeHook,boolHook,attrHandle=jQuery.expr.attrHandle;jQuery.fn.extend({attr:function(name,value){return access(this,jQuery.attr,name,value,arguments.length>1)},removeAttr:function(name){return this.each(function(){jQuery.removeAttr(this,name)})}}),jQuery.extend({attr:function(elem,name,value){var hooks,ret,nType=elem.nodeType;
 // don't get/set attributes on text, comment and attribute nodes
 if(elem&&3!==nType&&8!==nType&&2!==nType)
 // Fallback to prop when attributes are not supported
 // Fallback to prop when attributes are not supported
 // All attributes are lowercase
 // Grab necessary hook if one is defined
-return typeof elem.getAttribute===strundefined?jQuery.prop(elem,name,value):(1===nType&&jQuery.isXMLDoc(elem)||(name=name.toLowerCase(),hooks=jQuery.attrHooks[name]||(jQuery.expr.match.bool.test(name)?boolHook:nodeHook)),void 0===value?hooks&&"get"in hooks&&null!==(ret=hooks.get(elem,name))?ret:(ret=jQuery.find.attr(elem,name),null==ret?void 0:ret):null!==value?hooks&&"set"in hooks&&void 0!==(ret=hooks.set(elem,value,name))?ret:(elem.setAttribute(name,value+""),value):void jQuery.removeAttr(elem,name))},removeAttr:function(elem,value){var name,propName,i=0,attrNames=value&&value.match(rnotwhite);if(attrNames&&1===elem.nodeType)for(;name=attrNames[i++];)propName=jQuery.propFix[name]||name,jQuery.expr.match.bool.test(name)&&(elem[propName]=!1),elem.removeAttribute(name)},attrHooks:{type:{set:function(elem,value){if(!support.radioValue&&"radio"===value&&jQuery.nodeName(elem,"input")){var val=elem.value;return elem.setAttribute("type",value),val&&(elem.value=val),value}}}}}),boolHook={set:function(elem,value,name){
+return typeof elem.getAttribute===strundefined?jQuery.prop(elem,name,value):(1===nType&&jQuery.isXMLDoc(elem)||(name=name.toLowerCase(),hooks=jQuery.attrHooks[name]||(jQuery.expr.match.bool.test(name)?boolHook:nodeHook)),void 0===value?hooks&&"get"in hooks&&null!==(ret=hooks.get(elem,name))?ret:(ret=jQuery.find.attr(elem,name),null==ret?void 0:ret):null!==value?hooks&&"set"in hooks&&void 0!==(ret=hooks.set(elem,value,name))?ret:(elem.setAttribute(name,value+""),value):void jQuery.removeAttr(elem,name))},removeAttr:function(elem,value){var name,propName,i=0,attrNames=value&&value.match(rnotwhite);if(attrNames&&1===elem.nodeType)for(;name=attrNames[i++];)propName=jQuery.propFix[name]||name,
+// Boolean attributes get special treatment (#10870)
+jQuery.expr.match.bool.test(name)&&(
+// Set corresponding property to false
+elem[propName]=!1),elem.removeAttribute(name)},attrHooks:{type:{set:function(elem,value){if(!support.radioValue&&"radio"===value&&jQuery.nodeName(elem,"input")){var val=elem.value;return elem.setAttribute("type",value),val&&(elem.value=val),value}}}}}),
+// Hooks for boolean attributes
+boolHook={set:function(elem,value,name){
 // Remove boolean attributes when set to false
-return value===!1?jQuery.removeAttr(elem,name):elem.setAttribute(name,name),name}},jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g),function(i,name){var getter=attrHandle[name]||jQuery.find.attr;attrHandle[name]=function(elem,name,isXML){var ret,handle;return isXML||(handle=attrHandle[name],attrHandle[name]=ret,ret=null!=getter(elem,name,isXML)?name.toLowerCase():null,attrHandle[name]=handle),ret}});var rfocusable=/^(?:input|select|textarea|button)$/i;jQuery.fn.extend({prop:function(name,value){return access(this,jQuery.prop,name,value,arguments.length>1)},removeProp:function(name){return this.each(function(){delete this[jQuery.propFix[name]||name]})}}),jQuery.extend({propFix:{"for":"htmlFor","class":"className"},prop:function(elem,name,value){var ret,hooks,notxml,nType=elem.nodeType;
+return value===!1?jQuery.removeAttr(elem,name):elem.setAttribute(name,name),name}},jQuery.each(jQuery.expr.match.bool.source.match(/\w+/g),function(i,name){var getter=attrHandle[name]||jQuery.find.attr;attrHandle[name]=function(elem,name,isXML){var ret,handle;
+// Avoid an infinite loop by temporarily removing this function from the getter
+return isXML||(handle=attrHandle[name],attrHandle[name]=ret,ret=null!=getter(elem,name,isXML)?name.toLowerCase():null,attrHandle[name]=handle),ret}});var rfocusable=/^(?:input|select|textarea|button)$/i;jQuery.fn.extend({prop:function(name,value){return access(this,jQuery.prop,name,value,arguments.length>1)},removeProp:function(name){return this.each(function(){delete this[jQuery.propFix[name]||name]})}}),jQuery.extend({propFix:{"for":"htmlFor","class":"className"},prop:function(elem,name,value){var ret,hooks,notxml,nType=elem.nodeType;
 // Don't get/set properties on text, comment and attribute nodes
-if(elem&&3!==nType&&8!==nType&&2!==nType)return notxml=1!==nType||!jQuery.isXMLDoc(elem),notxml&&(name=jQuery.propFix[name]||name,hooks=jQuery.propHooks[name]),void 0!==value?hooks&&"set"in hooks&&void 0!==(ret=hooks.set(elem,value,name))?ret:elem[name]=value:hooks&&"get"in hooks&&null!==(ret=hooks.get(elem,name))?ret:elem[name]},propHooks:{tabIndex:{get:function(elem){return elem.hasAttribute("tabindex")||rfocusable.test(elem.nodeName)||elem.href?elem.tabIndex:-1}}}}),support.optSelected||(jQuery.propHooks.selected={get:function(elem){var parent=elem.parentNode;return parent&&parent.parentNode&&parent.parentNode.selectedIndex,null}}),jQuery.each(["tabIndex","readOnly","maxLength","cellSpacing","cellPadding","rowSpan","colSpan","useMap","frameBorder","contentEditable"],function(){jQuery.propFix[this.toLowerCase()]=this});var rclass=/[\t\r\n\f]/g;jQuery.fn.extend({addClass:function(value){var classes,elem,cur,clazz,j,finalValue,proceed="string"==typeof value&&value,i=0,len=this.length;if(jQuery.isFunction(value))return this.each(function(j){jQuery(this).addClass(value.call(this,j,this.className))});if(proceed)for(
+if(elem&&3!==nType&&8!==nType&&2!==nType)
+// Fix name and attach hooks
+return notxml=1!==nType||!jQuery.isXMLDoc(elem),notxml&&(name=jQuery.propFix[name]||name,hooks=jQuery.propHooks[name]),void 0!==value?hooks&&"set"in hooks&&void 0!==(ret=hooks.set(elem,value,name))?ret:elem[name]=value:hooks&&"get"in hooks&&null!==(ret=hooks.get(elem,name))?ret:elem[name]},propHooks:{tabIndex:{get:function(elem){return elem.hasAttribute("tabindex")||rfocusable.test(elem.nodeName)||elem.href?elem.tabIndex:-1}}}}),support.optSelected||(jQuery.propHooks.selected={get:function(elem){var parent=elem.parentNode;return parent&&parent.parentNode&&parent.parentNode.selectedIndex,null}}),jQuery.each(["tabIndex","readOnly","maxLength","cellSpacing","cellPadding","rowSpan","colSpan","useMap","frameBorder","contentEditable"],function(){jQuery.propFix[this.toLowerCase()]=this});var rclass=/[\t\r\n\f]/g;jQuery.fn.extend({addClass:function(value){var classes,elem,cur,clazz,j,finalValue,proceed="string"==typeof value&&value,i=0,len=this.length;if(jQuery.isFunction(value))return this.each(function(j){jQuery(this).addClass(value.call(this,j,this.className))});if(proceed)for(
 // The disjunction here is for better compressibility (see removeClass)
-classes=(value||"").match(rnotwhite)||[];len>i;i++)if(elem=this[i],cur=1===elem.nodeType&&(elem.className?(" "+elem.className+" ").replace(rclass," "):" ")){for(j=0;clazz=classes[j++];)cur.indexOf(" "+clazz+" ")<0&&(cur+=clazz+" ");
+classes=(value||"").match(rnotwhite)||[];i<len;i++)if(elem=this[i],cur=1===elem.nodeType&&(elem.className?(" "+elem.className+" ").replace(rclass," "):" ")){for(j=0;clazz=classes[j++];)cur.indexOf(" "+clazz+" ")<0&&(cur+=clazz+" ");
 // only assign if different to avoid unneeded rendering.
-finalValue=jQuery.trim(cur),elem.className!==finalValue&&(elem.className=finalValue)}return this},removeClass:function(value){var classes,elem,cur,clazz,j,finalValue,proceed=0===arguments.length||"string"==typeof value&&value,i=0,len=this.length;if(jQuery.isFunction(value))return this.each(function(j){jQuery(this).removeClass(value.call(this,j,this.className))});if(proceed)for(classes=(value||"").match(rnotwhite)||[];len>i;i++)if(elem=this[i],cur=1===elem.nodeType&&(elem.className?(" "+elem.className+" ").replace(rclass," "):"")){for(j=0;clazz=classes[j++];)
+finalValue=jQuery.trim(cur),elem.className!==finalValue&&(elem.className=finalValue)}return this},removeClass:function(value){var classes,elem,cur,clazz,j,finalValue,proceed=0===arguments.length||"string"==typeof value&&value,i=0,len=this.length;if(jQuery.isFunction(value))return this.each(function(j){jQuery(this).removeClass(value.call(this,j,this.className))});if(proceed)for(classes=(value||"").match(rnotwhite)||[];i<len;i++)if(elem=this[i],
+// This expression is here for better compressibility (see addClass)
+cur=1===elem.nodeType&&(elem.className?(" "+elem.className+" ").replace(rclass," "):"")){for(j=0;clazz=classes[j++];)
 // Remove *all* instances
 for(;cur.indexOf(" "+clazz+" ")>=0;)cur=cur.replace(" "+clazz+" "," ");
 // Only assign if different to avoid unneeded rendering.
-finalValue=value?jQuery.trim(cur):"",elem.className!==finalValue&&(elem.className=finalValue)}return this},toggleClass:function(value,stateVal){var type=typeof value;return"boolean"==typeof stateVal&&"string"===type?stateVal?this.addClass(value):this.removeClass(value):jQuery.isFunction(value)?this.each(function(i){jQuery(this).toggleClass(value.call(this,i,this.className,stateVal),stateVal)}):this.each(function(){if("string"===type)for(var className,i=0,self=jQuery(this),classNames=value.match(rnotwhite)||[];className=classNames[i++];)self.hasClass(className)?self.removeClass(className):self.addClass(className);else(type===strundefined||"boolean"===type)&&(this.className&&data_priv.set(this,"__className__",this.className),this.className=this.className||value===!1?"":data_priv.get(this,"__className__")||"")})},hasClass:function(selector){for(var className=" "+selector+" ",i=0,l=this.length;l>i;i++)if(1===this[i].nodeType&&(" "+this[i].className+" ").replace(rclass," ").indexOf(className)>=0)return!0;return!1}});var rreturn=/\r/g;jQuery.fn.extend({val:function(value){var hooks,ret,isFunction,elem=this[0];{if(arguments.length)return isFunction=jQuery.isFunction(value),this.each(function(i){var val;1===this.nodeType&&(val=isFunction?value.call(this,i,jQuery(this).val()):value,null==val?val="":"number"==typeof val?val+="":jQuery.isArray(val)&&(val=jQuery.map(val,function(value){return null==value?"":value+""})),hooks=jQuery.valHooks[this.type]||jQuery.valHooks[this.nodeName.toLowerCase()],hooks&&"set"in hooks&&void 0!==hooks.set(this,val,"value")||(this.value=val))});if(elem)
+finalValue=value?jQuery.trim(cur):"",elem.className!==finalValue&&(elem.className=finalValue)}return this},toggleClass:function(value,stateVal){var type=typeof value;return"boolean"==typeof stateVal&&"string"===type?stateVal?this.addClass(value):this.removeClass(value):jQuery.isFunction(value)?this.each(function(i){jQuery(this).toggleClass(value.call(this,i,this.className,stateVal),stateVal)}):this.each(function(){if("string"===type)for(
+// Toggle individual class names
+var className,i=0,self=jQuery(this),classNames=value.match(rnotwhite)||[];className=classNames[i++];)
+// Check each className given, space separated list
+self.hasClass(className)?self.removeClass(className):self.addClass(className);else type!==strundefined&&"boolean"!==type||(this.className&&
+// store className if set
+data_priv.set(this,"__className__",this.className),
+// If the element has a class name or if we're passed `false`,
+// then remove the whole classname (if there was one, the above saved it).
+// Otherwise bring back whatever was previously saved (if anything),
+// falling back to the empty string if nothing was stored.
+this.className=this.className||value===!1?"":data_priv.get(this,"__className__")||"")})},hasClass:function(selector){for(var className=" "+selector+" ",i=0,l=this.length;i<l;i++)if(1===this[i].nodeType&&(" "+this[i].className+" ").replace(rclass," ").indexOf(className)>=0)return!0;return!1}});var rreturn=/\r/g;jQuery.fn.extend({val:function(value){var hooks,ret,isFunction,elem=this[0];{if(arguments.length)return isFunction=jQuery.isFunction(value),this.each(function(i){var val;1===this.nodeType&&(val=isFunction?value.call(this,i,jQuery(this).val()):value,
+// Treat null/undefined as ""; convert numbers to string
+null==val?val="":"number"==typeof val?val+="":jQuery.isArray(val)&&(val=jQuery.map(val,function(value){return null==value?"":value+""})),hooks=jQuery.valHooks[this.type]||jQuery.valHooks[this.nodeName.toLowerCase()],
+// If set returns undefined, fall back to normal setting
+hooks&&"set"in hooks&&void 0!==hooks.set(this,val,"value")||(this.value=val))});if(elem)
 // Handle most common string cases
 // Handle cases where value is null/undef or number
 return hooks=jQuery.valHooks[elem.type]||jQuery.valHooks[elem.nodeName.toLowerCase()],hooks&&"get"in hooks&&void 0!==(ret=hooks.get(elem,"value"))?ret:(ret=elem.value,"string"==typeof ret?ret.replace(rreturn,""):null==ret?"":ret)}}}),jQuery.extend({valHooks:{option:{get:function(elem){var val=jQuery.find.attr(elem,"value");
@@ -1297,17 +1776,21 @@ return hooks=jQuery.valHooks[elem.type]||jQuery.valHooks[elem.nodeName.toLowerCa
 // option.text throws exceptions (#14686, #14858)
 return null!=val?val:jQuery.trim(jQuery.text(elem))}},select:{get:function(elem){
 // Loop through all the selected options
-for(var value,option,options=elem.options,index=elem.selectedIndex,one="select-one"===elem.type||0>index,values=one?null:[],max=one?index+1:options.length,i=0>index?max:one?index:0;max>i;i++)
+for(var value,option,options=elem.options,index=elem.selectedIndex,one="select-one"===elem.type||index<0,values=one?null:[],max=one?index+1:options.length,i=index<0?max:one?index:0;i<max;i++)
 // IE6-9 doesn't update selected after form reset (#2551)
-if(option=options[i],(option.selected||i===index)&&(support.optDisabled?!option.disabled:null===option.getAttribute("disabled"))&&(!option.parentNode.disabled||!jQuery.nodeName(option.parentNode,"optgroup"))){
+if(option=options[i],(option.selected||i===index)&&(
+// Don't return options that are disabled or in a disabled optgroup
+support.optDisabled?!option.disabled:null===option.getAttribute("disabled"))&&(!option.parentNode.disabled||!jQuery.nodeName(option.parentNode,"optgroup"))){
 // We don't need an array for one selects
-if(value=jQuery(option).val(),one)return value;
+if(
+// Get the specific value for the option
+value=jQuery(option).val(),one)return value;
 // Multi-Selects return an array
 values.push(value)}return values},set:function(elem,value){for(var optionSet,option,options=elem.options,values=jQuery.makeArray(value),i=options.length;i--;)option=options[i],(option.selected=jQuery.inArray(option.value,values)>=0)&&(optionSet=!0);
 // Force browsers to behave consistently when non-matching value is set
 return optionSet||(elem.selectedIndex=-1),values}}}}),
 // Radios and checkboxes getter/setter
-jQuery.each(["radio","checkbox"],function(){jQuery.valHooks[this]={set:function(elem,value){return jQuery.isArray(value)?elem.checked=jQuery.inArray(jQuery(elem).val(),value)>=0:void 0}},support.checkOn||(jQuery.valHooks[this].get=function(elem){return null===elem.getAttribute("value")?"on":elem.value})}),
+jQuery.each(["radio","checkbox"],function(){jQuery.valHooks[this]={set:function(elem,value){if(jQuery.isArray(value))return elem.checked=jQuery.inArray(jQuery(elem).val(),value)>=0}},support.checkOn||(jQuery.valHooks[this].get=function(elem){return null===elem.getAttribute("value")?"on":elem.value})}),
 // Return jQuery for attributes-only inclusion
 jQuery.each("blur focus focusin focusout load resize scroll unload click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave change select submit keydown keypress keyup error contextmenu".split(" "),function(i,name){
 // Handle event binding
@@ -1320,7 +1803,7 @@ jQuery.parseJSON=function(data){return JSON.parse(data+"")},
 // Cross-browser xml parsing
 jQuery.parseXML=function(data){var xml,tmp;if(!data||"string"!=typeof data)return null;
 // Support: IE9
-try{tmp=new DOMParser,xml=tmp.parseFromString(data,"text/xml")}catch(e){xml=void 0}return(!xml||xml.getElementsByTagName("parsererror").length)&&jQuery.error("Invalid XML: "+data),xml};var rhash=/#.*$/,rts=/([?&])_=[^&]*/,rheaders=/^(.*?):[ \t]*([^\r\n]*)$/gm,
+try{tmp=new DOMParser,xml=tmp.parseFromString(data,"text/xml")}catch(e){xml=void 0}return xml&&!xml.getElementsByTagName("parsererror").length||jQuery.error("Invalid XML: "+data),xml};var rhash=/#.*$/,rts=/([?&])_=[^&]*/,rheaders=/^(.*?):[ \t]*([^\r\n]*)$/gm,
 // #7653, #8125, #8152: local protocol detection
 rlocalProtocol=/^(?:about|app|app-storage|.+-extension|file|res|widget):$/,rnoContent=/^(?:GET|HEAD)$/,rprotocol=/^\/\//,rurl=/^([\w.+-]+:)(?:\/\/(?:[^\/?#]*@|)([^\/?#:]*)(?::(\d+)|)|)/,/* Prefilters
 	 * 1) They are useful to introduce custom dataTypes (see ajax/jsonp.js for an example)
@@ -1386,7 +1869,42 @@ ajax:function(url,options){
 // Callback for when everything is done
 function done(status,nativeStatusText,responses,headers){var isSuccess,success,error,response,modified,statusText=nativeStatusText;
 // Called once
-2!==state&&(state=2,timeoutTimer&&clearTimeout(timeoutTimer),transport=void 0,responseHeadersString=headers||"",jqXHR.readyState=status>0?4:0,isSuccess=status>=200&&300>status||304===status,responses&&(response=ajaxHandleResponses(s,jqXHR,responses)),response=ajaxConvert(s,response,jqXHR,isSuccess),isSuccess?(s.ifModified&&(modified=jqXHR.getResponseHeader("Last-Modified"),modified&&(jQuery.lastModified[cacheURL]=modified),modified=jqXHR.getResponseHeader("etag"),modified&&(jQuery.etag[cacheURL]=modified)),204===status||"HEAD"===s.type?statusText="nocontent":304===status?statusText="notmodified":(statusText=response.state,success=response.data,error=response.error,isSuccess=!error)):(error=statusText,(status||!statusText)&&(statusText="error",0>status&&(status=0))),jqXHR.status=status,jqXHR.statusText=(nativeStatusText||statusText)+"",isSuccess?deferred.resolveWith(callbackContext,[success,statusText,jqXHR]):deferred.rejectWith(callbackContext,[jqXHR,statusText,error]),jqXHR.statusCode(statusCode),statusCode=void 0,fireGlobals&&globalEventContext.trigger(isSuccess?"ajaxSuccess":"ajaxError",[jqXHR,s,isSuccess?success:error]),completeDeferred.fireWith(callbackContext,[jqXHR,statusText]),fireGlobals&&(globalEventContext.trigger("ajaxComplete",[jqXHR,s]),--jQuery.active||jQuery.event.trigger("ajaxStop")))}
+2!==state&&(
+// State is "done" now
+state=2,
+// Clear timeout if it exists
+timeoutTimer&&clearTimeout(timeoutTimer),
+// Dereference transport for early garbage collection
+// (no matter how long the jqXHR object will be used)
+transport=void 0,
+// Cache response headers
+responseHeadersString=headers||"",
+// Set readyState
+jqXHR.readyState=status>0?4:0,
+// Determine if successful
+isSuccess=status>=200&&status<300||304===status,
+// Get response data
+responses&&(response=ajaxHandleResponses(s,jqXHR,responses)),
+// Convert no matter what (that way responseXXX fields are always set)
+response=ajaxConvert(s,response,jqXHR,isSuccess),
+// If successful, handle type chaining
+isSuccess?(
+// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+s.ifModified&&(modified=jqXHR.getResponseHeader("Last-Modified"),modified&&(jQuery.lastModified[cacheURL]=modified),modified=jqXHR.getResponseHeader("etag"),modified&&(jQuery.etag[cacheURL]=modified)),
+// if no content
+204===status||"HEAD"===s.type?statusText="nocontent":304===status?statusText="notmodified":(statusText=response.state,success=response.data,error=response.error,isSuccess=!error)):(
+// Extract error from statusText and normalize for non-aborts
+error=statusText,!status&&statusText||(statusText="error",status<0&&(status=0))),
+// Set data for the fake xhr object
+jqXHR.status=status,jqXHR.statusText=(nativeStatusText||statusText)+"",
+// Success/Error
+isSuccess?deferred.resolveWith(callbackContext,[success,statusText,jqXHR]):deferred.rejectWith(callbackContext,[jqXHR,statusText,error]),
+// Status-dependent callbacks
+jqXHR.statusCode(statusCode),statusCode=void 0,fireGlobals&&globalEventContext.trigger(isSuccess?"ajaxSuccess":"ajaxError",[jqXHR,s,isSuccess?success:error]),
+// Complete
+completeDeferred.fireWith(callbackContext,[jqXHR,statusText]),fireGlobals&&(globalEventContext.trigger("ajaxComplete",[jqXHR,s]),
+// Handle the global AJAX counter
+--jQuery.active||jQuery.event.trigger("ajaxStop")))}
 // If url is an object, simulate pre-1.5 signature
 "object"==typeof url&&(options=url,url=void 0),
 // Force options to be an object
@@ -1430,7 +1948,7 @@ setRequestHeader:function(name,value){var lname=name.toLowerCase();return state|
 // Overrides response content-type header
 overrideMimeType:function(type){return state||(s.mimeType=type),this},
 // Status-dependent callbacks
-statusCode:function(map){var code;if(map)if(2>state)for(code in map)
+statusCode:function(map){var code;if(map)if(state<2)for(code in map)
 // Lazy-add the new callback in a way that preserves old ones
 statusCode[code]=[statusCode[code],map[code]];else
 // Execute the appropriate callbacks
@@ -1449,11 +1967,43 @@ s.url=((url||s.url||ajaxLocation)+"").replace(rhash,"").replace(rprotocol,ajaxLo
 // Alias method option to type as per ticket #12004
 s.type=options.method||options.type||s.method||s.type,
 // Extract dataTypes list
-s.dataTypes=jQuery.trim(s.dataType||"*").toLowerCase().match(rnotwhite)||[""],null==s.crossDomain&&(parts=rurl.exec(s.url.toLowerCase()),s.crossDomain=!(!parts||parts[1]===ajaxLocParts[1]&&parts[2]===ajaxLocParts[2]&&(parts[3]||("http:"===parts[1]?"80":"443"))===(ajaxLocParts[3]||("http:"===ajaxLocParts[1]?"80":"443")))),
+s.dataTypes=jQuery.trim(s.dataType||"*").toLowerCase().match(rnotwhite)||[""],
+// A cross-domain request is in order when we have a protocol:host:port mismatch
+null==s.crossDomain&&(parts=rurl.exec(s.url.toLowerCase()),s.crossDomain=!(!parts||parts[1]===ajaxLocParts[1]&&parts[2]===ajaxLocParts[2]&&(parts[3]||("http:"===parts[1]?"80":"443"))===(ajaxLocParts[3]||("http:"===ajaxLocParts[1]?"80":"443")))),
 // Convert data if not already a string
 s.data&&s.processData&&"string"!=typeof s.data&&(s.data=jQuery.param(s.data,s.traditional)),
 // Apply prefilters
-inspectPrefiltersOrTransports(prefilters,s,options,jqXHR),2===state)return jqXHR;fireGlobals=jQuery.event&&s.global,fireGlobals&&0===jQuery.active++&&jQuery.event.trigger("ajaxStart"),s.type=s.type.toUpperCase(),s.hasContent=!rnoContent.test(s.type),cacheURL=s.url,s.hasContent||(s.data&&(cacheURL=s.url+=(rquery.test(cacheURL)?"&":"?")+s.data,delete s.data),s.cache===!1&&(s.url=rts.test(cacheURL)?cacheURL.replace(rts,"$1_="+nonce++):cacheURL+(rquery.test(cacheURL)?"&":"?")+"_="+nonce++)),s.ifModified&&(jQuery.lastModified[cacheURL]&&jqXHR.setRequestHeader("If-Modified-Since",jQuery.lastModified[cacheURL]),jQuery.etag[cacheURL]&&jqXHR.setRequestHeader("If-None-Match",jQuery.etag[cacheURL])),(s.data&&s.hasContent&&s.contentType!==!1||options.contentType)&&jqXHR.setRequestHeader("Content-Type",s.contentType),jqXHR.setRequestHeader("Accept",s.dataTypes[0]&&s.accepts[s.dataTypes[0]]?s.accepts[s.dataTypes[0]]+("*"!==s.dataTypes[0]?", "+allTypes+"; q=0.01":""):s.accepts["*"]);
+inspectPrefiltersOrTransports(prefilters,s,options,jqXHR),2===state)return jqXHR;
+// We can fire global events as of now if asked to
+// Don't fire events if jQuery.event is undefined in an AMD-usage scenario (#15118)
+fireGlobals=jQuery.event&&s.global,
+// Watch for a new set of requests
+fireGlobals&&0===jQuery.active++&&jQuery.event.trigger("ajaxStart"),
+// Uppercase the type
+s.type=s.type.toUpperCase(),
+// Determine if request has content
+s.hasContent=!rnoContent.test(s.type),
+// Save the URL in case we're toying with the If-Modified-Since
+// and/or If-None-Match header later on
+cacheURL=s.url,
+// More options handling for requests with no content
+s.hasContent||(
+// If data is available, append data to url
+s.data&&(cacheURL=s.url+=(rquery.test(cacheURL)?"&":"?")+s.data,
+// #9682: remove data so that it's not used in an eventual retry
+delete s.data),
+// Add anti-cache in url if needed
+s.cache===!1&&(s.url=rts.test(cacheURL)?
+// If there is already a '_' parameter, set its value
+cacheURL.replace(rts,"$1_="+nonce++):
+// Otherwise add one to the end
+cacheURL+(rquery.test(cacheURL)?"&":"?")+"_="+nonce++)),
+// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
+s.ifModified&&(jQuery.lastModified[cacheURL]&&jqXHR.setRequestHeader("If-Modified-Since",jQuery.lastModified[cacheURL]),jQuery.etag[cacheURL]&&jqXHR.setRequestHeader("If-None-Match",jQuery.etag[cacheURL])),
+// Set the correct header, if data is being sent
+(s.data&&s.hasContent&&s.contentType!==!1||options.contentType)&&jqXHR.setRequestHeader("Content-Type",s.contentType),
+// Set the Accepts header for the server, depending on the dataType
+jqXHR.setRequestHeader("Accept",s.dataTypes[0]&&s.accepts[s.dataTypes[0]]?s.accepts[s.dataTypes[0]]+("*"!==s.dataTypes[0]?", "+allTypes+"; q=0.01":""):s.accepts["*"]);
 // Check for headers option
 for(i in s.headers)jqXHR.setRequestHeader(i,s.headers[i]);
 // Allow custom headers/mimetypes and early abort
@@ -1465,13 +2015,15 @@ strAbort="abort";
 // Install callbacks on deferreds
 for(i in{success:1,error:1,complete:1})jqXHR[i](s[i]);
 // If no transport, we auto-abort
-if(transport=inspectPrefiltersOrTransports(transports,s,options,jqXHR)){jqXHR.readyState=1,
+if(
+// Get transport
+transport=inspectPrefiltersOrTransports(transports,s,options,jqXHR)){jqXHR.readyState=1,
 // Send global event
 fireGlobals&&globalEventContext.trigger("ajaxSend",[jqXHR,s]),
 // Timeout
 s.async&&s.timeout>0&&(timeoutTimer=setTimeout(function(){jqXHR.abort("timeout")},s.timeout));try{state=1,transport.send(requestHeaders,done)}catch(e){
 // Propagate exception as error if not done
-if(!(2>state))throw e;done(-1,e)}}else done(-1,"No Transport");return jqXHR},getJSON:function(url,data,callback){return jQuery.get(url,data,callback,"json")},getScript:function(url,callback){return jQuery.get(url,void 0,callback,"script")}}),jQuery.each(["get","post"],function(i,method){jQuery[method]=function(url,data,callback,type){
+if(!(state<2))throw e;done(-1,e)}}else done(-1,"No Transport");return jqXHR},getJSON:function(url,data,callback){return jQuery.get(url,data,callback,"json")},getScript:function(url,callback){return jQuery.get(url,void 0,callback,"script")}}),jQuery.each(["get","post"],function(i,method){jQuery[method]=function(url,data,callback,type){
 // Shift arguments if data argument was omitted
 return jQuery.isFunction(data)&&(type=type||callback,callback=data,data=void 0),jQuery.ajax({url:url,type:method,dataType:type,data:data,success:callback})}}),jQuery._evalUrl=function(url){return jQuery.ajax({url:url,type:"GET",dataType:"script",async:!1,global:!1,"throws":!0})},jQuery.fn.extend({wrapAll:function(html){var wrap;
 // The elements to wrap the target around
@@ -1481,7 +2033,9 @@ return jQuery.isFunction(html)?this.each(function(i){jQuery(this).wrapAll(html.c
 return elem.offsetWidth<=0&&elem.offsetHeight<=0},jQuery.expr.filters.visible=function(elem){return!jQuery.expr.filters.hidden(elem)};var r20=/%20/g,rbracket=/\[\]$/,rCRLF=/\r?\n/g,rsubmitterTypes=/^(?:submit|button|image|reset|file)$/i,rsubmittable=/^(?:input|select|textarea|keygen)/i;
 // Serialize an array of form elements or a set of
 // key/values into a query string
-jQuery.param=function(a,traditional){var prefix,s=[],add=function(key,value){value=jQuery.isFunction(value)?value():null==value?"":value,s[s.length]=encodeURIComponent(key)+"="+encodeURIComponent(value)};
+jQuery.param=function(a,traditional){var prefix,s=[],add=function(key,value){
+// If value is a function, invoke it and return its value
+value=jQuery.isFunction(value)?value():null==value?"":value,s[s.length]=encodeURIComponent(key)+"="+encodeURIComponent(value)};
 // If an array was passed in, assume that it is an array of form elements.
 if(
 // Set traditional to true for jQuery <= 1.3.2 behavior.
@@ -1507,8 +2061,7 @@ return this.name&&!jQuery(this).is(":disabled")&&rsubmittable.test(this.nodeName
 // See https://support.microsoft.com/kb/2856746 for more info
 window.attachEvent&&window.attachEvent("onunload",function(){for(var key in xhrCallbacks)xhrCallbacks[key]()}),support.cors=!!xhrSupported&&"withCredentials"in xhrSupported,support.ajax=xhrSupported=!!xhrSupported,jQuery.ajaxTransport(function(options){var callback;
 // Cross domain only allowed if supported through XMLHttpRequest
-// Cross domain only allowed if supported through XMLHttpRequest
-return support.cors||xhrSupported&&!options.crossDomain?{send:function(headers,complete){var i,xhr=options.xhr(),id=++xhrId;
+if(support.cors||xhrSupported&&!options.crossDomain)return{send:function(headers,complete){var i,xhr=options.xhr(),id=++xhrId;
 // Apply custom fields if provided
 if(xhr.open(options.type,options.url,options.async,options.username,options.password),options.xhrFields)for(i in options.xhrFields)xhr[i]=options.xhrFields[i];
 // Override mime type if needed
@@ -1520,11 +2073,23 @@ options.mimeType&&xhr.overrideMimeType&&xhr.overrideMimeType(options.mimeType),
 // For same-domain requests, won't change header if already provided.
 options.crossDomain||headers["X-Requested-With"]||(headers["X-Requested-With"]="XMLHttpRequest");
 // Set headers
-for(i in headers)xhr.setRequestHeader(i,headers[i]);callback=function(type){return function(){callback&&(delete xhrCallbacks[id],callback=xhr.onload=xhr.onerror=null,"abort"===type?xhr.abort():"error"===type?complete(xhr.status,xhr.statusText):complete(xhrSuccessStatus[xhr.status]||xhr.status,xhr.statusText,"string"==typeof xhr.responseText?{text:xhr.responseText}:void 0,xhr.getAllResponseHeaders()))}},xhr.onload=callback(),xhr.onerror=callback("error"),callback=xhrCallbacks[id]=callback("abort");try{
+for(i in headers)xhr.setRequestHeader(i,headers[i]);
+// Callback
+callback=function(type){return function(){callback&&(delete xhrCallbacks[id],callback=xhr.onload=xhr.onerror=null,"abort"===type?xhr.abort():"error"===type?complete(
+// file: protocol always yields status 0; see #8605, #14207
+xhr.status,xhr.statusText):complete(xhrSuccessStatus[xhr.status]||xhr.status,xhr.statusText,
+// Support: IE9
+// Accessing binary-data responseText throws an exception
+// (#11426)
+"string"==typeof xhr.responseText?{text:xhr.responseText}:void 0,xhr.getAllResponseHeaders()))}},
+// Listen to events
+xhr.onload=callback(),xhr.onerror=callback("error"),
+// Create the abort callback
+callback=xhrCallbacks[id]=callback("abort");try{
 // Do send the request (this may raise an exception)
 xhr.send(options.hasContent&&options.data||null)}catch(e){
 // #14683: Only rethrow if this hasn't been notified as an error yet
-if(callback)throw e}},abort:function(){callback&&callback()}}:void 0}),
+if(callback)throw e}},abort:function(){callback&&callback()}}}),
 // Install script dataType
 jQuery.ajaxSetup({accepts:{script:"text/javascript, application/javascript, application/ecmascript, application/x-ecmascript"},contents:{script:/(?:java|ecma)script/},converters:{"text script":function(text){return jQuery.globalEval(text),text}}}),
 // Handle cache's special case and crossDomain
@@ -1538,14 +2103,25 @@ jQuery.ajaxSetup({jsonp:"callback",jsonpCallback:function(){var callback=oldCall
 // Detect, normalize options and install callbacks for jsonp requests
 jQuery.ajaxPrefilter("json jsonp",function(s,originalSettings,jqXHR){var callbackName,overwritten,responseContainer,jsonProp=s.jsonp!==!1&&(rjsonp.test(s.url)?"url":"string"==typeof s.data&&!(s.contentType||"").indexOf("application/x-www-form-urlencoded")&&rjsonp.test(s.data)&&"data");
 // Handle iff the expected data type is "jsonp" or we have a parameter to set
-// Handle iff the expected data type is "jsonp" or we have a parameter to set
+if(jsonProp||"jsonp"===s.dataTypes[0])
+// Delegate to script
 // Get callback name, remembering preexisting value associated with it
 // Insert callback into url or form data
 // Use data converter to retrieve json after script execution
 // force json dataType
 // Install callback
 // Clean-up function (fires after converters)
-return jsonProp||"jsonp"===s.dataTypes[0]?(callbackName=s.jsonpCallback=jQuery.isFunction(s.jsonpCallback)?s.jsonpCallback():s.jsonpCallback,jsonProp?s[jsonProp]=s[jsonProp].replace(rjsonp,"$1"+callbackName):s.jsonp!==!1&&(s.url+=(rquery.test(s.url)?"&":"?")+s.jsonp+"="+callbackName),s.converters["script json"]=function(){return responseContainer||jQuery.error(callbackName+" was not called"),responseContainer[0]},s.dataTypes[0]="json",overwritten=window[callbackName],window[callbackName]=function(){responseContainer=arguments},jqXHR.always(function(){window[callbackName]=overwritten,s[callbackName]&&(s.jsonpCallback=originalSettings.jsonpCallback,oldCallbacks.push(callbackName)),responseContainer&&jQuery.isFunction(overwritten)&&overwritten(responseContainer[0]),responseContainer=overwritten=void 0}),"script"):void 0}),
+return callbackName=s.jsonpCallback=jQuery.isFunction(s.jsonpCallback)?s.jsonpCallback():s.jsonpCallback,jsonProp?s[jsonProp]=s[jsonProp].replace(rjsonp,"$1"+callbackName):s.jsonp!==!1&&(s.url+=(rquery.test(s.url)?"&":"?")+s.jsonp+"="+callbackName),s.converters["script json"]=function(){return responseContainer||jQuery.error(callbackName+" was not called"),responseContainer[0]},s.dataTypes[0]="json",overwritten=window[callbackName],window[callbackName]=function(){responseContainer=arguments},jqXHR.always(function(){
+// Restore preexisting value
+window[callbackName]=overwritten,
+// Save back as free
+s[callbackName]&&(
+// make sure that re-using the options doesn't screw things around
+s.jsonpCallback=originalSettings.jsonpCallback,
+// save the callback name for future use
+oldCallbacks.push(callbackName)),
+// Call if it was a function and we have a response
+responseContainer&&jQuery.isFunction(overwritten)&&overwritten(responseContainer[0]),responseContainer=overwritten=void 0}),"script"}),
 // data: string of html
 // context (optional): If specified, the fragment will be created in this context, defaults to document
 // keepScripts (optional): If true, will include scripts passed in the html string
@@ -1563,11 +2139,21 @@ jQuery.fn.load=function(url,params,callback){if("string"!=typeof url&&_load)retu
 // If we have elements to modify, make the request
 return off>=0&&(selector=jQuery.trim(url.slice(off)),url=url.slice(0,off)),jQuery.isFunction(params)?(callback=params,params=void 0):params&&"object"==typeof params&&(type="POST"),self.length>0&&jQuery.ajax({url:url,
 // if "type" variable is undefined, then "GET" method will be used
-type:type,dataType:"html",data:params}).done(function(responseText){response=arguments,self.html(selector?jQuery("<div>").append(jQuery.parseHTML(responseText)).find(selector):responseText)}).complete(callback&&function(jqXHR,status){self.each(callback,response||[jqXHR.responseText,status,jqXHR])}),this},
+type:type,dataType:"html",data:params}).done(function(responseText){
+// Save response for use in complete callback
+response=arguments,self.html(selector?
+// If a selector was specified, locate the right elements in a dummy div
+// Exclude scripts to avoid IE 'Permission Denied' errors
+jQuery("<div>").append(jQuery.parseHTML(responseText)).find(selector):
+// Otherwise use the full result
+responseText)}).complete(callback&&function(jqXHR,status){self.each(callback,response||[jqXHR.responseText,status,jqXHR])}),this},
 // Attach a bunch of functions for handling common AJAX events
 jQuery.each(["ajaxStart","ajaxStop","ajaxComplete","ajaxError","ajaxSuccess","ajaxSend"],function(i,type){jQuery.fn[type]=function(fn){return this.on(type,fn)}}),jQuery.expr.filters.animated=function(elem){return jQuery.grep(jQuery.timers,function(fn){return elem===fn.elem}).length};var docElem=window.document.documentElement;jQuery.offset={setOffset:function(elem,options,i){var curPosition,curLeft,curCSSTop,curTop,curOffset,curCSSLeft,calculatePosition,position=jQuery.css(elem,"position"),curElem=jQuery(elem),props={};
 // Set position first, in-case top/left are set even on static elem
-"static"===position&&(elem.style.position="relative"),curOffset=curElem.offset(),curCSSTop=jQuery.css(elem,"top"),curCSSLeft=jQuery.css(elem,"left"),calculatePosition=("absolute"===position||"fixed"===position)&&(curCSSTop+curCSSLeft).indexOf("auto")>-1,calculatePosition?(curPosition=curElem.position(),curTop=curPosition.top,curLeft=curPosition.left):(curTop=parseFloat(curCSSTop)||0,curLeft=parseFloat(curCSSLeft)||0),jQuery.isFunction(options)&&(options=options.call(elem,i,curOffset)),null!=options.top&&(props.top=options.top-curOffset.top+curTop),null!=options.left&&(props.left=options.left-curOffset.left+curLeft),"using"in options?options.using.call(elem,props):curElem.css(props)}},jQuery.fn.extend({offset:function(options){if(arguments.length)return void 0===options?this:this.each(function(i){jQuery.offset.setOffset(this,options,i)});var docElem,win,elem=this[0],box={top:0,left:0},doc=elem&&elem.ownerDocument;if(doc)
+"static"===position&&(elem.style.position="relative"),curOffset=curElem.offset(),curCSSTop=jQuery.css(elem,"top"),curCSSLeft=jQuery.css(elem,"left"),calculatePosition=("absolute"===position||"fixed"===position)&&(curCSSTop+curCSSLeft).indexOf("auto")>-1,
+// Need to be able to calculate position if either
+// top or left is auto and position is either absolute or fixed
+calculatePosition?(curPosition=curElem.position(),curTop=curPosition.top,curLeft=curPosition.left):(curTop=parseFloat(curCSSTop)||0,curLeft=parseFloat(curCSSLeft)||0),jQuery.isFunction(options)&&(options=options.call(elem,i,curOffset)),null!=options.top&&(props.top=options.top-curOffset.top+curTop),null!=options.left&&(props.left=options.left-curOffset.left+curLeft),"using"in options?options.using.call(elem,props):curElem.css(props)}},jQuery.fn.extend({offset:function(options){if(arguments.length)return void 0===options?this:this.each(function(i){jQuery.offset.setOffset(this,options,i)});var docElem,win,elem=this[0],box={top:0,left:0},doc=elem&&elem.ownerDocument;if(doc)
 // Make sure it's not a disconnected DOM node
 // Make sure it's not a disconnected DOM node
 // Support: BlackBerry 5, iOS 3 (original iPhone)
@@ -1588,7 +2174,9 @@ jQuery.each({scrollLeft:"pageXOffset",scrollTop:"pageYOffset"},function(method,p
 // Blink bug: https://code.google.com/p/chromium/issues/detail?id=229280
 // getComputedStyle returns percent when specified for top/left/bottom/right;
 // rather than make the css module depend on the offset module, just check for it here
-jQuery.each(["top","left"],function(i,prop){jQuery.cssHooks[prop]=addGetHookIf(support.pixelPosition,function(elem,computed){return computed?(computed=curCSS(elem,prop),rnumnonpx.test(computed)?jQuery(elem).position()[prop]+"px":computed):void 0})}),
+jQuery.each(["top","left"],function(i,prop){jQuery.cssHooks[prop]=addGetHookIf(support.pixelPosition,function(elem,computed){if(computed)
+// If curCSS returns percentage, fallback to offset
+return computed=curCSS(elem,prop),rnumnonpx.test(computed)?jQuery(elem).position()[prop]+"px":computed})}),
 // Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
 jQuery.each({Height:"height",Width:"width"},function(name,type){jQuery.each({padding:"inner"+name,content:type,"":"outer"+name},function(defaultExtra,funcName){
 // Margin is only for outerHeight, outerWidth
@@ -1630,7 +2218,7 @@ return jQuery.noConflict=function(deep){return window.$===jQuery&&(window.$=_$),
 // ============================================================
 function transitionEnd(){var el=document.createElement("bootstrap"),transEndEventNames={WebkitTransition:"webkitTransitionEnd",MozTransition:"transitionend",OTransition:"oTransitionEnd otransitionend",transition:"transitionend"};for(var name in transEndEventNames)if(void 0!==el.style[name])return{end:transEndEventNames[name]};return!1}
 // http://blog.alexmaccaw.com/css-transitions
-$.fn.emulateTransitionEnd=function(duration){var called=!1,$el=this;$(this).one("bsTransitionEnd",function(){called=!0});var callback=function(){called||$($el).trigger($.support.transition.end)};return setTimeout(callback,duration),this},$(function(){$.support.transition=transitionEnd(),$.support.transition&&($.event.special.bsTransitionEnd={bindType:$.support.transition.end,delegateType:$.support.transition.end,handle:function(e){return $(e.target).is(this)?e.handleObj.handler.apply(this,arguments):void 0}})})}(jQuery),/* ========================================================================
+$.fn.emulateTransitionEnd=function(duration){var called=!1,$el=this;$(this).one("bsTransitionEnd",function(){called=!0});var callback=function(){called||$($el).trigger($.support.transition.end)};return setTimeout(callback,duration),this},$(function(){$.support.transition=transitionEnd(),$.support.transition&&($.event.special.bsTransitionEnd={bindType:$.support.transition.end,delegateType:$.support.transition.end,handle:function(e){if($(e.target).is(this))return e.handleObj.handler.apply(this,arguments)}})})}(jQuery),/* ========================================================================
  * Bootstrap: alert.js v3.3.6
  * http://getbootstrap.com/javascript/#alerts
  * ========================================================================
@@ -1664,7 +2252,9 @@ $(document).on("click.bs.alert.data-api",dismiss,Alert.prototype.close)}(jQuery)
 function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.button"),options="object"==typeof option&&option;data||$this.data("bs.button",data=new Button(this,options)),"toggle"==option?data.toggle():option&&data.setState(option)})}
 // BUTTON PUBLIC CLASS DEFINITION
 // ==============================
-var Button=function(element,options){this.$element=$(element),this.options=$.extend({},Button.DEFAULTS,options),this.isLoading=!1};Button.VERSION="3.3.6",Button.DEFAULTS={loadingText:"loading..."},Button.prototype.setState=function(state){var d="disabled",$el=this.$element,val=$el.is("input")?"val":"html",data=$el.data();state+="Text",null==data.resetText&&$el.data("resetText",$el[val]()),setTimeout($.proxy(function(){$el[val](null==data[state]?this.options[state]:data[state]),"loadingText"==state?(this.isLoading=!0,$el.addClass(d).attr(d,d)):this.isLoading&&(this.isLoading=!1,$el.removeClass(d).removeAttr(d))},this),0)},Button.prototype.toggle=function(){var changed=!0,$parent=this.$element.closest('[data-toggle="buttons"]');if($parent.length){var $input=this.$element.find("input");"radio"==$input.prop("type")?($input.prop("checked")&&(changed=!1),$parent.find(".active").removeClass("active"),this.$element.addClass("active")):"checkbox"==$input.prop("type")&&($input.prop("checked")!==this.$element.hasClass("active")&&(changed=!1),this.$element.toggleClass("active")),$input.prop("checked",this.$element.hasClass("active")),changed&&$input.trigger("change")}else this.$element.attr("aria-pressed",!this.$element.hasClass("active")),this.$element.toggleClass("active")};var old=$.fn.button;$.fn.button=Plugin,$.fn.button.Constructor=Button,
+var Button=function(element,options){this.$element=$(element),this.options=$.extend({},Button.DEFAULTS,options),this.isLoading=!1};Button.VERSION="3.3.6",Button.DEFAULTS={loadingText:"loading..."},Button.prototype.setState=function(state){var d="disabled",$el=this.$element,val=$el.is("input")?"val":"html",data=$el.data();state+="Text",null==data.resetText&&$el.data("resetText",$el[val]()),
+// push to event loop to allow forms to submit
+setTimeout($.proxy(function(){$el[val](null==data[state]?this.options[state]:data[state]),"loadingText"==state?(this.isLoading=!0,$el.addClass(d).attr(d,d)):this.isLoading&&(this.isLoading=!1,$el.removeClass(d).removeAttr(d))},this),0)},Button.prototype.toggle=function(){var changed=!0,$parent=this.$element.closest('[data-toggle="buttons"]');if($parent.length){var $input=this.$element.find("input");"radio"==$input.prop("type")?($input.prop("checked")&&(changed=!1),$parent.find(".active").removeClass("active"),this.$element.addClass("active")):"checkbox"==$input.prop("type")&&($input.prop("checked")!==this.$element.hasClass("active")&&(changed=!1),this.$element.toggleClass("active")),$input.prop("checked",this.$element.hasClass("active")),changed&&$input.trigger("change")}else this.$element.attr("aria-pressed",!this.$element.hasClass("active")),this.$element.toggleClass("active")};var old=$.fn.button;$.fn.button=Plugin,$.fn.button.Constructor=Button,
 // BUTTON NO CONFLICT
 // ==================
 $.fn.button.noConflict=function(){return $.fn.button=old,this},
@@ -1683,8 +2273,8 @@ $(document).on("click.bs.button.data-api",'[data-toggle^="button"]',function(e){
 function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.carousel"),options=$.extend({},Carousel.DEFAULTS,$this.data(),"object"==typeof option&&option),action="string"==typeof option?option:options.slide;data||$this.data("bs.carousel",data=new Carousel(this,options)),"number"==typeof option?data.to(option):action?data[action]():options.interval&&data.pause().cycle()})}
 // CAROUSEL CLASS DEFINITION
 // =========================
-var Carousel=function(element,options){this.$element=$(element),this.$indicators=this.$element.find(".carousel-indicators"),this.options=options,this.paused=null,this.sliding=null,this.interval=null,this.$active=null,this.$items=null,this.options.keyboard&&this.$element.on("keydown.bs.carousel",$.proxy(this.keydown,this)),"hover"==this.options.pause&&!("ontouchstart"in document.documentElement)&&this.$element.on("mouseenter.bs.carousel",$.proxy(this.pause,this)).on("mouseleave.bs.carousel",$.proxy(this.cycle,this))};Carousel.VERSION="3.3.6",Carousel.TRANSITION_DURATION=600,Carousel.DEFAULTS={interval:5e3,pause:"hover",wrap:!0,keyboard:!0},Carousel.prototype.keydown=function(e){if(!/input|textarea/i.test(e.target.tagName)){switch(e.which){case 37:this.prev();break;case 39:this.next();break;default:return}e.preventDefault()}},Carousel.prototype.cycle=function(e){return e||(this.paused=!1),this.interval&&clearInterval(this.interval),this.options.interval&&!this.paused&&(this.interval=setInterval($.proxy(this.next,this),this.options.interval)),this},Carousel.prototype.getItemIndex=function(item){return this.$items=item.parent().children(".item"),this.$items.index(item||this.$active)},Carousel.prototype.getItemForDirection=function(direction,active){var activeIndex=this.getItemIndex(active),willWrap="prev"==direction&&0===activeIndex||"next"==direction&&activeIndex==this.$items.length-1;if(willWrap&&!this.options.wrap)return active;var delta="prev"==direction?-1:1,itemIndex=(activeIndex+delta)%this.$items.length;return this.$items.eq(itemIndex)},Carousel.prototype.to=function(pos){var that=this,activeIndex=this.getItemIndex(this.$active=this.$element.find(".item.active"));// yes, "slid"
-return pos>this.$items.length-1||0>pos?void 0:this.sliding?this.$element.one("slid.bs.carousel",function(){that.to(pos)}):activeIndex==pos?this.pause().cycle():this.slide(pos>activeIndex?"next":"prev",this.$items.eq(pos))},Carousel.prototype.pause=function(e){return e||(this.paused=!0),this.$element.find(".next, .prev").length&&$.support.transition&&(this.$element.trigger($.support.transition.end),this.cycle(!0)),this.interval=clearInterval(this.interval),this},Carousel.prototype.next=function(){return this.sliding?void 0:this.slide("next")},Carousel.prototype.prev=function(){return this.sliding?void 0:this.slide("prev")},Carousel.prototype.slide=function(type,next){var $active=this.$element.find(".item.active"),$next=next||this.getItemForDirection(type,$active),isCycling=this.interval,direction="next"==type?"left":"right",that=this;if($next.hasClass("active"))return this.sliding=!1;var relatedTarget=$next[0],slideEvent=$.Event("slide.bs.carousel",{relatedTarget:relatedTarget,direction:direction});if(this.$element.trigger(slideEvent),!slideEvent.isDefaultPrevented()){if(this.sliding=!0,isCycling&&this.pause(),this.$indicators.length){this.$indicators.find(".active").removeClass("active");var $nextIndicator=$(this.$indicators.children()[this.getItemIndex($next)]);$nextIndicator&&$nextIndicator.addClass("active")}var slidEvent=$.Event("slid.bs.carousel",{relatedTarget:relatedTarget,direction:direction});// yes, "slid"
+var Carousel=function(element,options){this.$element=$(element),this.$indicators=this.$element.find(".carousel-indicators"),this.options=options,this.paused=null,this.sliding=null,this.interval=null,this.$active=null,this.$items=null,this.options.keyboard&&this.$element.on("keydown.bs.carousel",$.proxy(this.keydown,this)),"hover"==this.options.pause&&!("ontouchstart"in document.documentElement)&&this.$element.on("mouseenter.bs.carousel",$.proxy(this.pause,this)).on("mouseleave.bs.carousel",$.proxy(this.cycle,this))};Carousel.VERSION="3.3.6",Carousel.TRANSITION_DURATION=600,Carousel.DEFAULTS={interval:5e3,pause:"hover",wrap:!0,keyboard:!0},Carousel.prototype.keydown=function(e){if(!/input|textarea/i.test(e.target.tagName)){switch(e.which){case 37:this.prev();break;case 39:this.next();break;default:return}e.preventDefault()}},Carousel.prototype.cycle=function(e){return e||(this.paused=!1),this.interval&&clearInterval(this.interval),this.options.interval&&!this.paused&&(this.interval=setInterval($.proxy(this.next,this),this.options.interval)),this},Carousel.prototype.getItemIndex=function(item){return this.$items=item.parent().children(".item"),this.$items.index(item||this.$active)},Carousel.prototype.getItemForDirection=function(direction,active){var activeIndex=this.getItemIndex(active),willWrap="prev"==direction&&0===activeIndex||"next"==direction&&activeIndex==this.$items.length-1;if(willWrap&&!this.options.wrap)return active;var delta="prev"==direction?-1:1,itemIndex=(activeIndex+delta)%this.$items.length;return this.$items.eq(itemIndex)},Carousel.prototype.to=function(pos){var that=this,activeIndex=this.getItemIndex(this.$active=this.$element.find(".item.active"));if(!(pos>this.$items.length-1||pos<0))// yes, "slid"
+return this.sliding?this.$element.one("slid.bs.carousel",function(){that.to(pos)}):activeIndex==pos?this.pause().cycle():this.slide(pos>activeIndex?"next":"prev",this.$items.eq(pos))},Carousel.prototype.pause=function(e){return e||(this.paused=!0),this.$element.find(".next, .prev").length&&$.support.transition&&(this.$element.trigger($.support.transition.end),this.cycle(!0)),this.interval=clearInterval(this.interval),this},Carousel.prototype.next=function(){if(!this.sliding)return this.slide("next")},Carousel.prototype.prev=function(){if(!this.sliding)return this.slide("prev")},Carousel.prototype.slide=function(type,next){var $active=this.$element.find(".item.active"),$next=next||this.getItemForDirection(type,$active),isCycling=this.interval,direction="next"==type?"left":"right",that=this;if($next.hasClass("active"))return this.sliding=!1;var relatedTarget=$next[0],slideEvent=$.Event("slide.bs.carousel",{relatedTarget:relatedTarget,direction:direction});if(this.$element.trigger(slideEvent),!slideEvent.isDefaultPrevented()){if(this.sliding=!0,isCycling&&this.pause(),this.$indicators.length){this.$indicators.find(".active").removeClass("active");var $nextIndicator=$(this.$indicators.children()[this.getItemIndex($next)]);$nextIndicator&&$nextIndicator.addClass("active")}var slidEvent=$.Event("slid.bs.carousel",{relatedTarget:relatedTarget,direction:direction});// yes, "slid"
 // force reflow
 return $.support.transition&&this.$element.hasClass("slide")?($next.addClass(type),$next[0].offsetWidth,$active.addClass(direction),$next.addClass(direction),$active.one("bsTransitionEnd",function(){$next.removeClass([type,direction].join(" ")).addClass("active"),$active.removeClass(["active",direction].join(" ")),that.sliding=!1,setTimeout(function(){that.$element.trigger(slidEvent)},0)}).emulateTransitionEnd(Carousel.TRANSITION_DURATION)):($active.removeClass("active"),$next.addClass("active"),this.sliding=!1,this.$element.trigger(slidEvent)),isCycling&&this.cycle(),this}};var old=$.fn.carousel;$.fn.carousel=Plugin,$.fn.carousel.Constructor=Carousel,
 // CAROUSEL NO CONFLICT
@@ -1772,17 +2362,17 @@ $target.one("hidden.bs.modal",function(){$this.is(":visible")&&$this.trigger("fo
 +function($){"use strict";
 // TOOLTIP PLUGIN DEFINITION
 // =========================
-function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.tooltip"),options="object"==typeof option&&option;(data||!/destroy|hide/.test(option))&&(data||$this.data("bs.tooltip",data=new Tooltip(this,options)),"string"==typeof option&&data[option]())})}
+function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.tooltip"),options="object"==typeof option&&option;!data&&/destroy|hide/.test(option)||(data||$this.data("bs.tooltip",data=new Tooltip(this,options)),"string"==typeof option&&data[option]())})}
 // TOOLTIP PUBLIC CLASS DEFINITION
 // ===============================
-var Tooltip=function(element,options){this.type=null,this.options=null,this.enabled=null,this.timeout=null,this.hoverState=null,this.$element=null,this.inState=null,this.init("tooltip",element,options)};Tooltip.VERSION="3.3.6",Tooltip.TRANSITION_DURATION=150,Tooltip.DEFAULTS={animation:!0,placement:"top",selector:!1,template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',trigger:"hover focus",title:"",delay:0,html:!1,container:!1,viewport:{selector:"body",padding:0}},Tooltip.prototype.init=function(type,element,options){if(this.enabled=!0,this.type=type,this.$element=$(element),this.options=this.getOptions(options),this.$viewport=this.options.viewport&&$($.isFunction(this.options.viewport)?this.options.viewport.call(this,this.$element):this.options.viewport.selector||this.options.viewport),this.inState={click:!1,hover:!1,focus:!1},this.$element[0]instanceof document.constructor&&!this.options.selector)throw new Error("`selector` option must be specified when initializing "+this.type+" on the window.document object!");for(var triggers=this.options.trigger.split(" "),i=triggers.length;i--;){var trigger=triggers[i];if("click"==trigger)this.$element.on("click."+this.type,this.options.selector,$.proxy(this.toggle,this));else if("manual"!=trigger){var eventIn="hover"==trigger?"mouseenter":"focusin",eventOut="hover"==trigger?"mouseleave":"focusout";this.$element.on(eventIn+"."+this.type,this.options.selector,$.proxy(this.enter,this)),this.$element.on(eventOut+"."+this.type,this.options.selector,$.proxy(this.leave,this))}}this.options.selector?this._options=$.extend({},this.options,{trigger:"manual",selector:""}):this.fixTitle()},Tooltip.prototype.getDefaults=function(){return Tooltip.DEFAULTS},Tooltip.prototype.getOptions=function(options){return options=$.extend({},this.getDefaults(),this.$element.data(),options),options.delay&&"number"==typeof options.delay&&(options.delay={show:options.delay,hide:options.delay}),options},Tooltip.prototype.getDelegateOptions=function(){var options={},defaults=this.getDefaults();return this._options&&$.each(this._options,function(key,value){defaults[key]!=value&&(options[key]=value)}),options},Tooltip.prototype.enter=function(obj){var self=obj instanceof this.constructor?obj:$(obj.currentTarget).data("bs."+this.type);return self||(self=new this.constructor(obj.currentTarget,this.getDelegateOptions()),$(obj.currentTarget).data("bs."+this.type,self)),obj instanceof $.Event&&(self.inState["focusin"==obj.type?"focus":"hover"]=!0),self.tip().hasClass("in")||"in"==self.hoverState?void(self.hoverState="in"):(clearTimeout(self.timeout),self.hoverState="in",self.options.delay&&self.options.delay.show?void(self.timeout=setTimeout(function(){"in"==self.hoverState&&self.show()},self.options.delay.show)):self.show())},Tooltip.prototype.isInStateTrue=function(){for(var key in this.inState)if(this.inState[key])return!0;return!1},Tooltip.prototype.leave=function(obj){var self=obj instanceof this.constructor?obj:$(obj.currentTarget).data("bs."+this.type);return self||(self=new this.constructor(obj.currentTarget,this.getDelegateOptions()),$(obj.currentTarget).data("bs."+this.type,self)),obj instanceof $.Event&&(self.inState["focusout"==obj.type?"focus":"hover"]=!1),self.isInStateTrue()?void 0:(clearTimeout(self.timeout),self.hoverState="out",self.options.delay&&self.options.delay.hide?void(self.timeout=setTimeout(function(){"out"==self.hoverState&&self.hide()},self.options.delay.hide)):self.hide())},Tooltip.prototype.show=function(){var e=$.Event("show.bs."+this.type);if(this.hasContent()&&this.enabled){this.$element.trigger(e);var inDom=$.contains(this.$element[0].ownerDocument.documentElement,this.$element[0]);if(e.isDefaultPrevented()||!inDom)return;var that=this,$tip=this.tip(),tipId=this.getUID(this.type);this.setContent(),$tip.attr("id",tipId),this.$element.attr("aria-describedby",tipId),this.options.animation&&$tip.addClass("fade");var placement="function"==typeof this.options.placement?this.options.placement.call(this,$tip[0],this.$element[0]):this.options.placement,autoToken=/\s?auto?\s?/i,autoPlace=autoToken.test(placement);autoPlace&&(placement=placement.replace(autoToken,"")||"top"),$tip.detach().css({top:0,left:0,display:"block"}).addClass(placement).data("bs."+this.type,this),this.options.container?$tip.appendTo(this.options.container):$tip.insertAfter(this.$element),this.$element.trigger("inserted.bs."+this.type);var pos=this.getPosition(),actualWidth=$tip[0].offsetWidth,actualHeight=$tip[0].offsetHeight;if(autoPlace){var orgPlacement=placement,viewportDim=this.getPosition(this.$viewport);placement="bottom"==placement&&pos.bottom+actualHeight>viewportDim.bottom?"top":"top"==placement&&pos.top-actualHeight<viewportDim.top?"bottom":"right"==placement&&pos.right+actualWidth>viewportDim.width?"left":"left"==placement&&pos.left-actualWidth<viewportDim.left?"right":placement,$tip.removeClass(orgPlacement).addClass(placement)}var calculatedOffset=this.getCalculatedOffset(placement,pos,actualWidth,actualHeight);this.applyPlacement(calculatedOffset,placement);var complete=function(){var prevHoverState=that.hoverState;that.$element.trigger("shown.bs."+that.type),that.hoverState=null,"out"==prevHoverState&&that.leave(that)};$.support.transition&&this.$tip.hasClass("fade")?$tip.one("bsTransitionEnd",complete).emulateTransitionEnd(Tooltip.TRANSITION_DURATION):complete()}},Tooltip.prototype.applyPlacement=function(offset,placement){var $tip=this.tip(),width=$tip[0].offsetWidth,height=$tip[0].offsetHeight,marginTop=parseInt($tip.css("margin-top"),10),marginLeft=parseInt($tip.css("margin-left"),10);
+var Tooltip=function(element,options){this.type=null,this.options=null,this.enabled=null,this.timeout=null,this.hoverState=null,this.$element=null,this.inState=null,this.init("tooltip",element,options)};Tooltip.VERSION="3.3.6",Tooltip.TRANSITION_DURATION=150,Tooltip.DEFAULTS={animation:!0,placement:"top",selector:!1,template:'<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>',trigger:"hover focus",title:"",delay:0,html:!1,container:!1,viewport:{selector:"body",padding:0}},Tooltip.prototype.init=function(type,element,options){if(this.enabled=!0,this.type=type,this.$element=$(element),this.options=this.getOptions(options),this.$viewport=this.options.viewport&&$($.isFunction(this.options.viewport)?this.options.viewport.call(this,this.$element):this.options.viewport.selector||this.options.viewport),this.inState={click:!1,hover:!1,focus:!1},this.$element[0]instanceof document.constructor&&!this.options.selector)throw new Error("`selector` option must be specified when initializing "+this.type+" on the window.document object!");for(var triggers=this.options.trigger.split(" "),i=triggers.length;i--;){var trigger=triggers[i];if("click"==trigger)this.$element.on("click."+this.type,this.options.selector,$.proxy(this.toggle,this));else if("manual"!=trigger){var eventIn="hover"==trigger?"mouseenter":"focusin",eventOut="hover"==trigger?"mouseleave":"focusout";this.$element.on(eventIn+"."+this.type,this.options.selector,$.proxy(this.enter,this)),this.$element.on(eventOut+"."+this.type,this.options.selector,$.proxy(this.leave,this))}}this.options.selector?this._options=$.extend({},this.options,{trigger:"manual",selector:""}):this.fixTitle()},Tooltip.prototype.getDefaults=function(){return Tooltip.DEFAULTS},Tooltip.prototype.getOptions=function(options){return options=$.extend({},this.getDefaults(),this.$element.data(),options),options.delay&&"number"==typeof options.delay&&(options.delay={show:options.delay,hide:options.delay}),options},Tooltip.prototype.getDelegateOptions=function(){var options={},defaults=this.getDefaults();return this._options&&$.each(this._options,function(key,value){defaults[key]!=value&&(options[key]=value)}),options},Tooltip.prototype.enter=function(obj){var self=obj instanceof this.constructor?obj:$(obj.currentTarget).data("bs."+this.type);return self||(self=new this.constructor(obj.currentTarget,this.getDelegateOptions()),$(obj.currentTarget).data("bs."+this.type,self)),obj instanceof $.Event&&(self.inState["focusin"==obj.type?"focus":"hover"]=!0),self.tip().hasClass("in")||"in"==self.hoverState?void(self.hoverState="in"):(clearTimeout(self.timeout),self.hoverState="in",self.options.delay&&self.options.delay.show?void(self.timeout=setTimeout(function(){"in"==self.hoverState&&self.show()},self.options.delay.show)):self.show())},Tooltip.prototype.isInStateTrue=function(){for(var key in this.inState)if(this.inState[key])return!0;return!1},Tooltip.prototype.leave=function(obj){var self=obj instanceof this.constructor?obj:$(obj.currentTarget).data("bs."+this.type);if(self||(self=new this.constructor(obj.currentTarget,this.getDelegateOptions()),$(obj.currentTarget).data("bs."+this.type,self)),obj instanceof $.Event&&(self.inState["focusout"==obj.type?"focus":"hover"]=!1),!self.isInStateTrue())return clearTimeout(self.timeout),self.hoverState="out",self.options.delay&&self.options.delay.hide?void(self.timeout=setTimeout(function(){"out"==self.hoverState&&self.hide()},self.options.delay.hide)):self.hide()},Tooltip.prototype.show=function(){var e=$.Event("show.bs."+this.type);if(this.hasContent()&&this.enabled){this.$element.trigger(e);var inDom=$.contains(this.$element[0].ownerDocument.documentElement,this.$element[0]);if(e.isDefaultPrevented()||!inDom)return;var that=this,$tip=this.tip(),tipId=this.getUID(this.type);this.setContent(),$tip.attr("id",tipId),this.$element.attr("aria-describedby",tipId),this.options.animation&&$tip.addClass("fade");var placement="function"==typeof this.options.placement?this.options.placement.call(this,$tip[0],this.$element[0]):this.options.placement,autoToken=/\s?auto?\s?/i,autoPlace=autoToken.test(placement);autoPlace&&(placement=placement.replace(autoToken,"")||"top"),$tip.detach().css({top:0,left:0,display:"block"}).addClass(placement).data("bs."+this.type,this),this.options.container?$tip.appendTo(this.options.container):$tip.insertAfter(this.$element),this.$element.trigger("inserted.bs."+this.type);var pos=this.getPosition(),actualWidth=$tip[0].offsetWidth,actualHeight=$tip[0].offsetHeight;if(autoPlace){var orgPlacement=placement,viewportDim=this.getPosition(this.$viewport);placement="bottom"==placement&&pos.bottom+actualHeight>viewportDim.bottom?"top":"top"==placement&&pos.top-actualHeight<viewportDim.top?"bottom":"right"==placement&&pos.right+actualWidth>viewportDim.width?"left":"left"==placement&&pos.left-actualWidth<viewportDim.left?"right":placement,$tip.removeClass(orgPlacement).addClass(placement)}var calculatedOffset=this.getCalculatedOffset(placement,pos,actualWidth,actualHeight);this.applyPlacement(calculatedOffset,placement);var complete=function(){var prevHoverState=that.hoverState;that.$element.trigger("shown.bs."+that.type),that.hoverState=null,"out"==prevHoverState&&that.leave(that)};$.support.transition&&this.$tip.hasClass("fade")?$tip.one("bsTransitionEnd",complete).emulateTransitionEnd(Tooltip.TRANSITION_DURATION):complete()}},Tooltip.prototype.applyPlacement=function(offset,placement){var $tip=this.tip(),width=$tip[0].offsetWidth,height=$tip[0].offsetHeight,marginTop=parseInt($tip.css("margin-top"),10),marginLeft=parseInt($tip.css("margin-left"),10);
 // we must check for NaN for ie 8/9
 isNaN(marginTop)&&(marginTop=0),isNaN(marginLeft)&&(marginLeft=0),offset.top+=marginTop,offset.left+=marginLeft,
 // $.fn.offset doesn't round pixel values
 // so we use setOffset directly with our own function B-0
 $.offset.setOffset($tip[0],$.extend({using:function(props){$tip.css({top:Math.round(props.top),left:Math.round(props.left)})}},offset),0),$tip.addClass("in");
 // check to see if placing tip in new offset caused the tip to resize itself
-var actualWidth=$tip[0].offsetWidth,actualHeight=$tip[0].offsetHeight;"top"==placement&&actualHeight!=height&&(offset.top=offset.top+height-actualHeight);var delta=this.getViewportAdjustedDelta(placement,offset,actualWidth,actualHeight);delta.left?offset.left+=delta.left:offset.top+=delta.top;var isVertical=/top|bottom/.test(placement),arrowDelta=isVertical?2*delta.left-width+actualWidth:2*delta.top-height+actualHeight,arrowOffsetPosition=isVertical?"offsetWidth":"offsetHeight";$tip.offset(offset),this.replaceArrow(arrowDelta,$tip[0][arrowOffsetPosition],isVertical)},Tooltip.prototype.replaceArrow=function(delta,dimension,isVertical){this.arrow().css(isVertical?"left":"top",50*(1-delta/dimension)+"%").css(isVertical?"top":"left","")},Tooltip.prototype.setContent=function(){var $tip=this.tip(),title=this.getTitle();$tip.find(".tooltip-inner")[this.options.html?"html":"text"](title),$tip.removeClass("fade in top bottom left right")},Tooltip.prototype.hide=function(callback){function complete(){"in"!=that.hoverState&&$tip.detach(),that.$element.removeAttr("aria-describedby").trigger("hidden.bs."+that.type),callback&&callback()}var that=this,$tip=$(this.$tip),e=$.Event("hide.bs."+this.type);return this.$element.trigger(e),e.isDefaultPrevented()?void 0:($tip.removeClass("in"),$.support.transition&&$tip.hasClass("fade")?$tip.one("bsTransitionEnd",complete).emulateTransitionEnd(Tooltip.TRANSITION_DURATION):complete(),this.hoverState=null,this)},Tooltip.prototype.fixTitle=function(){var $e=this.$element;($e.attr("title")||"string"!=typeof $e.attr("data-original-title"))&&$e.attr("data-original-title",$e.attr("title")||"").attr("title","")},Tooltip.prototype.hasContent=function(){return this.getTitle()},Tooltip.prototype.getPosition=function($element){$element=$element||this.$element;var el=$element[0],isBody="BODY"==el.tagName,elRect=el.getBoundingClientRect();null==elRect.width&&(
+var actualWidth=$tip[0].offsetWidth,actualHeight=$tip[0].offsetHeight;"top"==placement&&actualHeight!=height&&(offset.top=offset.top+height-actualHeight);var delta=this.getViewportAdjustedDelta(placement,offset,actualWidth,actualHeight);delta.left?offset.left+=delta.left:offset.top+=delta.top;var isVertical=/top|bottom/.test(placement),arrowDelta=isVertical?2*delta.left-width+actualWidth:2*delta.top-height+actualHeight,arrowOffsetPosition=isVertical?"offsetWidth":"offsetHeight";$tip.offset(offset),this.replaceArrow(arrowDelta,$tip[0][arrowOffsetPosition],isVertical)},Tooltip.prototype.replaceArrow=function(delta,dimension,isVertical){this.arrow().css(isVertical?"left":"top",50*(1-delta/dimension)+"%").css(isVertical?"top":"left","")},Tooltip.prototype.setContent=function(){var $tip=this.tip(),title=this.getTitle();$tip.find(".tooltip-inner")[this.options.html?"html":"text"](title),$tip.removeClass("fade in top bottom left right")},Tooltip.prototype.hide=function(callback){function complete(){"in"!=that.hoverState&&$tip.detach(),that.$element.removeAttr("aria-describedby").trigger("hidden.bs."+that.type),callback&&callback()}var that=this,$tip=$(this.$tip),e=$.Event("hide.bs."+this.type);if(this.$element.trigger(e),!e.isDefaultPrevented())return $tip.removeClass("in"),$.support.transition&&$tip.hasClass("fade")?$tip.one("bsTransitionEnd",complete).emulateTransitionEnd(Tooltip.TRANSITION_DURATION):complete(),this.hoverState=null,this},Tooltip.prototype.fixTitle=function(){var $e=this.$element;($e.attr("title")||"string"!=typeof $e.attr("data-original-title"))&&$e.attr("data-original-title",$e.attr("title")||"").attr("title","")},Tooltip.prototype.hasContent=function(){return this.getTitle()},Tooltip.prototype.getPosition=function($element){$element=$element||this.$element;var el=$element[0],isBody="BODY"==el.tagName,elRect=el.getBoundingClientRect();null==elRect.width&&(
 // width and height are missing in IE8, so compute them manually; see https://github.com/twbs/bootstrap/issues/14093
 elRect=$.extend({},elRect,{width:elRect.right-elRect.left,height:elRect.bottom-elRect.top}));var elOffset=isBody?{top:0,left:0}:$element.offset(),scroll={scroll:isBody?document.documentElement.scrollTop||document.body.scrollTop:$element.scrollTop()},outerDims=isBody?{width:$(window).width(),height:$(window).height()}:null;return $.extend({},elRect,scroll,outerDims,elOffset)},Tooltip.prototype.getCalculatedOffset=function(placement,pos,actualWidth,actualHeight){/* placement == 'right' */
 return"bottom"==placement?{top:pos.top+pos.height,left:pos.left+pos.width/2-actualWidth/2}:"top"==placement?{top:pos.top-actualHeight,left:pos.left+pos.width/2-actualWidth/2}:"left"==placement?{top:pos.top+pos.height/2-actualHeight/2,left:pos.left-actualWidth}:{top:pos.top+pos.height/2-actualHeight/2,left:pos.left+pos.width}},Tooltip.prototype.getViewportAdjustedDelta=function(placement,pos,actualWidth,actualHeight){var delta={top:0,left:0};if(!this.$viewport)return delta;var viewportPadding=this.options.viewport&&this.options.viewport.padding||0,viewportDimensions=this.getPosition(this.$viewport);if(/right|left/.test(placement)){var topEdgeOffset=pos.top-viewportPadding-viewportDimensions.scroll,bottomEdgeOffset=pos.top+viewportPadding-viewportDimensions.scroll+actualHeight;topEdgeOffset<viewportDimensions.top?// top overflow
@@ -1802,13 +2392,14 @@ $.fn.tooltip.noConflict=function(){return $.fn.tooltip=old,this}}(jQuery),/* ===
 +function($){"use strict";
 // POPOVER PLUGIN DEFINITION
 // =========================
-function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.popover"),options="object"==typeof option&&option;(data||!/destroy|hide/.test(option))&&(data||$this.data("bs.popover",data=new Popover(this,options)),"string"==typeof option&&data[option]())})}
+function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.popover"),options="object"==typeof option&&option;!data&&/destroy|hide/.test(option)||(data||$this.data("bs.popover",data=new Popover(this,options)),"string"==typeof option&&data[option]())})}
 // POPOVER PUBLIC CLASS DEFINITION
 // ===============================
 var Popover=function(element,options){this.init("popover",element,options)};if(!$.fn.tooltip)throw new Error("Popover requires tooltip.js");Popover.VERSION="3.3.6",Popover.DEFAULTS=$.extend({},$.fn.tooltip.Constructor.DEFAULTS,{placement:"right",trigger:"click",content:"",template:'<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-title"></h3><div class="popover-content"></div></div>'}),
 // NOTE: POPOVER EXTENDS tooltip.js
 // ================================
-Popover.prototype=$.extend({},$.fn.tooltip.Constructor.prototype),Popover.prototype.constructor=Popover,Popover.prototype.getDefaults=function(){return Popover.DEFAULTS},Popover.prototype.setContent=function(){var $tip=this.tip(),title=this.getTitle(),content=this.getContent();$tip.find(".popover-title")[this.options.html?"html":"text"](title),$tip.find(".popover-content").children().detach().end()[this.options.html?"string"==typeof content?"html":"append":"text"](content),$tip.removeClass("fade top bottom left right in"),
+Popover.prototype=$.extend({},$.fn.tooltip.Constructor.prototype),Popover.prototype.constructor=Popover,Popover.prototype.getDefaults=function(){return Popover.DEFAULTS},Popover.prototype.setContent=function(){var $tip=this.tip(),title=this.getTitle(),content=this.getContent();$tip.find(".popover-title")[this.options.html?"html":"text"](title),$tip.find(".popover-content").children().detach().end()[// we use append for html objects to maintain js events
+this.options.html?"string"==typeof content?"html":"append":"text"](content),$tip.removeClass("fade top bottom left right in"),
 // IE8 doesn't accept hiding via the `:empty` pseudo selector, we have to do
 // this manually by checking the contents.
 $tip.find(".popover-title").html()||$tip.find(".popover-title").hide()},Popover.prototype.hasContent=function(){return this.getTitle()||this.getContent()},Popover.prototype.getContent=function(){var $e=this.$element,o=this.options;return $e.attr("data-content")||("function"==typeof o.content?o.content.call($e[0]):o.content)},Popover.prototype.arrow=function(){return this.$arrow=this.$arrow||this.tip().find(".arrow")};var old=$.fn.popover;$.fn.popover=Plugin,$.fn.popover.Constructor=Popover,
@@ -1868,7 +2459,7 @@ var clickHandler=function(e){e.preventDefault(),Plugin.call($(this),"show")};$(d
 function Plugin(option){return this.each(function(){var $this=$(this),data=$this.data("bs.affix"),options="object"==typeof option&&option;data||$this.data("bs.affix",data=new Affix(this,options)),"string"==typeof option&&data[option]()})}
 // AFFIX CLASS DEFINITION
 // ======================
-var Affix=function(element,options){this.options=$.extend({},Affix.DEFAULTS,options),this.$target=$(this.options.target).on("scroll.bs.affix.data-api",$.proxy(this.checkPosition,this)).on("click.bs.affix.data-api",$.proxy(this.checkPositionWithEventLoop,this)),this.$element=$(element),this.affixed=null,this.unpin=null,this.pinnedOffset=null,this.checkPosition()};Affix.VERSION="3.3.6",Affix.RESET="affix affix-top affix-bottom",Affix.DEFAULTS={offset:0,target:window},Affix.prototype.getState=function(scrollHeight,height,offsetTop,offsetBottom){var scrollTop=this.$target.scrollTop(),position=this.$element.offset(),targetHeight=this.$target.height();if(null!=offsetTop&&"top"==this.affixed)return offsetTop>scrollTop?"top":!1;if("bottom"==this.affixed)return null!=offsetTop?scrollTop+this.unpin<=position.top?!1:"bottom":scrollHeight-offsetBottom>=scrollTop+targetHeight?!1:"bottom";var initializing=null==this.affixed,colliderTop=initializing?scrollTop:position.top,colliderHeight=initializing?targetHeight:height;return null!=offsetTop&&offsetTop>=scrollTop?"top":null!=offsetBottom&&colliderTop+colliderHeight>=scrollHeight-offsetBottom?"bottom":!1},Affix.prototype.getPinnedOffset=function(){if(this.pinnedOffset)return this.pinnedOffset;this.$element.removeClass(Affix.RESET).addClass("affix");var scrollTop=this.$target.scrollTop(),position=this.$element.offset();return this.pinnedOffset=position.top-scrollTop},Affix.prototype.checkPositionWithEventLoop=function(){setTimeout($.proxy(this.checkPosition,this),1)},Affix.prototype.checkPosition=function(){if(this.$element.is(":visible")){var height=this.$element.height(),offset=this.options.offset,offsetTop=offset.top,offsetBottom=offset.bottom,scrollHeight=Math.max($(document).height(),$(document.body).height());"object"!=typeof offset&&(offsetBottom=offsetTop=offset),"function"==typeof offsetTop&&(offsetTop=offset.top(this.$element)),"function"==typeof offsetBottom&&(offsetBottom=offset.bottom(this.$element));var affix=this.getState(scrollHeight,height,offsetTop,offsetBottom);if(this.affixed!=affix){null!=this.unpin&&this.$element.css("top","");var affixType="affix"+(affix?"-"+affix:""),e=$.Event(affixType+".bs.affix");if(this.$element.trigger(e),e.isDefaultPrevented())return;this.affixed=affix,this.unpin="bottom"==affix?this.getPinnedOffset():null,this.$element.removeClass(Affix.RESET).addClass(affixType).trigger(affixType.replace("affix","affixed")+".bs.affix")}"bottom"==affix&&this.$element.offset({top:scrollHeight-height-offsetBottom})}};var old=$.fn.affix;$.fn.affix=Plugin,$.fn.affix.Constructor=Affix,
+var Affix=function(element,options){this.options=$.extend({},Affix.DEFAULTS,options),this.$target=$(this.options.target).on("scroll.bs.affix.data-api",$.proxy(this.checkPosition,this)).on("click.bs.affix.data-api",$.proxy(this.checkPositionWithEventLoop,this)),this.$element=$(element),this.affixed=null,this.unpin=null,this.pinnedOffset=null,this.checkPosition()};Affix.VERSION="3.3.6",Affix.RESET="affix affix-top affix-bottom",Affix.DEFAULTS={offset:0,target:window},Affix.prototype.getState=function(scrollHeight,height,offsetTop,offsetBottom){var scrollTop=this.$target.scrollTop(),position=this.$element.offset(),targetHeight=this.$target.height();if(null!=offsetTop&&"top"==this.affixed)return scrollTop<offsetTop&&"top";if("bottom"==this.affixed)return null!=offsetTop?!(scrollTop+this.unpin<=position.top)&&"bottom":!(scrollTop+targetHeight<=scrollHeight-offsetBottom)&&"bottom";var initializing=null==this.affixed,colliderTop=initializing?scrollTop:position.top,colliderHeight=initializing?targetHeight:height;return null!=offsetTop&&scrollTop<=offsetTop?"top":null!=offsetBottom&&colliderTop+colliderHeight>=scrollHeight-offsetBottom&&"bottom"},Affix.prototype.getPinnedOffset=function(){if(this.pinnedOffset)return this.pinnedOffset;this.$element.removeClass(Affix.RESET).addClass("affix");var scrollTop=this.$target.scrollTop(),position=this.$element.offset();return this.pinnedOffset=position.top-scrollTop},Affix.prototype.checkPositionWithEventLoop=function(){setTimeout($.proxy(this.checkPosition,this),1)},Affix.prototype.checkPosition=function(){if(this.$element.is(":visible")){var height=this.$element.height(),offset=this.options.offset,offsetTop=offset.top,offsetBottom=offset.bottom,scrollHeight=Math.max($(document).height(),$(document.body).height());"object"!=typeof offset&&(offsetBottom=offsetTop=offset),"function"==typeof offsetTop&&(offsetTop=offset.top(this.$element)),"function"==typeof offsetBottom&&(offsetBottom=offset.bottom(this.$element));var affix=this.getState(scrollHeight,height,offsetTop,offsetBottom);if(this.affixed!=affix){null!=this.unpin&&this.$element.css("top","");var affixType="affix"+(affix?"-"+affix:""),e=$.Event(affixType+".bs.affix");if(this.$element.trigger(e),e.isDefaultPrevented())return;this.affixed=affix,this.unpin="bottom"==affix?this.getPinnedOffset():null,this.$element.removeClass(Affix.RESET).addClass(affixType).trigger(affixType.replace("affix","affixed")+".bs.affix")}"bottom"==affix&&this.$element.offset({top:scrollHeight-height-offsetBottom})}};var old=$.fn.affix;$.fn.affix=Plugin,$.fn.affix.Constructor=Affix,
 // AFFIX NO CONFLICT
 // =================
 $.fn.affix.noConflict=function(){return $.fn.affix=old,this},
@@ -1884,7 +2475,7 @@ $(window).on("load",function(){$('[data-spy="affix"]').each(function(){var $spy=
    * @param {*} other The other value to compare.
    * @returns {number} Returns the sort order indicator for `value`.
    */
-function baseCompareAscending(value,other){if(value!==other){var valIsNull=null===value,valIsUndef=value===undefined,valIsReflexive=value===value,othIsNull=null===other,othIsUndef=other===undefined,othIsReflexive=other===other;if(value>other&&!othIsNull||!valIsReflexive||valIsNull&&!othIsUndef&&othIsReflexive||valIsUndef&&othIsReflexive)return 1;if(other>value&&!valIsNull||!othIsReflexive||othIsNull&&!valIsUndef&&valIsReflexive||othIsUndef&&valIsReflexive)return-1}return 0}/**
+function baseCompareAscending(value,other){if(value!==other){var valIsNull=null===value,valIsUndef=value===undefined,valIsReflexive=value===value,othIsNull=null===other,othIsUndef=other===undefined,othIsReflexive=other===other;if(value>other&&!othIsNull||!valIsReflexive||valIsNull&&!othIsUndef&&othIsReflexive||valIsUndef&&othIsReflexive)return 1;if(value<other&&!valIsNull||!othIsReflexive||othIsNull&&!valIsUndef&&valIsReflexive||othIsUndef&&valIsReflexive)return-1}return 0}/**
    * The base implementation of `_.findIndex` and `_.findLastIndex` without
    * support for callback shorthands and `this` binding.
    *
@@ -2025,7 +2616,7 @@ function isObjectLike(value){return!!value&&"object"==typeof value}/**
    * @param {number} charCode The character code to inspect.
    * @returns {boolean} Returns `true` if `charCode` is whitespace, else `false`.
    */
-function isSpace(charCode){return 160>=charCode&&charCode>=9&&13>=charCode||32==charCode||160==charCode||5760==charCode||6158==charCode||charCode>=8192&&(8202>=charCode||8232==charCode||8233==charCode||8239==charCode||8287==charCode||12288==charCode||65279==charCode)}/**
+function isSpace(charCode){return charCode<=160&&charCode>=9&&charCode<=13||32==charCode||160==charCode||5760==charCode||6158==charCode||charCode>=8192&&(charCode<=8202||8232==charCode||8233==charCode||8239==charCode||8287==charCode||12288==charCode||65279==charCode)}/**
    * Replaces all `placeholder` elements in `array` with an internal placeholder
    * and returns an array of their indexes.
    *
@@ -2243,7 +2834,7 @@ function lazyReverse(){if(this.__filtered__){var result=new LazyWrapper(this);re
      * @memberOf LazyWrapper
      * @returns {*} Returns the unwrapped value.
      */
-function lazyValue(){var array=this.__wrapped__.value(),dir=this.__dir__,isArr=isArray(array),isRight=0>dir,arrLength=isArr?array.length:0,view=getView(0,arrLength,this.__views__),start=view.start,end=view.end,length=end-start,index=isRight?end:start-1,iteratees=this.__iteratees__,iterLength=iteratees.length,resIndex=0,takeCount=nativeMin(length,this.__takeCount__);if(!isArr||LARGE_ARRAY_SIZE>arrLength||arrLength==length&&takeCount==length)return baseWrapperValue(array,this.__actions__);var result=[];outer:for(;length--&&takeCount>resIndex;){index+=dir;for(var iterIndex=-1,value=array[index];++iterIndex<iterLength;){var data=iteratees[iterIndex],iteratee=data.iteratee,type=data.type,computed=iteratee(value);if(type==LAZY_MAP_FLAG)value=computed;else if(!computed){if(type==LAZY_FILTER_FLAG)continue outer;break outer}}result[resIndex++]=value}return result}/*------------------------------------------------------------------------*/
+function lazyValue(){var array=this.__wrapped__.value(),dir=this.__dir__,isArr=isArray(array),isRight=dir<0,arrLength=isArr?array.length:0,view=getView(0,arrLength,this.__views__),start=view.start,end=view.end,length=end-start,index=isRight?end:start-1,iteratees=this.__iteratees__,iterLength=iteratees.length,resIndex=0,takeCount=nativeMin(length,this.__takeCount__);if(!isArr||arrLength<LARGE_ARRAY_SIZE||arrLength==length&&takeCount==length)return baseWrapperValue(array,this.__actions__);var result=[];outer:for(;length--&&resIndex<takeCount;){index+=dir;for(var iterIndex=-1,value=array[index];++iterIndex<iterLength;){var data=iteratees[iterIndex],iteratee=data.iteratee,type=data.type,computed=iteratee(value);if(type==LAZY_MAP_FLAG)value=computed;else if(!computed){if(type==LAZY_FILTER_FLAG)continue outer;break outer}}result[resIndex++]=value}return result}/*------------------------------------------------------------------------*/
 /**
      * Creates a cache object to store key/value pairs.
      *
@@ -2578,7 +3169,7 @@ function baseExtremum(collection,iteratee,comparator,exValue){var computed=exVal
      * @param {number} [end=array.length] The end position.
      * @returns {Array} Returns `array`.
      */
-function baseFill(array,value,start,end){var length=array.length;for(start=null==start?0:+start||0,0>start&&(start=-start>length?0:length+start),end=end===undefined||end>length?length:+end||0,0>end&&(end+=length),length=start>end?0:end>>>0,start>>>=0;length>start;)array[start++]=value;return array}/**
+function baseFill(array,value,start,end){var length=array.length;for(start=null==start?0:+start||0,start<0&&(start=-start>length?0:length+start),end=end===undefined||end>length?length:+end||0,end<0&&(end+=length),length=start>end?0:end>>>0,start>>>=0;start<length;)array[start++]=value;return array}/**
      * The base implementation of `_.filter` without support for callback
      * shorthands and `this` binding.
      *
@@ -2600,7 +3191,7 @@ function baseFilter(collection,predicate){var result=[];return baseEach(collecti
      *  instead of the element itself.
      * @returns {*} Returns the found element or its key, else `undefined`.
      */
-function baseFind(collection,predicate,eachFunc,retKey){var result;return eachFunc(collection,function(value,key,collection){return predicate(value,key,collection)?(result=retKey?key:value,!1):void 0}),result}/**
+function baseFind(collection,predicate,eachFunc,retKey){var result;return eachFunc(collection,function(value,key,collection){if(predicate(value,key,collection))return result=retKey?key:value,!1}),result}/**
      * The base implementation of `_.flatten` with added support for restricting
      * flattening and specifying the start index.
      *
@@ -2659,7 +3250,7 @@ function baseFunctions(object,props){for(var index=-1,length=props.length,resInd
      * @param {string} [pathKey] The key representation of path.
      * @returns {*} Returns the resolved value.
      */
-function baseGet(object,path,pathKey){if(null!=object){pathKey!==undefined&&pathKey in toObject(object)&&(path=[pathKey]);for(var index=0,length=path.length;null!=object&&length>index;)object=object[path[index++]];return index&&index==length?object:undefined}}/**
+function baseGet(object,path,pathKey){if(null!=object){pathKey!==undefined&&pathKey in toObject(object)&&(path=[pathKey]);for(var index=0,length=path.length;null!=object&&index<length;)object=object[path[index++]];return index&&index==length?object:undefined}}/**
      * The base implementation of `_.isEqual` without support for `this` binding
      * `customizer` functions.
      *
@@ -2672,7 +3263,7 @@ function baseGet(object,path,pathKey){if(null!=object){pathKey!==undefined&&path
      * @param {Array} [stackB] Tracks traversed `other` objects.
      * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
      */
-function baseIsEqual(value,other,customizer,isLoose,stackA,stackB){return value===other?!0:null==value||null==other||!isObject(value)&&!isObjectLike(other)?value!==value&&other!==other:baseIsEqualDeep(value,other,baseIsEqual,customizer,isLoose,stackA,stackB)}/**
+function baseIsEqual(value,other,customizer,isLoose,stackA,stackB){return value===other||(null==value||null==other||!isObject(value)&&!isObjectLike(other)?value!==value&&other!==other:baseIsEqualDeep(value,other,baseIsEqual,customizer,isLoose,stackA,stackB))}/**
      * A specialized version of `baseIsEqual` for arrays and objects which performs
      * deep comparisons and tracks traversed objects enabling objects with circular
      * references to be compared.
@@ -2718,7 +3309,7 @@ function baseMap(collection,iteratee){var index=-1,result=isArrayLike(collection
      * @param {Object} source The object of property values to match.
      * @returns {Function} Returns the new function.
      */
-function baseMatches(source){var matchData=getMatchData(source);if(1==matchData.length&&matchData[0][2]){var key=matchData[0][0],value=matchData[0][1];return function(object){return null==object?!1:object[key]===value&&(value!==undefined||key in toObject(object))}}return function(object){return baseIsMatch(object,matchData)}}/**
+function baseMatches(source){var matchData=getMatchData(source);if(1==matchData.length&&matchData[0][2]){var key=matchData[0][0],value=matchData[0][1];return function(object){return null!=object&&(object[key]===value&&(value!==undefined||key in toObject(object)))}}return function(object){return baseIsMatch(object,matchData)}}/**
      * The base implementation of `_.matchesProperty` which does not clone `srcValue`.
      *
      * @private
@@ -2813,7 +3404,7 @@ function baseReduce(collection,iteratee,accumulator,initFromCollection,eachFunc)
      * @param {number} [end=array.length] The end position.
      * @returns {Array} Returns the slice of `array`.
      */
-function baseSlice(array,start,end){var index=-1,length=array.length;start=null==start?0:+start||0,0>start&&(start=-start>length?0:length+start),end=end===undefined||end>length?length:+end||0,0>end&&(end+=length),length=start>end?0:end-start>>>0,start>>>=0;for(var result=Array(length);++index<length;)result[index]=array[index+start];return result}/**
+function baseSlice(array,start,end){var index=-1,length=array.length;start=null==start?0:+start||0,start<0&&(start=-start>length?0:length+start),end=end===undefined||end>length?length:+end||0,end<0&&(end+=length),length=start>end?0:end-start>>>0,start>>>=0;for(var result=Array(length);++index<length;)result[index]=array[index+start];return result}/**
      * The base implementation of `_.some` without support for callback shorthands
      * and `this` binding.
      *
@@ -2902,7 +3493,7 @@ function baseWrapperValue(value,actions){var result=value;result instanceof Lazy
      * @returns {number} Returns the index at which `value` should be inserted
      *  into `array`.
      */
-function binaryIndex(array,value,retHighest){var low=0,high=array?array.length:low;if("number"==typeof value&&value===value&&HALF_MAX_ARRAY_LENGTH>=high){for(;high>low;){var mid=low+high>>>1,computed=array[mid];(retHighest?value>=computed:value>computed)&&null!==computed?low=mid+1:high=mid}return high}return binaryIndexBy(array,value,identity,retHighest)}/**
+function binaryIndex(array,value,retHighest){var low=0,high=array?array.length:low;if("number"==typeof value&&value===value&&high<=HALF_MAX_ARRAY_LENGTH){for(;low<high;){var mid=low+high>>>1,computed=array[mid];(retHighest?computed<=value:computed<value)&&null!==computed?low=mid+1:high=mid}return high}return binaryIndexBy(array,value,identity,retHighest)}/**
      * This function is like `binaryIndex` except that it invokes `iteratee` for
      * `value` and each element of `array` to compute their sort ranking. The
      * iteratee is invoked with one argument; (value).
@@ -2915,7 +3506,7 @@ function binaryIndex(array,value,retHighest){var low=0,high=array?array.length:l
      * @returns {number} Returns the index at which `value` should be inserted
      *  into `array`.
      */
-function binaryIndexBy(array,value,iteratee,retHighest){value=iteratee(value);for(var low=0,high=array?array.length:0,valIsNaN=value!==value,valIsNull=null===value,valIsUndef=value===undefined;high>low;){var mid=nativeFloor((low+high)/2),computed=iteratee(array[mid]),isDef=computed!==undefined,isReflexive=computed===computed;if(valIsNaN)var setLow=isReflexive||retHighest;else setLow=valIsNull?isReflexive&&isDef&&(retHighest||null!=computed):valIsUndef?isReflexive&&(retHighest||isDef):null==computed?!1:retHighest?value>=computed:value>computed;setLow?low=mid+1:high=mid}return nativeMin(high,MAX_ARRAY_INDEX)}/**
+function binaryIndexBy(array,value,iteratee,retHighest){value=iteratee(value);for(var low=0,high=array?array.length:0,valIsNaN=value!==value,valIsNull=null===value,valIsUndef=value===undefined;low<high;){var mid=nativeFloor((low+high)/2),computed=iteratee(array[mid]),isDef=computed!==undefined,isReflexive=computed===computed;if(valIsNaN)var setLow=isReflexive||retHighest;else setLow=valIsNull?isReflexive&&isDef&&(retHighest||null!=computed):valIsUndef?isReflexive&&(retHighest||isDef):null!=computed&&(retHighest?computed<=value:computed<value);setLow?low=mid+1:high=mid}return nativeMin(high,MAX_ARRAY_INDEX)}/**
      * A specialized version of `baseCallback` which only supports `this` binding
      * and specifying the number of arguments to provide to `func`.
      *
@@ -2967,7 +3558,7 @@ function createAggregator(setter,initializer){return function(collection,iterate
      * @param {Function} assigner The function to assign values.
      * @returns {Function} Returns the new assigner function.
      */
-function createAssigner(assigner){return restParam(function(object,sources){var index=-1,length=null==object?0:sources.length,customizer=length>2?sources[length-2]:undefined,guard=length>2?sources[2]:undefined,thisArg=length>1?sources[length-1]:undefined;for("function"==typeof customizer?(customizer=bindCallback(customizer,thisArg,5),length-=2):(customizer="function"==typeof thisArg?thisArg:undefined,length-=customizer?1:0),guard&&isIterateeCall(sources[0],sources[1],guard)&&(customizer=3>length?undefined:customizer,length=1);++index<length;){var source=sources[index];source&&assigner(object,source,customizer)}return object})}/**
+function createAssigner(assigner){return restParam(function(object,sources){var index=-1,length=null==object?0:sources.length,customizer=length>2?sources[length-2]:undefined,guard=length>2?sources[2]:undefined,thisArg=length>1?sources[length-1]:undefined;for("function"==typeof customizer?(customizer=bindCallback(customizer,thisArg,5),length-=2):(customizer="function"==typeof thisArg?thisArg:undefined,length-=customizer?1:0),guard&&isIterateeCall(sources[0],sources[1],guard)&&(customizer=length<3?undefined:customizer,length=1);++index<length;){var source=sources[index];source&&assigner(object,source,customizer)}return object})}/**
      * Creates a `baseEach` or `baseEachRight` function.
      *
      * @private
@@ -3073,7 +3664,7 @@ function createFindKey(objectFunc){return function(object,predicate,thisArg){ret
      * @param {boolean} [fromRight] Specify iterating from right to left.
      * @returns {Function} Returns the new flow function.
      */
-function createFlow(fromRight){return function(){for(var wrapper,length=arguments.length,index=fromRight?length:-1,leftIndex=0,funcs=Array(length);fromRight?index--:++index<length;){var func=funcs[leftIndex++]=arguments[index];if("function"!=typeof func)throw new TypeError(FUNC_ERROR_TEXT);!wrapper&&LodashWrapper.prototype.thru&&"wrapper"==getFuncName(func)&&(wrapper=new LodashWrapper([],!0))}for(index=wrapper?-1:length;++index<length;){func=funcs[index];var funcName=getFuncName(func),data="wrapper"==funcName?getData(func):undefined;wrapper=data&&isLaziable(data[0])&&data[1]==(ARY_FLAG|CURRY_FLAG|PARTIAL_FLAG|REARG_FLAG)&&!data[4].length&&1==data[9]?wrapper[getFuncName(data[0])].apply(wrapper,data[3]):1==func.length&&isLaziable(func)?wrapper[funcName]():wrapper.thru(func)}return function(){var args=arguments,value=args[0];if(wrapper&&1==args.length&&isArray(value)&&value.length>=LARGE_ARRAY_SIZE)return wrapper.plant(value).value();for(var index=0,result=length?funcs[index].apply(this,args):value;++index<length;)result=funcs[index].call(this,result);return result}}}/**
+function createFlow(fromRight){return function(){for(var wrapper,length=arguments.length,index=fromRight?length:-1,leftIndex=0,funcs=Array(length);fromRight?index--:++index<length;){var func=funcs[leftIndex++]=arguments[index];if("function"!=typeof func)throw new TypeError(FUNC_ERROR_TEXT);!wrapper&&LodashWrapper.prototype.thru&&"wrapper"==getFuncName(func)&&(wrapper=new LodashWrapper([],(!0)))}for(index=wrapper?-1:length;++index<length;){func=funcs[index];var funcName=getFuncName(func),data="wrapper"==funcName?getData(func):undefined;wrapper=data&&isLaziable(data[0])&&data[1]==(ARY_FLAG|CURRY_FLAG|PARTIAL_FLAG|REARG_FLAG)&&!data[4].length&&1==data[9]?wrapper[getFuncName(data[0])].apply(wrapper,data[3]):1==func.length&&isLaziable(func)?wrapper[funcName]():wrapper.thru(func)}return function(){var args=arguments,value=args[0];if(wrapper&&1==args.length&&isArray(value)&&value.length>=LARGE_ARRAY_SIZE)return wrapper.plant(value).value();for(var index=0,result=length?funcs[index].apply(this,args):value;++index<length;)result=funcs[index].call(this,result);return result}}}/**
      * Creates a function for `_.forEach` or `_.forEachRight`.
      *
      * @private
@@ -3088,14 +3679,14 @@ function createForEach(arrayFunc,eachFunc){return function(collection,iteratee,t
      * @param {Function} objectFunc The function to iterate over an object.
      * @returns {Function} Returns the new each function.
      */
-function createForIn(objectFunc){return function(object,iteratee,thisArg){return("function"!=typeof iteratee||thisArg!==undefined)&&(iteratee=bindCallback(iteratee,thisArg,3)),objectFunc(object,iteratee,keysIn)}}/**
+function createForIn(objectFunc){return function(object,iteratee,thisArg){return"function"==typeof iteratee&&thisArg===undefined||(iteratee=bindCallback(iteratee,thisArg,3)),objectFunc(object,iteratee,keysIn)}}/**
      * Creates a function for `_.forOwn` or `_.forOwnRight`.
      *
      * @private
      * @param {Function} objectFunc The function to iterate over an object.
      * @returns {Function} Returns the new each function.
      */
-function createForOwn(objectFunc){return function(object,iteratee,thisArg){return("function"!=typeof iteratee||thisArg!==undefined)&&(iteratee=bindCallback(iteratee,thisArg,3)),objectFunc(object,iteratee)}}/**
+function createForOwn(objectFunc){return function(object,iteratee,thisArg){return"function"==typeof iteratee&&thisArg===undefined||(iteratee=bindCallback(iteratee,thisArg,3)),objectFunc(object,iteratee)}}/**
      * Creates a function for `_.mapKeys` or `_.mapValues`.
      *
      * @private
@@ -3144,7 +3735,7 @@ function createReduce(arrayFunc,eachFunc){return function(collection,iteratee,ac
 function createHybridWrapper(func,bitmask,thisArg,partials,holders,partialsRight,holdersRight,argPos,ary,arity){function wrapper(){for(
 // Avoid `arguments` object use disqualifying optimizations by
 // converting it to an array before providing it to other functions.
-var length=arguments.length,index=length,args=Array(length);index--;)args[index]=arguments[index];if(partials&&(args=composeArgs(args,partials,holders)),partialsRight&&(args=composeArgsRight(args,partialsRight,holdersRight)),isCurry||isCurryRight){var placeholder=wrapper.placeholder,argsHolders=replaceHolders(args,placeholder);if(length-=argsHolders.length,arity>length){var newArgPos=argPos?arrayCopy(argPos):undefined,newArity=nativeMax(arity-length,0),newsHolders=isCurry?argsHolders:undefined,newHoldersRight=isCurry?undefined:argsHolders,newPartials=isCurry?args:undefined,newPartialsRight=isCurry?undefined:args;bitmask|=isCurry?PARTIAL_FLAG:PARTIAL_RIGHT_FLAG,bitmask&=~(isCurry?PARTIAL_RIGHT_FLAG:PARTIAL_FLAG),isCurryBound||(bitmask&=~(BIND_FLAG|BIND_KEY_FLAG));var newData=[func,bitmask,thisArg,newPartials,newsHolders,newPartialsRight,newHoldersRight,newArgPos,ary,newArity],result=createHybridWrapper.apply(undefined,newData);return isLaziable(func)&&setData(result,newData),result.placeholder=placeholder,result}}var thisBinding=isBind?thisArg:this,fn=isBindKey?thisBinding[func]:func;return argPos&&(args=reorder(args,argPos)),isAry&&ary<args.length&&(args.length=ary),this&&this!==root&&this instanceof wrapper&&(fn=Ctor||createCtorWrapper(func)),fn.apply(thisBinding,args)}var isAry=bitmask&ARY_FLAG,isBind=bitmask&BIND_FLAG,isBindKey=bitmask&BIND_KEY_FLAG,isCurry=bitmask&CURRY_FLAG,isCurryBound=bitmask&CURRY_BOUND_FLAG,isCurryRight=bitmask&CURRY_RIGHT_FLAG,Ctor=isBindKey?undefined:createCtorWrapper(func);return wrapper}/**
+var length=arguments.length,index=length,args=Array(length);index--;)args[index]=arguments[index];if(partials&&(args=composeArgs(args,partials,holders)),partialsRight&&(args=composeArgsRight(args,partialsRight,holdersRight)),isCurry||isCurryRight){var placeholder=wrapper.placeholder,argsHolders=replaceHolders(args,placeholder);if(length-=argsHolders.length,length<arity){var newArgPos=argPos?arrayCopy(argPos):undefined,newArity=nativeMax(arity-length,0),newsHolders=isCurry?argsHolders:undefined,newHoldersRight=isCurry?undefined:argsHolders,newPartials=isCurry?args:undefined,newPartialsRight=isCurry?undefined:args;bitmask|=isCurry?PARTIAL_FLAG:PARTIAL_RIGHT_FLAG,bitmask&=~(isCurry?PARTIAL_RIGHT_FLAG:PARTIAL_FLAG),isCurryBound||(bitmask&=~(BIND_FLAG|BIND_KEY_FLAG));var newData=[func,bitmask,thisArg,newPartials,newsHolders,newPartialsRight,newHoldersRight,newArgPos,ary,newArity],result=createHybridWrapper.apply(undefined,newData);return isLaziable(func)&&setData(result,newData),result.placeholder=placeholder,result}}var thisBinding=isBind?thisArg:this,fn=isBindKey?thisBinding[func]:func;return argPos&&(args=reorder(args,argPos)),isAry&&ary<args.length&&(args.length=ary),this&&this!==root&&this instanceof wrapper&&(fn=Ctor||createCtorWrapper(func)),fn.apply(thisBinding,args)}var isAry=bitmask&ARY_FLAG,isBind=bitmask&BIND_FLAG,isBindKey=bitmask&BIND_KEY_FLAG,isCurry=bitmask&CURRY_FLAG,isCurryBound=bitmask&CURRY_BOUND_FLAG,isCurryRight=bitmask&CURRY_RIGHT_FLAG,Ctor=isBindKey?undefined:createCtorWrapper(func);return wrapper}/**
      * Creates the padding required for `string` based on the given `length`.
      * The `chars` string is truncated if the number of characters exceeds `length`.
      *
@@ -3343,7 +3934,7 @@ function initCloneObject(object){var Ctor=object.constructor;return"function"==t
      * @param {boolean} [isDeep] Specify a deep clone.
      * @returns {Object} Returns the initialized clone.
      */
-function initCloneByTag(object,tag,isDeep){var Ctor=object.constructor;switch(tag){case arrayBufferTag:return bufferClone(object);case boolTag:case dateTag:return new Ctor(+object);case float32Tag:case float64Tag:case int8Tag:case int16Tag:case int32Tag:case uint8Tag:case uint8ClampedTag:case uint16Tag:case uint32Tag:var buffer=object.buffer;return new Ctor(isDeep?bufferClone(buffer):buffer,object.byteOffset,object.length);case numberTag:case stringTag:return new Ctor(object);case regexpTag:var result=new Ctor(object.source,reFlags.exec(object));result.lastIndex=object.lastIndex}return result}/**
+function initCloneByTag(object,tag,isDeep){var Ctor=object.constructor;switch(tag){case arrayBufferTag:return bufferClone(object);case boolTag:case dateTag:return new Ctor((+object));case float32Tag:case float64Tag:case int8Tag:case int16Tag:case int32Tag:case uint8Tag:case uint8ClampedTag:case uint16Tag:case uint32Tag:var buffer=object.buffer;return new Ctor(isDeep?bufferClone(buffer):buffer,object.byteOffset,object.length);case numberTag:case stringTag:return new Ctor(object);case regexpTag:var result=new Ctor(object.source,reFlags.exec(object));result.lastIndex=object.lastIndex}return result}/**
      * Invokes the method at `path` on `object`.
      *
      * @private
@@ -3367,7 +3958,7 @@ function isArrayLike(value){return null!=value&&isLength(getLength(value))}/**
      * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
      * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
      */
-function isIndex(value,length){return value="number"==typeof value||reIsUint.test(value)?+value:-1,length=null==length?MAX_SAFE_INTEGER:length,value>-1&&value%1==0&&length>value}/**
+function isIndex(value,length){return value="number"==typeof value||reIsUint.test(value)?+value:-1,length=null==length?MAX_SAFE_INTEGER:length,value>-1&&value%1==0&&value<length}/**
      * Checks if the provided arguments are from an iteratee call.
      *
      * @private
@@ -3400,7 +3991,7 @@ function isLaziable(func){var funcName=getFuncName(func),other=lodash[funcName];
      * @param {*} value The value to check.
      * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
      */
-function isLength(value){return"number"==typeof value&&value>-1&&value%1==0&&MAX_SAFE_INTEGER>=value}/**
+function isLength(value){return"number"==typeof value&&value>-1&&value%1==0&&value<=MAX_SAFE_INTEGER}/**
      * Checks if `value` is suitable for strict equality comparisons, i.e. `===`.
      *
      * @private
@@ -3423,7 +4014,7 @@ function isStrictComparable(value){return value===value&&!isObject(value)}/**
      * @param {Array} source The source metadata.
      * @returns {Array} Returns `data`.
      */
-function mergeData(data,source){var bitmask=data[1],srcBitmask=source[1],newBitmask=bitmask|srcBitmask,isCommon=ARY_FLAG>newBitmask,isCombo=srcBitmask==ARY_FLAG&&bitmask==CURRY_FLAG||srcBitmask==ARY_FLAG&&bitmask==REARG_FLAG&&data[7].length<=source[8]||srcBitmask==(ARY_FLAG|REARG_FLAG)&&bitmask==CURRY_FLAG;
+function mergeData(data,source){var bitmask=data[1],srcBitmask=source[1],newBitmask=bitmask|srcBitmask,isCommon=newBitmask<ARY_FLAG,isCombo=srcBitmask==ARY_FLAG&&bitmask==CURRY_FLAG||srcBitmask==ARY_FLAG&&bitmask==REARG_FLAG&&data[7].length<=source[8]||srcBitmask==(ARY_FLAG|REARG_FLAG)&&bitmask==CURRY_FLAG;
 // Exit early if metadata can't be merged.
 if(!isCommon&&!isCombo)return data;
 // Use source `thisArg` if available.
@@ -3530,7 +4121,7 @@ function wrapperClone(wrapper){return wrapper instanceof LazyWrapper?wrapper.clo
      * _.chunk(['a', 'b', 'c', 'd'], 3);
      * // => [['a', 'b', 'c'], ['d']]
      */
-function chunk(array,size,guard){size=(guard?isIterateeCall(array,size,guard):null==size)?1:nativeMax(nativeFloor(size)||1,1);for(var index=0,length=array?array.length:0,resIndex=-1,result=Array(nativeCeil(length/size));length>index;)result[++resIndex]=baseSlice(array,index,index+=size);return result}/**
+function chunk(array,size,guard){size=(guard?isIterateeCall(array,size,guard):null==size)?1:nativeMax(nativeFloor(size)||1,1);for(var index=0,length=array?array.length:0,resIndex=-1,result=Array(nativeCeil(length/size));index<length;)result[++resIndex]=baseSlice(array,index,index+=size);return result}/**
      * Creates an array with all falsey values removed. The values `false`, `null`,
      * `0`, `""`, `undefined`, and `NaN` are falsey.
      *
@@ -3568,7 +4159,7 @@ function compact(array){for(var index=-1,length=array?array.length:0,resIndex=-1
      * _.drop([1, 2, 3], 0);
      * // => [1, 2, 3]
      */
-function drop(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),baseSlice(array,0>n?0:n)):[]}/**
+function drop(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),baseSlice(array,n<0?0:n)):[]}/**
      * Creates a slice of `array` with `n` elements dropped from the end.
      *
      * @static
@@ -3592,7 +4183,7 @@ function drop(array,n,guard){var length=array?array.length:0;return length?((gua
      * _.dropRight([1, 2, 3], 0);
      * // => [1, 2, 3]
      */
-function dropRight(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),n=length-(+n||0),baseSlice(array,0,0>n?0:n)):[]}/**
+function dropRight(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),n=length-(+n||0),baseSlice(array,0,n<0?0:n)):[]}/**
      * Creates a slice of `array` excluding elements dropped from the end.
      * Elements are dropped until `predicate` returns falsey. The predicate is
      * bound to `thisArg` and invoked with three arguments: (value, index, array).
@@ -3796,7 +4387,7 @@ function flattenDeep(array){var length=array?array.length:0;return length?baseFl
      * _.indexOf([1, 1, 2, 2], 2, true);
      * // => 2
      */
-function indexOf(array,value,fromIndex){var length=array?array.length:0;if(!length)return-1;if("number"==typeof fromIndex)fromIndex=0>fromIndex?nativeMax(length+fromIndex,0):fromIndex;else if(fromIndex){var index=binaryIndex(array,value);return length>index&&(value===value?value===array[index]:array[index]!==array[index])?index:-1}return baseIndexOf(array,value,fromIndex||0)}/**
+function indexOf(array,value,fromIndex){var length=array?array.length:0;if(!length)return-1;if("number"==typeof fromIndex)fromIndex=fromIndex<0?nativeMax(length+fromIndex,0):fromIndex;else if(fromIndex){var index=binaryIndex(array,value);return index<length&&(value===value?value===array[index]:array[index]!==array[index])?index:-1}return baseIndexOf(array,value,fromIndex||0)}/**
      * Gets all but the last element of `array`.
      *
      * @static
@@ -3847,7 +4438,7 @@ function last(array){var length=array?array.length:0;return length?array[length-
      * _.lastIndexOf([1, 1, 2, 2], 2, true);
      * // => 3
      */
-function lastIndexOf(array,value,fromIndex){var length=array?array.length:0;if(!length)return-1;var index=length;if("number"==typeof fromIndex)index=(0>fromIndex?nativeMax(length+fromIndex,0):nativeMin(fromIndex||0,length-1))+1;else if(fromIndex){index=binaryIndex(array,value,!0)-1;var other=array[index];return(value===value?value===other:other!==other)?index:-1}if(value!==value)return indexOfNaN(array,index,!0);for(;index--;)if(array[index]===value)return index;return-1}/**
+function lastIndexOf(array,value,fromIndex){var length=array?array.length:0;if(!length)return-1;var index=length;if("number"==typeof fromIndex)index=(fromIndex<0?nativeMax(length+fromIndex,0):nativeMin(fromIndex||0,length-1))+1;else if(fromIndex){index=binaryIndex(array,value,!0)-1;var other=array[index];return(value===value?value===other:other!==other)?index:-1}if(value!==value)return indexOfNaN(array,index,!0);for(;index--;)if(array[index]===value)return index;return-1}/**
      * Removes all provided values from `array` using
      * [`SameValueZero`](http://ecma-international.org/ecma-262/6.0/#sec-samevaluezero)
      * for equality comparisons.
@@ -3959,7 +4550,7 @@ function slice(array,start,end){var length=array?array.length:0;return length?(e
      * _.take([1, 2, 3], 0);
      * // => []
      */
-function take(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),baseSlice(array,0,0>n?0:n)):[]}/**
+function take(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),baseSlice(array,0,n<0?0:n)):[]}/**
      * Creates a slice of `array` with `n` elements taken from the end.
      *
      * @static
@@ -3983,7 +4574,7 @@ function take(array,n,guard){var length=array?array.length:0;return length?((gua
      * _.takeRight([1, 2, 3], 0);
      * // => []
      */
-function takeRight(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),n=length-(+n||0),baseSlice(array,0>n?0:n)):[]}/**
+function takeRight(array,n,guard){var length=array?array.length:0;return length?((guard?isIterateeCall(array,n,guard):null==n)&&(n=1),n=length-(+n||0),baseSlice(array,n<0?0:n)):[]}/**
      * Creates a slice of `array` with elements taken from the end. Elements are
      * taken until `predicate` returns falsey. The predicate is bound to `thisArg`
      * and invoked with three arguments: (value, index, array).
@@ -4130,7 +4721,7 @@ function takeWhile(array,predicate,thisArg){return array&&array.length?baseWhile
      * _.uniq([{ 'x': 1 }, { 'x': 2 }, { 'x': 1 }], 'x');
      * // => [{ 'x': 1 }, { 'x': 2 }]
      */
-function uniq(array,isSorted,iteratee,thisArg){var length=array?array.length:0;if(!length)return[];null!=isSorted&&"boolean"!=typeof isSorted&&(thisArg=iteratee,iteratee=isIterateeCall(array,isSorted,thisArg)?undefined:isSorted,isSorted=!1);var callback=getCallback();return(null!=iteratee||callback!==baseCallback)&&(iteratee=callback(iteratee,thisArg,3)),isSorted&&getIndexOf()===baseIndexOf?sortedUniq(array,iteratee):baseUniq(array,iteratee)}/**
+function uniq(array,isSorted,iteratee,thisArg){var length=array?array.length:0;if(!length)return[];null!=isSorted&&"boolean"!=typeof isSorted&&(thisArg=iteratee,iteratee=isIterateeCall(array,isSorted,thisArg)?undefined:isSorted,isSorted=!1);var callback=getCallback();return null==iteratee&&callback===baseCallback||(iteratee=callback(iteratee,thisArg,3)),isSorted&&getIndexOf()===baseIndexOf?sortedUniq(array,iteratee):baseUniq(array,iteratee)}/**
      * This method is like `_.zip` except that it accepts an array of grouped
      * elements and creates an array regrouping the elements to their pre-zip
      * configuration.
@@ -4148,7 +4739,7 @@ function uniq(array,isSorted,iteratee,thisArg){var length=array?array.length:0;i
      * _.unzip(zipped);
      * // => [['fred', 'barney'], [30, 40], [true, false]]
      */
-function unzip(array){if(!array||!array.length)return[];var index=-1,length=0;array=arrayFilter(array,function(group){return isArrayLike(group)?(length=nativeMax(group.length,length),!0):void 0});for(var result=Array(length);++index<length;)result[index]=arrayMap(array,baseProperty(index));return result}/**
+function unzip(array){if(!array||!array.length)return[];var index=-1,length=0;array=arrayFilter(array,function(group){if(isArrayLike(group))return length=nativeMax(group.length,length),!0});for(var result=Array(length);++index<length;)result[index]=arrayMap(array,baseProperty(index));return result}/**
      * This method is like `_.unzip` except that it accepts an iteratee to specify
      * how regrouped values should be combined. The `iteratee` is bound to `thisArg`
      * and invoked with four arguments: (accumulator, value, index, group).
@@ -4440,7 +5031,7 @@ function wrapperValue(){return baseWrapperValue(this.__wrapped__,this.__actions_
      * _.every(users, 'active');
      * // => false
      */
-function every(collection,predicate,thisArg){var func=isArray(collection)?arrayEvery:baseEvery;return thisArg&&isIterateeCall(collection,predicate,thisArg)&&(predicate=undefined),("function"!=typeof predicate||thisArg!==undefined)&&(predicate=getCallback(predicate,thisArg,3)),func(collection,predicate)}/**
+function every(collection,predicate,thisArg){var func=isArray(collection)?arrayEvery:baseEvery;return thisArg&&isIterateeCall(collection,predicate,thisArg)&&(predicate=undefined),"function"==typeof predicate&&thisArg===undefined||(predicate=getCallback(predicate,thisArg,3)),func(collection,predicate)}/**
      * Iterates over elements of `collection`, returning an array of all elements
      * `predicate` returns truthy for. The predicate is bound to `thisArg` and
      * invoked with three arguments: (value, index|key, collection).
@@ -4547,7 +5138,7 @@ function findWhere(collection,source){return find(collection,baseMatches(source)
      * _.includes('pebbles', 'eb');
      * // => true
      */
-function includes(collection,target,fromIndex,guard){var length=collection?getLength(collection):0;return isLength(length)||(collection=values(collection),length=collection.length),fromIndex="number"!=typeof fromIndex||guard&&isIterateeCall(target,fromIndex,guard)?0:0>fromIndex?nativeMax(length+fromIndex,0):fromIndex||0,"string"==typeof collection||!isArray(collection)&&isString(collection)?length>=fromIndex&&collection.indexOf(target,fromIndex)>-1:!!length&&getIndexOf(collection,target,fromIndex)>-1}/**
+function includes(collection,target,fromIndex,guard){var length=collection?getLength(collection):0;return isLength(length)||(collection=values(collection),length=collection.length),fromIndex="number"!=typeof fromIndex||guard&&isIterateeCall(target,fromIndex,guard)?0:fromIndex<0?nativeMax(length+fromIndex,0):fromIndex||0,"string"==typeof collection||!isArray(collection)&&isString(collection)?fromIndex<=length&&collection.indexOf(target,fromIndex)>-1:!!length&&getIndexOf(collection,target,fromIndex)>-1}/**
      * Creates an array of values by running each element in `collection` through
      * `iteratee`. The `iteratee` is bound to `thisArg` and invoked with three
      * arguments: (value, index|key, collection).
@@ -4680,7 +5271,7 @@ function reject(collection,predicate,thisArg){var func=isArray(collection)?array
      * _.sample([1, 2, 3, 4], 2);
      * // => [3, 1]
      */
-function sample(collection,n,guard){if(guard?isIterateeCall(collection,n,guard):null==n){collection=toIterable(collection);var length=collection.length;return length>0?collection[baseRandom(0,length-1)]:undefined}var index=-1,result=toArray(collection),length=result.length,lastIndex=length-1;for(n=nativeMin(0>n?0:+n||0,length);++index<n;){var rand=baseRandom(index,lastIndex),value=result[rand];result[rand]=result[index],result[index]=value}return result.length=n,result}/**
+function sample(collection,n,guard){if(guard?isIterateeCall(collection,n,guard):null==n){collection=toIterable(collection);var length=collection.length;return length>0?collection[baseRandom(0,length-1)]:undefined}var index=-1,result=toArray(collection),length=result.length,lastIndex=length-1;for(n=nativeMin(n<0?0:+n||0,length);++index<n;){var rand=baseRandom(index,lastIndex),value=result[rand];result[rand]=result[index],result[index]=value}return result.length=n,result}/**
      * Creates an array of shuffled values, using a version of the
      * [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher-Yates_shuffle).
      *
@@ -4763,7 +5354,7 @@ function size(collection){var length=collection?getLength(collection):0;return i
      * _.some(users, 'active');
      * // => true
      */
-function some(collection,predicate,thisArg){var func=isArray(collection)?arraySome:baseSome;return thisArg&&isIterateeCall(collection,predicate,thisArg)&&(predicate=undefined),("function"!=typeof predicate||thisArg!==undefined)&&(predicate=getCallback(predicate,thisArg,3)),func(collection,predicate)}/**
+function some(collection,predicate,thisArg){var func=isArray(collection)?arraySome:baseSome;return thisArg&&isIterateeCall(collection,predicate,thisArg)&&(predicate=undefined),"function"==typeof predicate&&thisArg===undefined||(predicate=getCallback(predicate,thisArg,3)),func(collection,predicate)}/**
      * Creates an array of elements, sorted in ascending order by the results of
      * running each element in a collection through `iteratee`. This method performs
      * a stable sort, that is, it preserves the original sort order of equal elements.
@@ -4898,7 +5489,7 @@ function where(collection,source){return filter(collection,baseMatches(source))}
      * });
      * // => logs 'done saving!' after the two async saves have completed
      */
-function after(n,func){if("function"!=typeof func){if("function"!=typeof n)throw new TypeError(FUNC_ERROR_TEXT);var temp=n;n=func,func=temp}return n=nativeIsFinite(n=+n)?n:0,function(){return--n<1?func.apply(this,arguments):void 0}}/**
+function after(n,func){if("function"!=typeof func){if("function"!=typeof n)throw new TypeError(FUNC_ERROR_TEXT);var temp=n;n=func,func=temp}return n=nativeIsFinite(n=+n)?n:0,function(){if(--n<1)return func.apply(this,arguments)}}/**
      * Creates a function that accepts up to `n` arguments ignoring any
      * additional arguments.
      *
@@ -4930,7 +5521,7 @@ function ary(func,n,guard){return guard&&isIterateeCall(func,n,guard)&&(n=undefi
      * jQuery('#add').on('click', _.before(5, addContactToList));
      * // => allows adding up to 4 contacts to the list
      */
-function before(n,func){var result;if("function"!=typeof func){if("function"!=typeof n)throw new TypeError(FUNC_ERROR_TEXT);var temp=n;n=func,func=temp}return function(){return--n>0&&(result=func.apply(this,arguments)),1>=n&&(func=undefined),result}}/**
+function before(n,func){var result;if("function"!=typeof func){if("function"!=typeof n)throw new TypeError(FUNC_ERROR_TEXT);var temp=n;n=func,func=temp}return function(){return--n>0&&(result=func.apply(this,arguments)),n<=1&&(func=undefined),result}}/**
      * Creates a debounced function that delays invoking `func` until after `wait`
      * milliseconds have elapsed since the last time the debounced function was
      * invoked. The debounced function comes with a `cancel` method to cancel
@@ -4993,7 +5584,7 @@ function before(n,func){var result;if("function"!=typeof func){if("function"!=ty
      * // which cancels the debounced `todoChanges` call
      * delete models.todo;
      */
-function debounce(func,wait,options){function cancel(){timeoutId&&clearTimeout(timeoutId),maxTimeoutId&&clearTimeout(maxTimeoutId),lastCalled=0,maxTimeoutId=timeoutId=trailingCall=undefined}function complete(isCalled,id){id&&clearTimeout(id),maxTimeoutId=timeoutId=trailingCall=undefined,isCalled&&(lastCalled=now(),result=func.apply(thisArg,args),timeoutId||maxTimeoutId||(args=thisArg=undefined))}function delayed(){var remaining=wait-(now()-stamp);0>=remaining||remaining>wait?complete(trailingCall,maxTimeoutId):timeoutId=setTimeout(delayed,remaining)}function maxDelayed(){complete(trailing,timeoutId)}function debounced(){if(args=arguments,stamp=now(),thisArg=this,trailingCall=trailing&&(timeoutId||!leading),maxWait===!1)var leadingCall=leading&&!timeoutId;else{maxTimeoutId||leading||(lastCalled=stamp);var remaining=maxWait-(stamp-lastCalled),isCalled=0>=remaining||remaining>maxWait;isCalled?(maxTimeoutId&&(maxTimeoutId=clearTimeout(maxTimeoutId)),lastCalled=stamp,result=func.apply(thisArg,args)):maxTimeoutId||(maxTimeoutId=setTimeout(maxDelayed,remaining))}return isCalled&&timeoutId?timeoutId=clearTimeout(timeoutId):timeoutId||wait===maxWait||(timeoutId=setTimeout(delayed,wait)),leadingCall&&(isCalled=!0,result=func.apply(thisArg,args)),!isCalled||timeoutId||maxTimeoutId||(args=thisArg=undefined),result}var args,maxTimeoutId,result,stamp,thisArg,timeoutId,trailingCall,lastCalled=0,maxWait=!1,trailing=!0;if("function"!=typeof func)throw new TypeError(FUNC_ERROR_TEXT);if(wait=0>wait?0:+wait||0,options===!0){var leading=!0;trailing=!1}else isObject(options)&&(leading=!!options.leading,maxWait="maxWait"in options&&nativeMax(+options.maxWait||0,wait),trailing="trailing"in options?!!options.trailing:trailing);return debounced.cancel=cancel,debounced}/**
+function debounce(func,wait,options){function cancel(){timeoutId&&clearTimeout(timeoutId),maxTimeoutId&&clearTimeout(maxTimeoutId),lastCalled=0,maxTimeoutId=timeoutId=trailingCall=undefined}function complete(isCalled,id){id&&clearTimeout(id),maxTimeoutId=timeoutId=trailingCall=undefined,isCalled&&(lastCalled=now(),result=func.apply(thisArg,args),timeoutId||maxTimeoutId||(args=thisArg=undefined))}function delayed(){var remaining=wait-(now()-stamp);remaining<=0||remaining>wait?complete(trailingCall,maxTimeoutId):timeoutId=setTimeout(delayed,remaining)}function maxDelayed(){complete(trailing,timeoutId)}function debounced(){if(args=arguments,stamp=now(),thisArg=this,trailingCall=trailing&&(timeoutId||!leading),maxWait===!1)var leadingCall=leading&&!timeoutId;else{maxTimeoutId||leading||(lastCalled=stamp);var remaining=maxWait-(stamp-lastCalled),isCalled=remaining<=0||remaining>maxWait;isCalled?(maxTimeoutId&&(maxTimeoutId=clearTimeout(maxTimeoutId)),lastCalled=stamp,result=func.apply(thisArg,args)):maxTimeoutId||(maxTimeoutId=setTimeout(maxDelayed,remaining))}return isCalled&&timeoutId?timeoutId=clearTimeout(timeoutId):timeoutId||wait===maxWait||(timeoutId=setTimeout(delayed,wait)),leadingCall&&(isCalled=!0,result=func.apply(thisArg,args)),!isCalled||timeoutId||maxTimeoutId||(args=thisArg=undefined),result}var args,maxTimeoutId,result,stamp,thisArg,timeoutId,trailingCall,lastCalled=0,maxWait=!1,trailing=!0;if("function"!=typeof func)throw new TypeError(FUNC_ERROR_TEXT);if(wait=wait<0?0:+wait||0,options===!0){var leading=!0;trailing=!1}else isObject(options)&&(leading=!!options.leading,maxWait="maxWait"in options&&nativeMax(+options.maxWait||0,wait),trailing="trailing"in options?!!options.trailing:trailing);return debounced.cancel=cancel,debounced}/**
      * Creates a function that memoizes the result of `func`. If `resolver` is
      * provided it determines the cache key for storing the result based on the
      * arguments provided to the memoized function. By default, the first argument
@@ -5421,7 +6012,7 @@ function isElement(value){return!!value&&1===value.nodeType&&isObjectLike(value)
      * _.isEmpty({ 'a': 1 });
      * // => false
      */
-function isEmpty(value){return null==value?!0:isArrayLike(value)&&(isArray(value)||isString(value)||isArguments(value)||isObjectLike(value)&&isFunction(value.splice))?!value.length:!keys(value).length}/**
+function isEmpty(value){return null==value||(isArrayLike(value)&&(isArray(value)||isString(value)||isArguments(value)||isObjectLike(value)&&isFunction(value.splice))?!value.length:!keys(value).length)}/**
      * Performs a deep comparison between two values to determine if they are
      * equivalent. If `customizer` is provided it's invoked to compare values.
      * If `customizer` returns `undefined` comparisons are handled by the method
@@ -5635,7 +6226,7 @@ return isNumber(value)&&value!=+value}/**
      * _.isNative(_);
      * // => false
      */
-function isNative(value){return null==value?!1:isFunction(value)?reIsNative.test(fnToString.call(value)):isObjectLike(value)&&reIsHostCtor.test(value)}/**
+function isNative(value){return null!=value&&(isFunction(value)?reIsNative.test(fnToString.call(value)):isObjectLike(value)&&reIsHostCtor.test(value))}/**
      * Checks if `value` is `null`.
      *
      * @static
@@ -5797,7 +6388,7 @@ function isUndefined(value){return value===undefined}/**
      * _.lt(3, 1);
      * // => false
      */
-function lt(value,other){return other>value}/**
+function lt(value,other){return value<other}/**
      * Checks if `value` is less than or equal to `other`.
      *
      * @static
@@ -5817,7 +6408,7 @@ function lt(value,other){return other>value}/**
      * _.lte(3, 1);
      * // => false
      */
-function lte(value,other){return other>=value}/**
+function lte(value,other){return value<=other}/**
      * Converts `value` to an array.
      *
      * @static
@@ -6244,7 +6835,7 @@ function deburr(string){return string=baseToString(string),string&&string.replac
      * _.endsWith('abc', 'b', 2);
      * // => true
      */
-function endsWith(string,target,position){string=baseToString(string),target+="";var length=string.length;return position=position===undefined?length:nativeMin(0>position?0:+position||0,length),position-=target.length,position>=0&&string.indexOf(target,position)==position}/**
+function endsWith(string,target,position){string=baseToString(string),target+="";var length=string.length;return position=position===undefined?length:nativeMin(position<0?0:+position||0,length),position-=target.length,position>=0&&string.indexOf(target,position)==position}/**
      * Converts the characters "&", "<", ">", '"', "'", and "\`", in `string` to
      * their corresponding HTML entities.
      *
@@ -6361,7 +6952,7 @@ return(guard?isIterateeCall(string,radix,guard):null==radix)?radix=0:radix&&(rad
      * _.repeat('abc', 0);
      * // => ''
      */
-function repeat(string,n){var result="";if(string=baseToString(string),n=+n,1>n||!string||!nativeIsFinite(n))return result;
+function repeat(string,n){var result="";if(string=baseToString(string),n=+n,n<1||!string||!nativeIsFinite(n))return result;
 // Leverage the exponentiation by squaring algorithm for a faster repeat.
 // See https://en.wikipedia.org/wiki/Exponentiation_by_squaring for more details.
 do n%2&&(result+=string),n=nativeFloor(n/2),string+=string;while(n);return result}/**
@@ -6385,7 +6976,7 @@ do n%2&&(result+=string),n=nativeFloor(n/2),string+=string;while(n);return resul
      * _.startsWith('abc', 'b', 1);
      * // => true
      */
-function startsWith(string,target,position){return string=baseToString(string),position=null==position?0:nativeMin(0>position?0:+position||0,string.length),string.lastIndexOf(target,position)==position}/**
+function startsWith(string,target,position){return string=baseToString(string),position=null==position?0:nativeMin(position<0?0:+position||0,string.length),string.lastIndexOf(target,position)==position}/**
      * Creates a compiled template function that can interpolate data properties
      * in "interpolate" delimiters, HTML-escape interpolated data properties in
      * "escape" delimiters, and execute JavaScript in "evaluate" delimiters. Data
@@ -6492,7 +7083,11 @@ var settings=lodash.templateSettings;otherOptions&&isIterateeCall(string,options
 return interpolateValue||(interpolateValue=esTemplateValue),source+=string.slice(index,offset).replace(reUnescapedString,escapeStringChar),escapeValue&&(isEscaping=!0,source+="' +\n__e("+escapeValue+") +\n'"),evaluateValue&&(isEvaluating=!0,source+="';\n"+evaluateValue+";\n__p += '"),interpolateValue&&(source+="' +\n((__t = ("+interpolateValue+")) == null ? '' : __t) +\n'"),index=offset+match.length,match}),source+="';\n";
 // If `variable` is not specified wrap a with-statement around the generated
 // code to add the data object to the top of the scope chain.
-var variable=options.variable;variable||(source="with (obj) {\n"+source+"\n}\n"),source=(isEvaluating?source.replace(reEmptyStringLeading,""):source).replace(reEmptyStringMiddle,"$1").replace(reEmptyStringTrailing,"$1;"),source="function("+(variable||"obj")+") {\n"+(variable?"":"obj || (obj = {});\n")+"var __t, __p = ''"+(isEscaping?", __e = _.escape":"")+(isEvaluating?", __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n":";\n")+source+"return __p\n}";var result=attempt(function(){return Function(importsKeys,sourceURL+"return "+source).apply(undefined,importsValues)});if(
+var variable=options.variable;variable||(source="with (obj) {\n"+source+"\n}\n"),
+// Cleanup code by stripping empty strings.
+source=(isEvaluating?source.replace(reEmptyStringLeading,""):source).replace(reEmptyStringMiddle,"$1").replace(reEmptyStringTrailing,"$1;"),
+// Frame code as the function body.
+source="function("+(variable||"obj")+") {\n"+(variable?"":"obj || (obj = {});\n")+"var __t, __p = ''"+(isEscaping?", __e = _.escape":"")+(isEvaluating?", __j = Array.prototype.join;\nfunction print() { __p += __j.call(arguments, '') }\n":";\n")+source+"return __p\n}";var result=attempt(function(){return Function(importsKeys,sourceURL+"return "+source).apply(undefined,importsValues)});if(
 // Provide the compiled function's source by its `toString` method or
 // the `source` property as a convenience for inlining compiled templates.
 result.source=source,isError(result))throw result;return result}/**
@@ -6592,7 +7187,7 @@ function trimRight(string,chars,guard){var value=string;return string=baseToStri
      * });
      * // => 'hi-diddly-ho there, neig [...]'
      */
-function trunc(string,options,guard){guard&&isIterateeCall(string,options,guard)&&(options=undefined);var length=DEFAULT_TRUNC_LENGTH,omission=DEFAULT_TRUNC_OMISSION;if(null!=options)if(isObject(options)){var separator="separator"in options?options.separator:separator;length="length"in options?+options.length||0:length,omission="omission"in options?baseToString(options.omission):omission}else length=+options||0;if(string=baseToString(string),length>=string.length)return string;var end=length-omission.length;if(1>end)return omission;var result=string.slice(0,end);if(null==separator)return result+omission;if(isRegExp(separator)){if(string.slice(end).search(separator)){var match,newEnd,substring=string.slice(0,end);for(separator.global||(separator=RegExp(separator.source,(reFlags.exec(separator)||"")+"g")),separator.lastIndex=0;match=separator.exec(substring);)newEnd=match.index;result=result.slice(0,null==newEnd?end:newEnd)}}else if(string.indexOf(separator,end)!=end){var index=result.lastIndexOf(separator);index>-1&&(result=result.slice(0,index))}return result+omission}/**
+function trunc(string,options,guard){guard&&isIterateeCall(string,options,guard)&&(options=undefined);var length=DEFAULT_TRUNC_LENGTH,omission=DEFAULT_TRUNC_OMISSION;if(null!=options)if(isObject(options)){var separator="separator"in options?options.separator:separator;length="length"in options?+options.length||0:length,omission="omission"in options?baseToString(options.omission):omission}else length=+options||0;if(string=baseToString(string),length>=string.length)return string;var end=length-omission.length;if(end<1)return omission;var result=string.slice(0,end);if(null==separator)return result+omission;if(isRegExp(separator)){if(string.slice(end).search(separator)){var match,newEnd,substring=string.slice(0,end);for(separator.global||(separator=RegExp(separator.source,(reFlags.exec(separator)||"")+"g")),separator.lastIndex=0;match=separator.exec(substring);)newEnd=match.index;result=result.slice(0,null==newEnd?end:newEnd)}}else if(string.indexOf(separator,end)!=end){var index=result.lastIndexOf(separator);index>-1&&(result=result.slice(0,index))}return result+omission}/**
      * The inverse of `_.escape`; this method converts the HTML entities
      * `&amp;`, `&lt;`, `&gt;`, `&quot;`, `&#39;`, and `&#96;` in `string` to their
      * corresponding characters.
@@ -6916,7 +7511,7 @@ var index=-1,length=nativeMax(nativeCeil((end-start)/(step||1)),0),result=Array(
 function times(n,iteratee,thisArg){
 // Exit early to avoid a JSC JIT bug in Safari 8
 // where `Array(0)` is treated as `Array(1)`.
-if(n=nativeFloor(n),1>n||!nativeIsFinite(n))return[];var index=-1,result=Array(nativeMin(n,MAX_ARRAY_LENGTH));for(iteratee=bindCallback(iteratee,thisArg,1);++index<n;)MAX_ARRAY_LENGTH>index?result[index]=iteratee(index):iteratee(index);return result}/**
+if(n=nativeFloor(n),n<1||!nativeIsFinite(n))return[];var index=-1,result=Array(nativeMin(n,MAX_ARRAY_LENGTH));for(iteratee=bindCallback(iteratee,thisArg,1);++index<n;)index<MAX_ARRAY_LENGTH?result[index]=iteratee(index):iteratee(index);return result}/**
      * Generates a unique ID. If `prefix` is provided the ID is appended to it.
      *
      * @static
@@ -7071,7 +7666,7 @@ var baseCreate=function(){function object(){}return function(prototype){if(isObj
 // Add functions to the lazy wrapper.
 // Add chaining functions to the `lodash` wrapper.
 // Add function aliases to the `lodash` wrapper.
-return lodash.prototype=baseLodash.prototype,LodashWrapper.prototype=baseCreate(baseLodash.prototype),LodashWrapper.prototype.constructor=LodashWrapper,LazyWrapper.prototype=baseCreate(baseLodash.prototype),LazyWrapper.prototype.constructor=LazyWrapper,MapCache.prototype["delete"]=mapDelete,MapCache.prototype.get=mapGet,MapCache.prototype.has=mapHas,MapCache.prototype.set=mapSet,SetCache.prototype.push=cachePush,memoize.Cache=MapCache,lodash.after=after,lodash.ary=ary,lodash.assign=assign,lodash.at=at,lodash.before=before,lodash.bind=bind,lodash.bindAll=bindAll,lodash.bindKey=bindKey,lodash.callback=callback,lodash.chain=chain,lodash.chunk=chunk,lodash.compact=compact,lodash.constant=constant,lodash.countBy=countBy,lodash.create=create,lodash.curry=curry,lodash.curryRight=curryRight,lodash.debounce=debounce,lodash.defaults=defaults,lodash.defaultsDeep=defaultsDeep,lodash.defer=defer,lodash.delay=delay,lodash.difference=difference,lodash.drop=drop,lodash.dropRight=dropRight,lodash.dropRightWhile=dropRightWhile,lodash.dropWhile=dropWhile,lodash.fill=fill,lodash.filter=filter,lodash.flatten=flatten,lodash.flattenDeep=flattenDeep,lodash.flow=flow,lodash.flowRight=flowRight,lodash.forEach=forEach,lodash.forEachRight=forEachRight,lodash.forIn=forIn,lodash.forInRight=forInRight,lodash.forOwn=forOwn,lodash.forOwnRight=forOwnRight,lodash.functions=functions,lodash.groupBy=groupBy,lodash.indexBy=indexBy,lodash.initial=initial,lodash.intersection=intersection,lodash.invert=invert,lodash.invoke=invoke,lodash.keys=keys,lodash.keysIn=keysIn,lodash.map=map,lodash.mapKeys=mapKeys,lodash.mapValues=mapValues,lodash.matches=matches,lodash.matchesProperty=matchesProperty,lodash.memoize=memoize,lodash.merge=merge,lodash.method=method,lodash.methodOf=methodOf,lodash.mixin=mixin,lodash.modArgs=modArgs,lodash.negate=negate,lodash.omit=omit,lodash.once=once,lodash.pairs=pairs,lodash.partial=partial,lodash.partialRight=partialRight,lodash.partition=partition,lodash.pick=pick,lodash.pluck=pluck,lodash.property=property,lodash.propertyOf=propertyOf,lodash.pull=pull,lodash.pullAt=pullAt,lodash.range=range,lodash.rearg=rearg,lodash.reject=reject,lodash.remove=remove,lodash.rest=rest,lodash.restParam=restParam,lodash.set=set,lodash.shuffle=shuffle,lodash.slice=slice,lodash.sortBy=sortBy,lodash.sortByAll=sortByAll,lodash.sortByOrder=sortByOrder,lodash.spread=spread,lodash.take=take,lodash.takeRight=takeRight,lodash.takeRightWhile=takeRightWhile,lodash.takeWhile=takeWhile,lodash.tap=tap,lodash.throttle=throttle,lodash.thru=thru,lodash.times=times,lodash.toArray=toArray,lodash.toPlainObject=toPlainObject,lodash.transform=transform,lodash.union=union,lodash.uniq=uniq,lodash.unzip=unzip,lodash.unzipWith=unzipWith,lodash.values=values,lodash.valuesIn=valuesIn,lodash.where=where,lodash.without=without,lodash.wrap=wrap,lodash.xor=xor,lodash.zip=zip,lodash.zipObject=zipObject,lodash.zipWith=zipWith,lodash.backflow=flowRight,lodash.collect=map,lodash.compose=flowRight,lodash.each=forEach,lodash.eachRight=forEachRight,lodash.extend=assign,lodash.iteratee=callback,lodash.methods=functions,lodash.object=zipObject,lodash.select=filter,lodash.tail=rest,lodash.unique=uniq,mixin(lodash,lodash),lodash.add=add,lodash.attempt=attempt,lodash.camelCase=camelCase,lodash.capitalize=capitalize,lodash.ceil=ceil,lodash.clone=clone,lodash.cloneDeep=cloneDeep,lodash.deburr=deburr,lodash.endsWith=endsWith,lodash.escape=escape,lodash.escapeRegExp=escapeRegExp,lodash.every=every,lodash.find=find,lodash.findIndex=findIndex,lodash.findKey=findKey,lodash.findLast=findLast,lodash.findLastIndex=findLastIndex,lodash.findLastKey=findLastKey,lodash.findWhere=findWhere,lodash.first=first,lodash.floor=floor,lodash.get=get,lodash.gt=gt,lodash.gte=gte,lodash.has=has,lodash.identity=identity,lodash.includes=includes,lodash.indexOf=indexOf,lodash.inRange=inRange,lodash.isArguments=isArguments,lodash.isArray=isArray,lodash.isBoolean=isBoolean,lodash.isDate=isDate,lodash.isElement=isElement,lodash.isEmpty=isEmpty,lodash.isEqual=isEqual,lodash.isError=isError,lodash.isFinite=isFinite,lodash.isFunction=isFunction,lodash.isMatch=isMatch,lodash.isNaN=isNaN,lodash.isNative=isNative,lodash.isNull=isNull,lodash.isNumber=isNumber,lodash.isObject=isObject,lodash.isPlainObject=isPlainObject,lodash.isRegExp=isRegExp,lodash.isString=isString,lodash.isTypedArray=isTypedArray,lodash.isUndefined=isUndefined,lodash.kebabCase=kebabCase,lodash.last=last,lodash.lastIndexOf=lastIndexOf,lodash.lt=lt,lodash.lte=lte,lodash.max=max,lodash.min=min,lodash.noConflict=noConflict,lodash.noop=noop,lodash.now=now,lodash.pad=pad,lodash.padLeft=padLeft,lodash.padRight=padRight,lodash.parseInt=parseInt,lodash.random=random,lodash.reduce=reduce,lodash.reduceRight=reduceRight,lodash.repeat=repeat,lodash.result=result,lodash.round=round,lodash.runInContext=runInContext,lodash.size=size,lodash.snakeCase=snakeCase,lodash.some=some,lodash.sortedIndex=sortedIndex,lodash.sortedLastIndex=sortedLastIndex,lodash.startCase=startCase,lodash.startsWith=startsWith,lodash.sum=sum,lodash.template=template,lodash.trim=trim,lodash.trimLeft=trimLeft,lodash.trimRight=trimRight,lodash.trunc=trunc,lodash.unescape=unescape,lodash.uniqueId=uniqueId,lodash.words=words,lodash.all=every,lodash.any=some,lodash.contains=includes,lodash.eq=isEqual,lodash.detect=find,lodash.foldl=reduce,lodash.foldr=reduceRight,lodash.head=first,lodash.include=includes,lodash.inject=reduce,mixin(lodash,function(){var source={};return baseForOwn(lodash,function(func,methodName){lodash.prototype[methodName]||(source[methodName]=func)}),source}(),!1),lodash.sample=sample,lodash.prototype.sample=function(n){return this.__chain__||null!=n?this.thru(function(value){return sample(value,n)}):sample(this.value())},lodash.VERSION=VERSION,arrayEach(["bind","bindKey","curry","curryRight","partial","partialRight"],function(methodName){lodash[methodName].placeholder=lodash}),arrayEach(["drop","take"],function(methodName,index){LazyWrapper.prototype[methodName]=function(n){var filtered=this.__filtered__;if(filtered&&!index)return new LazyWrapper(this);n=null==n?1:nativeMax(nativeFloor(n)||0,0);var result=this.clone();return filtered?result.__takeCount__=nativeMin(result.__takeCount__,n):result.__views__.push({size:n,type:methodName+(result.__dir__<0?"Right":"")}),result},LazyWrapper.prototype[methodName+"Right"]=function(n){return this.reverse()[methodName](n).reverse()}}),arrayEach(["filter","map","takeWhile"],function(methodName,index){var type=index+1,isFilter=type!=LAZY_MAP_FLAG;LazyWrapper.prototype[methodName]=function(iteratee,thisArg){var result=this.clone();return result.__iteratees__.push({iteratee:getCallback(iteratee,thisArg,1),type:type}),result.__filtered__=result.__filtered__||isFilter,result}}),arrayEach(["first","last"],function(methodName,index){var takeName="take"+(index?"Right":"");LazyWrapper.prototype[methodName]=function(){return this[takeName](1).value()[0]}}),arrayEach(["initial","rest"],function(methodName,index){var dropName="drop"+(index?"":"Right");LazyWrapper.prototype[methodName]=function(){return this.__filtered__?new LazyWrapper(this):this[dropName](1)}}),arrayEach(["pluck","where"],function(methodName,index){var operationName=index?"filter":"map",createCallback=index?baseMatches:property;LazyWrapper.prototype[methodName]=function(value){return this[operationName](createCallback(value))}}),LazyWrapper.prototype.compact=function(){return this.filter(identity)},LazyWrapper.prototype.reject=function(predicate,thisArg){return predicate=getCallback(predicate,thisArg,1),this.filter(function(value){return!predicate(value)})},LazyWrapper.prototype.slice=function(start,end){start=null==start?0:+start||0;var result=this;return result.__filtered__&&(start>0||0>end)?new LazyWrapper(result):(0>start?result=result.takeRight(-start):start&&(result=result.drop(start)),end!==undefined&&(end=+end||0,result=0>end?result.dropRight(-end):result.take(end-start)),result)},LazyWrapper.prototype.takeRightWhile=function(predicate,thisArg){return this.reverse().takeWhile(predicate,thisArg).reverse()},LazyWrapper.prototype.toArray=function(){return this.take(POSITIVE_INFINITY)},baseForOwn(LazyWrapper.prototype,function(func,methodName){var checkIteratee=/^(?:filter|map|reject)|While$/.test(methodName),retUnwrapped=/^(?:first|last)$/.test(methodName),lodashFunc=lodash[retUnwrapped?"take"+("last"==methodName?"Right":""):methodName];lodashFunc&&(lodash.prototype[methodName]=function(){var args=retUnwrapped?[1]:arguments,chainAll=this.__chain__,value=this.__wrapped__,isHybrid=!!this.__actions__.length,isLazy=value instanceof LazyWrapper,iteratee=args[0],useLazy=isLazy||isArray(value);useLazy&&checkIteratee&&"function"==typeof iteratee&&1!=iteratee.length&&(
+return lodash.prototype=baseLodash.prototype,LodashWrapper.prototype=baseCreate(baseLodash.prototype),LodashWrapper.prototype.constructor=LodashWrapper,LazyWrapper.prototype=baseCreate(baseLodash.prototype),LazyWrapper.prototype.constructor=LazyWrapper,MapCache.prototype["delete"]=mapDelete,MapCache.prototype.get=mapGet,MapCache.prototype.has=mapHas,MapCache.prototype.set=mapSet,SetCache.prototype.push=cachePush,memoize.Cache=MapCache,lodash.after=after,lodash.ary=ary,lodash.assign=assign,lodash.at=at,lodash.before=before,lodash.bind=bind,lodash.bindAll=bindAll,lodash.bindKey=bindKey,lodash.callback=callback,lodash.chain=chain,lodash.chunk=chunk,lodash.compact=compact,lodash.constant=constant,lodash.countBy=countBy,lodash.create=create,lodash.curry=curry,lodash.curryRight=curryRight,lodash.debounce=debounce,lodash.defaults=defaults,lodash.defaultsDeep=defaultsDeep,lodash.defer=defer,lodash.delay=delay,lodash.difference=difference,lodash.drop=drop,lodash.dropRight=dropRight,lodash.dropRightWhile=dropRightWhile,lodash.dropWhile=dropWhile,lodash.fill=fill,lodash.filter=filter,lodash.flatten=flatten,lodash.flattenDeep=flattenDeep,lodash.flow=flow,lodash.flowRight=flowRight,lodash.forEach=forEach,lodash.forEachRight=forEachRight,lodash.forIn=forIn,lodash.forInRight=forInRight,lodash.forOwn=forOwn,lodash.forOwnRight=forOwnRight,lodash.functions=functions,lodash.groupBy=groupBy,lodash.indexBy=indexBy,lodash.initial=initial,lodash.intersection=intersection,lodash.invert=invert,lodash.invoke=invoke,lodash.keys=keys,lodash.keysIn=keysIn,lodash.map=map,lodash.mapKeys=mapKeys,lodash.mapValues=mapValues,lodash.matches=matches,lodash.matchesProperty=matchesProperty,lodash.memoize=memoize,lodash.merge=merge,lodash.method=method,lodash.methodOf=methodOf,lodash.mixin=mixin,lodash.modArgs=modArgs,lodash.negate=negate,lodash.omit=omit,lodash.once=once,lodash.pairs=pairs,lodash.partial=partial,lodash.partialRight=partialRight,lodash.partition=partition,lodash.pick=pick,lodash.pluck=pluck,lodash.property=property,lodash.propertyOf=propertyOf,lodash.pull=pull,lodash.pullAt=pullAt,lodash.range=range,lodash.rearg=rearg,lodash.reject=reject,lodash.remove=remove,lodash.rest=rest,lodash.restParam=restParam,lodash.set=set,lodash.shuffle=shuffle,lodash.slice=slice,lodash.sortBy=sortBy,lodash.sortByAll=sortByAll,lodash.sortByOrder=sortByOrder,lodash.spread=spread,lodash.take=take,lodash.takeRight=takeRight,lodash.takeRightWhile=takeRightWhile,lodash.takeWhile=takeWhile,lodash.tap=tap,lodash.throttle=throttle,lodash.thru=thru,lodash.times=times,lodash.toArray=toArray,lodash.toPlainObject=toPlainObject,lodash.transform=transform,lodash.union=union,lodash.uniq=uniq,lodash.unzip=unzip,lodash.unzipWith=unzipWith,lodash.values=values,lodash.valuesIn=valuesIn,lodash.where=where,lodash.without=without,lodash.wrap=wrap,lodash.xor=xor,lodash.zip=zip,lodash.zipObject=zipObject,lodash.zipWith=zipWith,lodash.backflow=flowRight,lodash.collect=map,lodash.compose=flowRight,lodash.each=forEach,lodash.eachRight=forEachRight,lodash.extend=assign,lodash.iteratee=callback,lodash.methods=functions,lodash.object=zipObject,lodash.select=filter,lodash.tail=rest,lodash.unique=uniq,mixin(lodash,lodash),lodash.add=add,lodash.attempt=attempt,lodash.camelCase=camelCase,lodash.capitalize=capitalize,lodash.ceil=ceil,lodash.clone=clone,lodash.cloneDeep=cloneDeep,lodash.deburr=deburr,lodash.endsWith=endsWith,lodash.escape=escape,lodash.escapeRegExp=escapeRegExp,lodash.every=every,lodash.find=find,lodash.findIndex=findIndex,lodash.findKey=findKey,lodash.findLast=findLast,lodash.findLastIndex=findLastIndex,lodash.findLastKey=findLastKey,lodash.findWhere=findWhere,lodash.first=first,lodash.floor=floor,lodash.get=get,lodash.gt=gt,lodash.gte=gte,lodash.has=has,lodash.identity=identity,lodash.includes=includes,lodash.indexOf=indexOf,lodash.inRange=inRange,lodash.isArguments=isArguments,lodash.isArray=isArray,lodash.isBoolean=isBoolean,lodash.isDate=isDate,lodash.isElement=isElement,lodash.isEmpty=isEmpty,lodash.isEqual=isEqual,lodash.isError=isError,lodash.isFinite=isFinite,lodash.isFunction=isFunction,lodash.isMatch=isMatch,lodash.isNaN=isNaN,lodash.isNative=isNative,lodash.isNull=isNull,lodash.isNumber=isNumber,lodash.isObject=isObject,lodash.isPlainObject=isPlainObject,lodash.isRegExp=isRegExp,lodash.isString=isString,lodash.isTypedArray=isTypedArray,lodash.isUndefined=isUndefined,lodash.kebabCase=kebabCase,lodash.last=last,lodash.lastIndexOf=lastIndexOf,lodash.lt=lt,lodash.lte=lte,lodash.max=max,lodash.min=min,lodash.noConflict=noConflict,lodash.noop=noop,lodash.now=now,lodash.pad=pad,lodash.padLeft=padLeft,lodash.padRight=padRight,lodash.parseInt=parseInt,lodash.random=random,lodash.reduce=reduce,lodash.reduceRight=reduceRight,lodash.repeat=repeat,lodash.result=result,lodash.round=round,lodash.runInContext=runInContext,lodash.size=size,lodash.snakeCase=snakeCase,lodash.some=some,lodash.sortedIndex=sortedIndex,lodash.sortedLastIndex=sortedLastIndex,lodash.startCase=startCase,lodash.startsWith=startsWith,lodash.sum=sum,lodash.template=template,lodash.trim=trim,lodash.trimLeft=trimLeft,lodash.trimRight=trimRight,lodash.trunc=trunc,lodash.unescape=unescape,lodash.uniqueId=uniqueId,lodash.words=words,lodash.all=every,lodash.any=some,lodash.contains=includes,lodash.eq=isEqual,lodash.detect=find,lodash.foldl=reduce,lodash.foldr=reduceRight,lodash.head=first,lodash.include=includes,lodash.inject=reduce,mixin(lodash,function(){var source={};return baseForOwn(lodash,function(func,methodName){lodash.prototype[methodName]||(source[methodName]=func)}),source}(),!1),lodash.sample=sample,lodash.prototype.sample=function(n){return this.__chain__||null!=n?this.thru(function(value){return sample(value,n)}):sample(this.value())},lodash.VERSION=VERSION,arrayEach(["bind","bindKey","curry","curryRight","partial","partialRight"],function(methodName){lodash[methodName].placeholder=lodash}),arrayEach(["drop","take"],function(methodName,index){LazyWrapper.prototype[methodName]=function(n){var filtered=this.__filtered__;if(filtered&&!index)return new LazyWrapper(this);n=null==n?1:nativeMax(nativeFloor(n)||0,0);var result=this.clone();return filtered?result.__takeCount__=nativeMin(result.__takeCount__,n):result.__views__.push({size:n,type:methodName+(result.__dir__<0?"Right":"")}),result},LazyWrapper.prototype[methodName+"Right"]=function(n){return this.reverse()[methodName](n).reverse()}}),arrayEach(["filter","map","takeWhile"],function(methodName,index){var type=index+1,isFilter=type!=LAZY_MAP_FLAG;LazyWrapper.prototype[methodName]=function(iteratee,thisArg){var result=this.clone();return result.__iteratees__.push({iteratee:getCallback(iteratee,thisArg,1),type:type}),result.__filtered__=result.__filtered__||isFilter,result}}),arrayEach(["first","last"],function(methodName,index){var takeName="take"+(index?"Right":"");LazyWrapper.prototype[methodName]=function(){return this[takeName](1).value()[0]}}),arrayEach(["initial","rest"],function(methodName,index){var dropName="drop"+(index?"":"Right");LazyWrapper.prototype[methodName]=function(){return this.__filtered__?new LazyWrapper(this):this[dropName](1)}}),arrayEach(["pluck","where"],function(methodName,index){var operationName=index?"filter":"map",createCallback=index?baseMatches:property;LazyWrapper.prototype[methodName]=function(value){return this[operationName](createCallback(value))}}),LazyWrapper.prototype.compact=function(){return this.filter(identity)},LazyWrapper.prototype.reject=function(predicate,thisArg){return predicate=getCallback(predicate,thisArg,1),this.filter(function(value){return!predicate(value)})},LazyWrapper.prototype.slice=function(start,end){start=null==start?0:+start||0;var result=this;return result.__filtered__&&(start>0||end<0)?new LazyWrapper(result):(start<0?result=result.takeRight(-start):start&&(result=result.drop(start)),end!==undefined&&(end=+end||0,result=end<0?result.dropRight(-end):result.take(end-start)),result)},LazyWrapper.prototype.takeRightWhile=function(predicate,thisArg){return this.reverse().takeWhile(predicate,thisArg).reverse()},LazyWrapper.prototype.toArray=function(){return this.take(POSITIVE_INFINITY)},baseForOwn(LazyWrapper.prototype,function(func,methodName){var checkIteratee=/^(?:filter|map|reject)|While$/.test(methodName),retUnwrapped=/^(?:first|last)$/.test(methodName),lodashFunc=lodash[retUnwrapped?"take"+("last"==methodName?"Right":""):methodName];lodashFunc&&(lodash.prototype[methodName]=function(){var args=retUnwrapped?[1]:arguments,chainAll=this.__chain__,value=this.__wrapped__,isHybrid=!!this.__actions__.length,isLazy=value instanceof LazyWrapper,iteratee=args[0],useLazy=isLazy||isArray(value);useLazy&&checkIteratee&&"function"==typeof iteratee&&1!=iteratee.length&&(
 // Avoid lazy use if the iteratee has a "length" value other than `1`.
 isLazy=useLazy=!1);var interceptor=function(value){return retUnwrapped&&chainAll?lodashFunc(value,1)[0]:lodashFunc.apply(undefined,arrayPush([value],args))},action={func:thru,args:[interceptor],thisArg:undefined},onlyLazy=isLazy&&!isHybrid;if(retUnwrapped&&!chainAll)return onlyLazy?(value=value.clone(),value.__actions__.push(action),func.call(value)):lodashFunc.call(undefined,this.value())[0];if(!retUnwrapped&&useLazy){value=onlyLazy?value:new LazyWrapper(this);var result=func.apply(value,args);return result.__actions__.push(action),new LodashWrapper(result,chainAll)}return this.thru(interceptor)})}),arrayEach(["join","pop","push","replace","shift","sort","splice","split","unshift"],function(methodName){var func=(/^(?:replace|split)$/.test(methodName)?stringProto:arrayProto)[methodName],chainName=/^(?:push|sort|unshift)$/.test(methodName)?"tap":"thru",retUnwrapped=/^(?:join|pop|replace|shift)$/.test(methodName);lodash.prototype[methodName]=function(){var args=arguments;return retUnwrapped&&!this.__chain__?func.apply(this.value(),args):this[chainName](function(value){return func.apply(value,args)})}}),baseForOwn(LazyWrapper.prototype,function(func,methodName){var lodashFunc=lodash[methodName];if(lodashFunc){var key=lodashFunc.name+"",names=realNames[key]||(realNames[key]=[]);names.push({name:methodName,func:lodashFunc})}}),realNames[createHybridWrapper(undefined,BIND_KEY_FLAG).name]=[{name:"wrapper",func:undefined}],LazyWrapper.prototype.clone=lazyClone,LazyWrapper.prototype.reverse=lazyReverse,LazyWrapper.prototype.value=lazyValue,lodash.prototype.chain=wrapperChain,lodash.prototype.commit=wrapperCommit,lodash.prototype.concat=wrapperConcat,lodash.prototype.plant=wrapperPlant,lodash.prototype.reverse=wrapperReverse,lodash.prototype.toString=wrapperToString,lodash.prototype.run=lodash.prototype.toJSON=lodash.prototype.valueOf=lodash.prototype.value=wrapperValue,lodash.prototype.collect=lodash.prototype.map,lodash.prototype.head=lodash.prototype.first,lodash.prototype.select=lodash.prototype.filter,lodash.prototype.tail=lodash.prototype.rest,lodash}/** Used as a safe reference for `undefined` in pre-ES5 environments. */
 var undefined,VERSION="3.10.1",BIND_FLAG=1,BIND_KEY_FLAG=2,CURRY_BOUND_FLAG=4,CURRY_FLAG=8,CURRY_RIGHT_FLAG=16,PARTIAL_FLAG=32,PARTIAL_RIGHT_FLAG=64,ARY_FLAG=128,REARG_FLAG=256,DEFAULT_TRUNC_LENGTH=30,DEFAULT_TRUNC_OMISSION="...",HOT_COUNT=150,HOT_SPAN=16,LARGE_ARRAY_SIZE=200,LAZY_FILTER_FLAG=1,LAZY_MAP_FLAG=2,FUNC_ERROR_TEXT="Expected a function",PLACEHOLDER="__lodash_placeholder__",argsTag="[object Arguments]",arrayTag="[object Array]",boolTag="[object Boolean]",dateTag="[object Date]",errorTag="[object Error]",funcTag="[object Function]",mapTag="[object Map]",numberTag="[object Number]",objectTag="[object Object]",regexpTag="[object RegExp]",setTag="[object Set]",stringTag="[object String]",weakMapTag="[object WeakMap]",arrayBufferTag="[object ArrayBuffer]",float32Tag="[object Float32Array]",float64Tag="[object Float64Array]",int8Tag="[object Int8Array]",int16Tag="[object Int16Array]",int32Tag="[object Int32Array]",uint8Tag="[object Uint8Array]",uint8ClampedTag="[object Uint8ClampedArray]",uint16Tag="[object Uint16Array]",uint32Tag="[object Uint32Array]",reEmptyStringLeading=/\b__p \+= '';/g,reEmptyStringMiddle=/\b(__p \+=) '' \+/g,reEmptyStringTrailing=/(__e\(.*?\)|\b__t\)) \+\n'';/g,reEscapedHtml=/&(?:amp|lt|gt|quot|#39|#96);/g,reUnescapedHtml=/[&<>"'`]/g,reHasEscapedHtml=RegExp(reEscapedHtml.source),reHasUnescapedHtml=RegExp(reUnescapedHtml.source),reEscape=/<%-([\s\S]+?)%>/g,reEvaluate=/<%([\s\S]+?)%>/g,reInterpolate=/<%=([\s\S]+?)%>/g,reIsDeepProp=/\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\n\\]|\\.)*?\1)\]/,reIsPlainProp=/^\w*$/,rePropName=/[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\n\\]|\\.)*?)\2)\]/g,reRegExpChars=/^[:!,]|[\\^$.*+?()[\]{}|\/]|(^[0-9a-fA-Fnrtuvx])|([\n\r\u2028\u2029])/g,reHasRegExpChars=RegExp(reRegExpChars.source),reComboMark=/[\u0300-\u036f\ufe20-\ufe23]/g,reEscapeChar=/\\(\\)?/g,reEsTemplate=/\$\{([^\\}]*(?:\\.[^\\}]*)*)\}/g,reFlags=/\w*$/,reHasHexPrefix=/^0[xX]/,reIsHostCtor=/^\[object .+?Constructor\]$/,reIsUint=/^\d+$/,reLatin1=/[\xc0-\xd6\xd8-\xde\xdf-\xf6\xf8-\xff]/g,reNoMatch=/($^)/,reUnescapedString=/['\n\r\u2028\u2029\\]/g,reWords=function(){var upper="[A-Z\\xc0-\\xd6\\xd8-\\xde]",lower="[a-z\\xdf-\\xf6\\xf8-\\xff]+";return RegExp(upper+"+(?="+upper+lower+")|"+upper+"?"+lower+"|"+upper+"+|[0-9]+","g")}(),contextProps=["Array","ArrayBuffer","Date","Error","Float32Array","Float64Array","Function","Int8Array","Int16Array","Int32Array","Math","Number","Object","RegExp","Set","String","_","clearTimeout","isFinite","parseFloat","parseInt","setTimeout","TypeError","Uint8Array","Uint8ClampedArray","Uint16Array","Uint32Array","WeakMap"],templateCounter=-1,typedArrayTags={};typedArrayTags[float32Tag]=typedArrayTags[float64Tag]=typedArrayTags[int8Tag]=typedArrayTags[int16Tag]=typedArrayTags[int32Tag]=typedArrayTags[uint8Tag]=typedArrayTags[uint8ClampedTag]=typedArrayTags[uint16Tag]=typedArrayTags[uint32Tag]=!0,typedArrayTags[argsTag]=typedArrayTags[arrayTag]=typedArrayTags[arrayBufferTag]=typedArrayTags[boolTag]=typedArrayTags[dateTag]=typedArrayTags[errorTag]=typedArrayTags[funcTag]=typedArrayTags[mapTag]=typedArrayTags[numberTag]=typedArrayTags[objectTag]=typedArrayTags[regexpTag]=typedArrayTags[setTag]=typedArrayTags[stringTag]=typedArrayTags[weakMapTag]=!1;/** Used to identify `toStringTag` values supported by `_.clone`. */
@@ -7088,4 +7683,6 @@ root._=_,
 // referenced as the "underscore" module.
 define(function(){return _})):freeExports&&freeModule?
 // Export for Node.js or RingoJS.
-moduleExports?(freeModule.exports=_)._=_:freeExports._=_:root._=_}.call(this);
+moduleExports?(freeModule.exports=_)._=_:freeExports._=_:
+// Export for a browser or Rhino.
+root._=_}.call(this);

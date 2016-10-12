@@ -33,6 +33,7 @@ class ActionsBox extends Core\ProudWidget {
         '#title' => 'Active tabs',
         '#type' => 'checkboxes',
         '#options' => [
+          'vote' => 'Vote',
           'faq' => 'Answers',
           'payments' => 'Payments',
           'report' => 'Report an Issue',
@@ -74,7 +75,7 @@ class ActionsBox extends Core\ProudWidget {
       'custom_content' => [
         '#type' => 'textarea',
         '#title' => 'Custom tab content',
-        '#description' => 'Add and HTML content, including an iFrame embed.',
+        '#description' => 'Add any HTML content, including an iFrame embed.',
         '#states' => [
           'visible' => [
             'active_tabs' => [
@@ -122,6 +123,11 @@ class ActionsBox extends Core\ProudWidget {
     wp_enqueue_script('proud-actions-app-libraries', $path . 'js/libraries.min.js', array('angular'), false, true);
     wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js', array('proud-actions-app-libraries'), false, true);
     wp_enqueue_script('proud-actions-app-templates', $path . 'views/app.templates.js', array('proud-actions-app-app'), false, true);
+    wp_enqueue_script('google-maps-api', '//maps.googleapis.com/maps/api/js?key=' . get_option( 'google_api_key', '' ) . '&libraries=places');
+    // @todo: make this work (file isn't getting included with this call, so I just added it to app.min.js)
+    //if ($this->settings['active_tabs']['#options']['vote']) {
+    //  wp_enqueue_script('proud-actions-app-vote', $path . 'js/vote.min.js', array('proud-actions-app-app'), false, true);
+    //}
     
     // Add global settings
     parent::addJsSettings(array(

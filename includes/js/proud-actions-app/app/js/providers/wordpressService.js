@@ -6,7 +6,8 @@ angular.module('wordpressService', ['ngResource'])
     return $resource($rootScope.apiUrl + ':postType/:id', 
       {
         'id': '@nid',
-        'postType': '@postType'
+        'postType': '@postType', 
+        per_page: 100,
       },
       {
         get: {

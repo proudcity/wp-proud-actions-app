@@ -16,7 +16,8 @@ angular.module('311App')
     var initMenu = function(appId) {
       // Only run once
       if(!active311Items) {
-        active311Items = _.get(Proud, 'settings.proud_actions_app.instances.' + appId + '.active_tabs') || {
+        var instance = 'settings.proud_actions_app.instances.' + appId;
+        active311Items = _.get(Proud, instance + '.active_tabs') || {
           'faq': true, 
           'payments': true, 
           'report': true, 
@@ -81,6 +82,16 @@ angular.module('311App')
                 menu.push(item);
                 if(!default311Url) {
                   default311Url = '/city/vote/address';
+                }
+              }
+              break;
+            case 'custom':
+              if(item && item !== '0') {
+                var item = {title: _.get(Proud, instance + '.custom_title') || '', icon: _.get(Proud, instance + '.custom_icon') || ''};
+                item.state = 'custom';
+                menu.push(item);
+                if(!default311Url) {
+                  default311Url = '/city/tab';
                 }
               }
               break;
