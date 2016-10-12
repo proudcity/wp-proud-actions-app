@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <base href="/" />
     <meta property="og:image" content="http://FILLME!/images/shareimg.jpg" />
-    <meta property="og:url" content="https://vote.proudcity.com" />
-    <meta property="og:title" content="ProudCity Vote" />
-    <meta property="og:description" content="Enter your address to find out where and how to vote and learn more about the issues on the ballot." />
+    <meta property="og:url" content="http://FILLME!" />
+    <meta property="og:title" content="FILLME!" />
+    <meta property="og:description" content="FILLME!" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" ng-attr-content="{{metaDescription()}}" />
     <meta name="keywords" ng-attr-content="{{metaKeywords()}}" />
@@ -21,6 +21,20 @@
     var Proud = {};
     Proud.settings = {
         "global": {
+            "location": {
+                "city": "San Rafael",
+                "state": "California",
+                "lat": 39.6681,
+                "lng": -84.2481,
+                "code": "San_Rafael,_California"
+            },
+            "external_link_window": true,
+            "mapbox": {
+                "token": "pk.eyJ1IjoiYWxiYXRyb3NzZGlnaXRhbCIsImEiOiI1cVUxbUxVIn0.SqKOVeohLfY0vfShalVDUw",
+                "map": "albatrossdigital.lpkdpcjb"
+            },
+            'proudcity_api': 'http://localhost:4000',
+            'proudcity_site_id': 'san-rafael-ca.proudcity.com',
             'google_key': 'AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI',
         },
         "proud_actions_app": {
@@ -34,11 +48,35 @@
                         //"status": "status",
                         //"custom": "custom"
                     },
+                    "category_section": {
+                        "education-2": "education-2",
+                        "jobs-contracts": "jobs-contracts",
+                        "payments": "payments",
+                        "business": "business",
+                        "transportation": "transportation",
+                        "property-housing": "property-housing",
+                        "permits-licensing": "permits-licensing",
+                        "services": "services",
+                        "culture-recreation": "culture-recreation"
+                    },
                     "expand_section": false,
+                    "custom_title": 'Custom title',
+                    "custom_icon": 'fa fa-facebook',
+                    "custom_content": '<iframe src="https://public.romuluscrm.com/departments/sm57h2mx/cases/new" width="500px" height="1590" frameborder="0" style="border: none"></iframe><b>asdf</b>'
                 }
             },
             "global": {
-                
+                "api_path": "\/\/localhost:8080\/wp-json\/wp\/v2\/",
+                "render_in_overlay": false,
+                "issue": {
+                    "service": "iframe",
+                    "link_create": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp",
+                    "link_status": "http:\/\/www.egovlink.com\/westcarrollton\/action.asp"
+                },
+                "payment": {
+                    "service": "link",
+                    "stripe_key": ""
+                },
                 'google_election_id': 5000 // @todo: change to 5000 for 2016 election
             }
         },
@@ -55,8 +93,6 @@
     </script>
   </head>
   <body>
-
-    <div class="container spacing"><div class="col-sm-12 content-contain" style="padding-bottom:0"><h1>ProudCity Vote</h1></div></div>
 
     <div ng-init="$root.appId = 'proud_actions_app-1391001'" class="container spacing" style="padding-top: 000px;padding-bottom:00px;"><div in-view="faqCompile = faqCompile || '%3Cdiv%20class%3D%22parent%22%20ui-view%3E%3C%2Fdiv%3E'" lazy-compile="faqCompile" lazy-decode="true"></div></div>
         
