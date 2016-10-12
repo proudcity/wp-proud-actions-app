@@ -126,15 +126,15 @@ angular.module('311App')
 
             // Helper function
             var marker;
-            $scope.addMarker = function(address, label){
+            $scope.addMarker = function(address, label, color){
               geocoder.geocode( { 'address': address}, function(results, status) {
                 if (status == 'OK') {
                   marker = new google.maps.Marker({
                       map: map,
                       position: results[0].geometry.location,
                       title: label.toUpperCase(label),
-                      icon: '//maps.google.com/mapfiles/ms/micons/blue-pushpin.png',
-                      shadow: '//maps.google.com/mapfiles/ms/micons/pushpin_shadow.png' //@todo
+                      icon: '//raw.githubusercontent.com/Concept211/Google-Maps-Markers/master/images/marker_'+ color +'.png'
+                      //shadow: '//maps.google.com/mapfiles/ms/micons/pushpin_shadow.png' //@todo
                   });
                   bounds.extend(marker.getPosition());
                   map.fitBounds(bounds);
@@ -143,21 +143,27 @@ angular.module('311App')
             }
 
             // Add polling place pins
-            if (data.pollingLocations != undefined) {
+            data.pollingLocations = typeof data.pollingLocations == 'array' ? data.pollingLocations : [];
+            var combinedLocations = data.pollingLocations.concat(data.earlyVoteSites);
+            if (combinedLocations != undefined && combinedLocations.length > 0) {
               var addr;
               var address;
-              for (var i in data.pollingLocations) {
-                addr = data.pollingLocations[i].address;
+              for (var i in combinedLocations) {
+                addr = combinedLocations[i].address;
                 address = addr.line1 + ', ' + 
                   (addr.line2 != undefined ? addr.line2 + ', ' : '') + 
                   addr.city + ', ' + addr.state + ' ' + addr.zip;
-                $scope.addMarker(address, 'Polling place: ' + addr.locationName);
+                $scope.addMarker(address, 'Polling place: ' + addr.locationName, i >= data.pollingLocations.length ? 'green' : 'orange');
               }
 
               $scope.directionsLink = '//maps.google.com/maps/dir/' + encodeURIComponent($state.params.latlng) + '/' + encodeURIComponent(address);
-              $scope.address = data.pollingLocations[0].address;
-              $scope.hours = data.pollingLocations[0].pollingHours;
-              $scope.sources = data.pollingLocations[0].sources;
+              $scope.address = combinedLocations[0].address;
+              $scope.hours = combinedLocations[0].pollingHours.replace(/\n/g, '<br>');
+              var arrHrs = $scope.hours.split("<br>");
+              $scope.shortHours = arrHrs.length > 3 ? [arrHrs[0], arrHrs[1], arrHrs[2]].join("<br>") : null;
+              $scope.longHours = false;
+              $scope.sources = combinedLocations[0].sources;
+              $scope.isEarly = i >= data.pollingLocations.length;
             }
 
             $scope.links = data.state[0].electionAdministrationBody;
@@ -165,6 +171,21 @@ angular.module('311App')
             $scope.disclaimer = false;
             $scope.toggleDisclaimer = function() {
               $scope.disclaimer = !$scope.disclaimer;
+            }
+
+            $scope.getDirections = function($e) {
+              $e.preventDefault();
+              window.open($scope.directionsLink);
+            }
+
+            $scope.toggleHours = function($e) {
+              $e.preventDefault();
+              $scope.longHours = !$scope.longHours; 
+            }
+
+            $scope.mapScroll = function($e) {
+              $e.preventDefault();
+              document.getElementById('google-map').scrollIntoView(true);
             }
           }
 
@@ -184,6 +205,13 @@ angular.module('311App')
           },
           controller: function($scope, $rootScope, $state, $filter, data){
             $scope.contests = $filter('filter')(data.contests, {type: 'Referendum'});
+
+            $scope.active = null;
+            $scope.setActive = function(val, $e) {
+              console.log(val);
+              $e.preventDefault();
+              $scope.active = val;
+            }
           }
 
         })
@@ -201,6 +229,12 @@ angular.module('311App')
           },
           controller: function($scope, $rootScope, $state, $filter, data){
             $scope.contests = $filter('filter')(data.contests, {type: 'General'}).slice().reverse();
+
+            $scope.googleSearch = function(name, loc, $e) {
+              $e.preventDefault();
+              console.log(name);
+              window.open('//google.com/search?q=' + encodeURIComponent(name +' '+ loc));
+            }
           }
 
         })

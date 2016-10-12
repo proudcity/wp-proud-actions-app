@@ -1,8 +1,9 @@
+<h2>Candidates</h2>
 <div ng-repeat="contest in contests">
-  <h3>{{contest.office}} <small><i class="fa fa-fw fa-map-marker"></i>{{contest.district.name}}</small></h3>
+  <h3>{{contest.office}} <small>{{contest.district.name}}</small></h3>
   <div class="row">
     <div ng-repeat="candidate in contest.candidates" class="col-md-4 col-xs-6">
-      <div><strong>{{candidate.name}}</strong></div>
+      <div><strong><a ng-click="googleSearch(candidate.name, contest.district.name, $event)" href="#" title="Search Google for {{candidate.name}}">{{candidate.name}}</a></strong></div>
       <div>{{candidate.party}}</div>
       <div>
         <a ng-repeat="channel in candidate.channels" ng-if="channel.type != 'GooglePlus'" href="{{channel.id}}">

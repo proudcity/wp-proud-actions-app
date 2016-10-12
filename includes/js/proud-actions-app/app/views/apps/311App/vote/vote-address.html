@@ -1,11 +1,24 @@
 <div class="slide-left-2 column">  
   <h1>Voting is important</h1>
-  <h3>Enter your address to find out how to vote, and educate yourself on the issues on the ballot.</h3>
-  <input class="input-lg form-control" style="max-width: 300px;" type="text" googleplace ng-model="place" place="chosenPlace" ng-change="chosenUpdate()" />
+  <h3>Enter your address to find out where and how to vote and learn more about the issues on the ballot.</h3>
+
+  <form class="form-inline">
+    <div class="form-group">
+      <input class="input-lg form-control" type="text" googleplace ng-model="place" place="chosenPlace" ng-change="chosenUpdate()" style="width:350px" placeholder="enter an address or location" />
+    </div>
+    <button class="btn btn-lg btn-default hidden-xs"><i class="fa fa-search"></i></button>
+  </form>
+
+  
+  
 
   <hr style="margin-top:20px" />
 
-  <a ui-sref="city.vote.embed"><i class="fa fa-fw fa-plus-circle"></i>Add this to your website (free!)</a>
+  <div class="pull-md-right">
+   Powered by <a href="//proudcity.com" target="_blank">ProudCity</a> and the 
+   <a href="https://developers.google.com/civic-information/" target="_blank">Google Civic Information API</a>.
+  </div>
+  <a ui-sref="city.vote.embed"><i class="fa fa-fw fa-plus-circle"></i>Add ProudCity Vote to your website</a>
 
 </div>
 
