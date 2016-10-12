@@ -160,7 +160,7 @@ angular.module('311App')
             // Add polling place pins
             data.pollingLocations = typeof data.pollingLocations == 'array' ? data.pollingLocations : [];
             var combinedLocations = data.pollingLocations.concat(data.earlyVoteSites);
-            //combinedLocations = combinedLocations[0] == undefined ? [] : combinedLocations;
+            combinedLocations = combinedLocations[0] == undefined ? [] : combinedLocations;
             if (combinedLocations != undefined && combinedLocations.length > 0) {
               var addr;
               var address;

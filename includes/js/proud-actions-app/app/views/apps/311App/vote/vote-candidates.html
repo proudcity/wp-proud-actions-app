@@ -1,4 +1,5 @@
 <h2>Candidates</h2>
+<p ng-if="!contests">We do not have any information about the candidates for your election yet. Please check back again closer to the election.<hr/></p>
 <div ng-repeat="contest in contests">
   <h3>{{contest.office}} <small>{{contest.district.name}}</small></h3>
   <div class="row">
