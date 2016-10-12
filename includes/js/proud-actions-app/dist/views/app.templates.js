@@ -77,7 +77,7 @@ angular.module('311AppParent').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/apps/311App/vote/vote-candidates.html',
-    "<h2>Candidates</h2><div ng-repeat=\"contest in contests\"><h3>{{contest.office}} <small>{{contest.district.name}}</small></h3><div class=\"row\"><div ng-repeat=\"candidate in contest.candidates\" class=\"col-md-4 col-xs-6\"><div><strong><a ng-click=\"googleSearch(candidate.name, contest.district.name, $event)\" href=\"#\" title=\"Search Google for {{candidate.name}}\">{{candidate.name}}</a></strong></div><div>{{candidate.party}}</div><p><a ng-repeat=\"channel in candidate.channels\" ng-if=\"channel.type != 'GooglePlus'\" href=\"{{channel.id}}\"><i class=\"fa fa-fw fa-{{channel.type|lowercase}}-square\"></i></a></p></div></div><hr></div>"
+    "<h2>Candidates</h2><p ng-if=\"!contests\">We do not have any information about the candidates for your election yet. Please check back again closer to the election.<hr></p><div ng-repeat=\"contest in contests\"><h3>{{contest.office}} <small>{{contest.district.name}}</small></h3><div class=\"row\"><div ng-repeat=\"candidate in contest.candidates\" class=\"col-md-4 col-xs-6\"><div><strong><a ng-click=\"googleSearch(candidate.name, contest.district.name, $event)\" href=\"#\" title=\"Search Google for {{candidate.name}}\">{{candidate.name}}</a></strong></div><div>{{candidate.party}}</div><p><a ng-repeat=\"channel in candidate.channels\" ng-if=\"channel.type != 'GooglePlus'\" href=\"{{channel.id}}\"><i class=\"fa fa-fw fa-{{channel.type|lowercase}}-square\"></i></a></p></div></div><hr></div>"
   );
 
 
@@ -92,7 +92,7 @@ angular.module('311AppParent').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('views/apps/311App/vote/vote-issues.html',
-    "<h2>Issues</h2><div ng-repeat=\"contest in contests\" ng-click=\"setActive(contest.referendumTitle, $event)\"><h3><a ng-href=\"#\" target=\"_blank\" title=\"Learn more about {{contest.referendumTitle}}\" ng-click=\"setActive(contest.referendumTitle, $event)\">{{contest.referendumTitle}}</a> <small>{{contest.district.name}}</small></h3><h5>{{contest.referendumSubtitle}}</h5><div ng-if=\"active == contest.referendumTitle\"><a ng-if=\"contest.referendumUrl\" ng-href=\"{{contest.referendumUrl}}\" target=\"_blank\" class=\"hidden-xs btn btn-sm btn-default pull-right\"><i class=\"fa fa-fw fa-info-circle\"></i>Impartial analysis</a> {{contest.referendumText}}</div><hr></div>"
+    "<h2>Issues</h2><p ng-if=\"!contest\">We do not have any information about the issues for your election yet. Please check back again closer to the election.<hr></p><div ng-repeat=\"contest in contests\" ng-click=\"setActive(contest.referendumTitle, $event)\"><h3><a ng-href=\"#\" target=\"_blank\" title=\"Learn more about {{contest.referendumTitle}}\" ng-click=\"setActive(contest.referendumTitle, $event)\">{{contest.referendumTitle}}</a> <small>{{contest.district.name}}</small></h3><h5>{{contest.referendumSubtitle}}</h5><div ng-if=\"active == contest.referendumTitle\"><a ng-if=\"contest.referendumUrl\" ng-href=\"{{contest.referendumUrl}}\" target=\"_blank\" class=\"hidden-xs btn btn-sm btn-default pull-right\"><i class=\"fa fa-fw fa-info-circle\"></i>Impartial analysis</a> {{contest.referendumText}}</div><hr></div>"
   );
 
 
