@@ -89,9 +89,7 @@ angular.module('311App')
             // @todo: put this in resolve
             Post.query({
               postType: 'questions',
-              'filter[faq-topic]': $state.params.slug,
-              sort: 'title',
-              direction: 'ASC'
+              'filter[faq-topic]': $state.params.slug
             }).$promise.then(function(data) {
               $scope.nodes = data;
             });

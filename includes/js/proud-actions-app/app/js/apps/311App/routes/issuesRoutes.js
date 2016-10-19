@@ -130,9 +130,7 @@ angular.module('311App')
               }
               else {
                 return Post.query({
-                  postType: 'issues',
-                  sort: 'title',
-                  direction: 'ASC'
+                  postType: 'issues'
                 }).$promise.then(function(data) {
                   return data;
                 });
