@@ -8410,9 +8410,7 @@ label {
     float: left;
     width: 50% !important;
     height: auto;
-    position: relative;
-    padding-left: 12px;
-    padding-right: 12px; }
+    position: relative; }
     .main-311 .slide-left-2 + .slide-left-2 {
       height: 1px; }
   .main-311 h2:first-child {
@@ -8438,7 +8436,7 @@ label {
           color: #FFF; }
           .light-background-main .nav-contain .nav-pills li a, .light-background-main .nav-contain .nav-pills li a:hover, .light-background-main .nav-contain .nav-pills li a:focus {
             color: #434343; }
-      .nav-contain .nav-pills li .nav-contain .nav-pills li:not(.active) a:hover, .nav-contain .nav-pills li .nav-contain .nav-pills li:not(.active) a:focus {
+      .nav-contain .nav-pills li:not(.active) a:hover, .nav-contain .nav-pills li:not(.active) a:focus {
         background: #4f555d; }
       .nav-contain .nav-pills li.active a, .nav-contain .nav-pills li.active a:hover, .nav-contain .nav-pills li.active a:focus {
         color: #FFF;
@@ -8450,6 +8448,9 @@ label {
   position: absolute;
   right: 12px;
   top: -2px; }
+
+.content-contain {
+  padding-top: 12px; }
 
 .action-box dl {
   padding-left: 0; }
@@ -8562,6 +8563,9 @@ label {
       margin-right: auto; } }
 
 @media screen and (min-width: 768px) {
+  .main-311 .slide-left-2 {
+    padding-left: 12px;
+    padding-right: 12px; }
   .action-box h1, .action-box h2 {
     font-size: 30px; }
   .action-box > div {
@@ -9380,7 +9384,7 @@ body.proud-navbar-active {
     font-size: 18px;
     border-radius: 10px;
     color: #FFF;
-    margin-top: 3.5px;
+    margin-top: 2.5px;
     margin-bottom: 0;
     background-color: rgba(255, 255, 255, 0);
     -webkit-transition: margin-top 0.2s ease-in-out, background-color 0.1s ease-in;
@@ -9463,6 +9467,9 @@ body.proud-navbar-active {
           background: #434343; }
           .light-background-main .navbar-external .navbar-btn.menu-button .hamburger span:before, .light-background-main .navbar-external .navbar-btn.menu-button .hamburger span:after {
             background-color: #434343; }
+  .navbar-external .navbar-btn-normal {
+    margin-top: 6px;
+    margin-right: 5px; }
   .light-background-main .navbar-external .navbar-btn {
     color: #434343; }
   .light-background-main .navbar-external .navbar-btn:hover {
