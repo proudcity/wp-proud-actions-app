@@ -7,6 +7,8 @@ angular.module('311App')
 .config(
   [ '$stateProvider', '$urlRouterProvider',
     function ($stateProvider, $urlRouterProvider) {
+      $urlRouterProvider
+        .when('/vote', '/vote/address');
 
       $stateProvider
         .state("city.vote", {
@@ -20,7 +22,18 @@ angular.module('311App')
             undoMainToggle: true            // Force "offcanvas" class off
           },
           controller: function($scope, $rootScope, $state, $window){
-            $state.go('city.vote.address')
+
+            $state.go('city.vote.address');
+            /*$scope.$on('$stateChangeStart', function(event, toState, toParams) {
+
+              alert('asdf');
+            });*/
+            /*
+            $scope.$on('$viewContentLoaded', function(event){
+
+              
+            });*/
+
           }
         })
 

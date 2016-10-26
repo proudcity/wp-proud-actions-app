@@ -10,8 +10,8 @@ class ActionsBox extends Core\ProudWidget {
   function __construct() {
     parent::__construct(
       'proud_actions_app', // Base ID
-      __( '311 Actions Box', 'wp-proud-actions-app' ), // Name
-      array( 'description' => __( 'An interactive 311 interface', 'wp-proud-actions-app' ), ) // Args
+      __( 'Service Center', 'wp-proud-actions-app' ), // Name
+      array( 'description' => __( 'Get Answers, Make Payments, Report Issues, Voting Information and more', 'wp-proud-actions-app' ), ) // Args
     );
   }
 

@@ -1,0 +1,31 @@
+<div class="slide-left-2 column" style="{{bgStyle}}">
+  
+  <search></search>
+  <ol class="breadcrumb clean" style="margin-bottom: 0;">
+    <li class="active">
+      <i class="fa fa-compass"></i> Find your address
+    </li>
+  </ol>
+  <div style="text-align: center;">
+
+    <div class="row"><div class="col-md-10 col-md-push-1">
+      <h3 style="margin-bottom:1em;">Enter your address to find out more about your local city services including garbage collection, local representatives and more.</h3>
+    </div></div>
+
+    <form class="form-inline">
+      <div class="form-group">
+        <input class="input-lg form-control" type="text" googleplace ng-model="place" place="chosenPlace" ng-change="chosenUpdate()" style="width:350px" placeholder="enter an address or location" />
+      </div>
+      <button class="btn btn-lg btn-default hidden-xs"><i class="fa fa-search"></i></button>
+    </form>
+    <div class="or-bar"><span>OR</span></div>
+    <button class="btn btn-primary btn-lg" ng-click="locate()"><i class="fa fa-fw fa-location-arrow"></i> Use my current location</button>
+
+  </div>
+
+</div>
+
+
+<div class="animation-wrap slide-left-2">
+  <div class="quickfade" ui-view></div>
+</div>

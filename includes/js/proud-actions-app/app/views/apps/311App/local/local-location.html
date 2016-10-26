@@ -1,0 +1,86 @@
+<div class="slide-left-2 column">  
+  
+  <search></search>
+  <ol  class="breadcrumb clean">
+    <li>
+      <a href="" ui-sref="city.local.address" main-toggle="slide-left" title="Choose another address"><i class="fa fa-compass"></i></a>
+    </li>
+    <li class="active">
+      <i class="fa fa-map-marker"></i>Services at {{place.address_assoc.street_number}} {{place.address_assoc.route}}
+    </li>
+    <li>
+      <label>
+        <input type="checkbox" ng-model="saveAddress" ng-click="toggleSaveAddress($event);" /> 
+        Save my address
+        <a href="#" title="What does this mean?" ng-click="toggleSaveInfo($event)"><i class="fa fa-fw fa-question-circle"></i></a>
+      </label>
+    </li>
+    <div ng-if="showSaveInfo" class="text-muted">
+      If you check this box, we will save your address in a local cookie, and subsequent visits to this site will automatically display 
+      the services relevant to you. Your address will not be used to track you in any other way.
+    </div>
+  </ol>
+
+  <div class="row">
+    <div class="col-md-6">
+
+      <div class="row">
+        <div class="col-sm-1 col-xs-2"><i class="fa fa-map-marker fa-fw fa-2x text-muted"></i></div>
+        <div class="col-sm-11 col-xs-10">
+          <p>{{place.address_assoc.street_number}} {{place.address_assoc.route}},<br/>
+          {{place.address_assoc.locality}}, {{place.address_assoc.administrative_area_level_1}} {{place.address_assoc.postal_code}}-{{place.address_assoc.postal_code_suffix}}
+          </p>
+          <div ng-if="place.address_assoc.neighborhood"><span class="text-muted">Neighborhood:</span> {{place.address_assoc.neighborhood}}</div>
+          <div ng-if="place.address_assoc.administrative_area_level_2"><span class="text-muted">County:</span> {{place.address_assoc.administrative_area_level_2}}</div>
+          <hr />
+        </div>
+      </div>
+
+      <div class="row" ng-if="services.police || services.fire">
+        <div class="col-sm-1 col-xs-2"><i class="fa fa-shield fa-fw fa-2x text-muted"></i></div>
+        <div class="col-sm-11 col-xs-10">
+          <div ng-if="services.police"><span class="text-muted">Police:</span> {{services.police}}</div>
+          <div ng-if="services.fire"><span class="text-muted">Fire:</span> {{services.fire}}</div>
+          <hr  />
+        </div>
+      </div>
+
+      <div class="row" ng-if="services.garbage">
+        <div class="col-sm-1 col-xs-2"><i class="fa fa-trash fa-fw fa-2x text-muted"></i></div>
+        <div class="col-sm-11 col-xs-10">
+          <div class="text-muted">Garbage Collection</div>
+          <div ng-bind-html="services.garbage"></div>
+          <hr  />
+        </div>
+      </div>
+
+      <div class="row" ng-if="services.streetSweeping">
+        <div class="col-sm-1 col-xs-2"><i class="fa fa-car fa-fw fa-2x text-muted"></i></div>
+        <div class="col-sm-11 col-xs-10">
+          <div class="text-muted">Street Sweeping</div>
+          <div ng-bind-html="services.streetSweeping"></div>
+          <hr  />
+        </div>
+      </div>
+
+    </div>
+
+    <div class="col-md-6">
+      <pc-map 
+        show-home
+        zoom="14"
+        legend="buttonbar" 
+        layer="random"
+        title-suffix="near you"
+        legend-title="More services:"></pc-map>
+    </div>
+
+  </div>
+
+  
+</div>
+
+
+<div class="animation-wrap slide-left-2">
+  <div class="quickfade" ui-view></div>
+</div>

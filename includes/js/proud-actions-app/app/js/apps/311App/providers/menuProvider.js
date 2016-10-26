@@ -29,6 +29,14 @@ angular.module('311App')
         // Push objects
         _.forEach(active311Items, function(item, key) {
           switch(key) {
+            case 'local':
+              if(item && item !== '0') {
+                menu.push({title: 'Local Services', state: 'local', icon: 'fa-map-marker'});
+                if(!default311Url) {
+                  default311Url = '/city/local/address';
+                }
+              }
+              break;
             case 'faq':
               if(item && item !== '0') {
                 menu.push({title: 'Get Answers', state: 'faq', icon: 'fa-question-circle'});
@@ -72,6 +80,14 @@ angular.module('311App')
                 menu.push(item);
                 if(!default311Url) {
                   default311Url = '/city/status';
+                }
+              }
+              break;
+            case 'maps':
+              if(item && item !== '0') {
+                menu.push({title: 'Maps', state: 'map', icon: 'fa-map'});
+                if(!default311Url) {
+                  default311Url = '/city/map';
                 }
               }
               break;

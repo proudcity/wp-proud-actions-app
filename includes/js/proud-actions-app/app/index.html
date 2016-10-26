@@ -51,11 +51,18 @@
         "proud_actions_app": {
             "instances": {
                 "proud_actions_app-1391001": {
+                    "logo": "logo",
+                    "title": "Service Center",
+                    "search": 'example.proudcity.com',
+                    "background": "https://san-rafael-ca.proudcity.com/wp-content/uploads/2016/02/Mt.-Tam.jpg",
+                    "tab_display": "side",
                     "active_tabs": {
+                        "local": "local",
                         "vote": "vote",
                         "faq": "faq",
-                        //"payments": "payments",
+                        "payments": "payments",
                         "report": "report",
+                        "maps": "maps"
                         //"status": "status",
                         //"custom": "custom"
                     },
@@ -73,6 +80,35 @@
                         "health":"health",
                         "finance":"finance"
                     },
+                    "map_layers": [
+                        {
+                            "type": "wordpress",
+                            "slug": "libraries",
+                            "icon": "fa-book",
+                            "title": "Libraries"
+                        },
+                        {
+                            "type": "googlePlaces",
+                            "term": "school",
+                            "icon": "fa-graduation-cap",
+                            "title": "Schools"
+                        },
+                        {
+                            "type": "transit",
+                            "icon": "fa-train",
+                            "title": "Public Transit"
+                        },
+                        {
+                            "type": "bicycle",
+                            "icon": "fa-bicycle",
+                            "title": "Bicycle Routes",
+                        },
+                        {
+                            "type": "traffic",
+                            "icon": "fa-car",
+                            "title": "Traffic"
+                        }
+                    ],
                     "expand_section": false,
                     "custom_title": 'Custom title',
                     "custom_icon": 'fa fa-facebook',
@@ -138,9 +174,13 @@
         <script src="bower_components/leaflet.locatecontrol/src/L.Control.Locate.js"></script>
     -->
 
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI"></script>
+
     <!-- build:js js/libraries.min.js -->
     <!-- bower:js -->
     <script src="bower_components/afkl-lazy-image/release/lazy-image.js"></script>
+    <script src="bower_components/ngmap/build/scripts/ng-map.js"></script>
+    <script src="bower_components/map-icons/dist/js/map-icons.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
     
@@ -156,9 +196,13 @@
     <!-- 311App -->
     <script src="js/apps/311App/311App.js"></script>
     <script src="js/apps/311App/directives/menuDir.js"></script>
+    <script src="js/apps/311App/directives/search.js"></script>
+    <script src="js/apps/311App/directives/pcMap.js"></script>
     <script src="js/apps/311App/providers/menuProvider.js"></script>
     <script src="js/apps/311App/providers/issueService.js"></script>
     <script src="js/apps/311App/providers/paymentService.js"></script>
+    <script src="js/apps/311App/routes/searchRoutes.js"></script>
+    <script src="js/apps/311App/routes/localRoutes.js"></script>
     <script src="js/apps/311App/routes/faqRoutes.js"></script>
     <script src="js/apps/311App/routes/issuesRoutes.js"></script>
     <script src="js/apps/311App/routes/paymentRoutes.js"></script>
@@ -169,7 +213,6 @@
     <!-- endbuild -->
     <!-- build:js js/vote.min.js -->
     <!-- endbuild -->
-    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAYvdraLh30IA0q9Nio4RB_IcvwB9Vp5RI"></script>
 
     <style>
         .action-box>div {

@@ -11,6 +11,7 @@ angular.module('311App', [
   'ngTouch',
   'scrollTo',
   'ngResource',
+  'ngMap',
 ])
 
 .run(
@@ -34,6 +35,8 @@ angular.module('311App', [
       $rootScope.location = _.get(Proud, 'settings.global.location') || {lat: 0, lng: 0};
       $rootScope.mapboxAccessToken = _.get(Proud, 'settings.global.mapbox.token') || '';
       $rootScope.mapboxMap = _.get(Proud, 'settings.global.mapbox.map') || '';
+      var chosenPlace = localStorage.getItem('chosenPlace');
+      $rootScope.chosenPlace = chosenPlace ? JSON.parse(chosenPlace) : null;
 
       // Helper function returns boolean for if we're in "full page mode"
       $rootScope.displayExpanded = function(section) {

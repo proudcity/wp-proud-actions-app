@@ -61,6 +61,27 @@ angular.module('wordpressService', ['ngResource'])
   }])
 
 
+  .factory('Search', ['$resource', '$rootScope', function ($resource, $rootScope) {
+    var params = {
+      term: '@term',
+    };
+    return $resource($rootScope.apiUrl + 'search', 
+      params,
+      {
+        query: {
+          method:'GET',
+          transformRequest: function(data, headersGetter) {
+            headersGetter()['Accept'] = 'application/json';
+          },
+          cache: true,
+          isArray: true
+        }
+      }
+    )
+  }])
+
+
+
   /*
   .factory('TaxonomyTermPosts', ['$resource', '$rootScope', function ($resource, $rootScope) {
     return $resource($rootScope.apiUrl + '/taxonomy_term_nodes', {tid: '@tid'}, {});
