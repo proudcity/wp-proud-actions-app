@@ -7,7 +7,7 @@ we can use the local or beta version:
 
 ```
 # Use local version
-wp --allow-root option update wp_proud_service_center_path 'http://localhost:3000/dist'
+wp --allow-root option update wp_proud_service_center_path 'http://localhost:9000/dist'
 
 # Use beta version
 wp --allow-root option update wp_proud_service_center_path '//service-center-beta.proudcity.com'
