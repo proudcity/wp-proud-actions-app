@@ -117,9 +117,13 @@ class ActionsBox extends Core\ProudWidget {
   public function enqueueFrontend() {
     $local_path = plugins_url('../includes/js', __FILE__);
     $path = get_option( 'wp_proud_service_center_path', false );
-    $path = $path == 'local' ? $local_path . 'proud-actions-app/dist/' :
-      $path ? $path : '//service-center.proudcity.com';
-    
+    if ($path == 'local') {
+      $path = $local_path . '/service-center/dist/';
+    }
+    else {
+      $path = $path ? $path : '//service-center.proudcity.com';
+    }
+
     // Running script
     wp_enqueue_script('proud-actions-app', $local_path . '/proud-actions-app.js', array('lodash','angular'), false, true);
     // Angular resources

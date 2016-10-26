@@ -3,11 +3,13 @@ An interactive, Angular-based 311 interface for FAQ, Payments, Issue reporting a
 
 ### Development
 By default, this app calls the ProudCity Service Center remove JS include files at https://service-center.proudcity.com.  Fo development,
-we can use the local or beta version:
+we can use the local or beta version.:
 
 ```
-# Use local version
-wp --allow-root option update wp_proud_service_center_path 'http://localhost:9000/dist'
+# Use local version (in ./includes/js/service-center/dist)
+cd ./includes/js
+git clone git@github.com:proudcity/service-center.git
+wp --allow-root option update wp_proud_service_center_path 'local'
 
 # Use beta version
 wp --allow-root option update wp_proud_service_center_path '//service-center-beta.proudcity.com'
