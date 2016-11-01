@@ -16,12 +16,12 @@ class ServiceCenterStandalonePage
       $this->option = 'service_center_standalone';
       $this->fields = [
         'background' => [
-          '#title' => __( 'Background', 'wp-proud-core' ),
+          '#title' => __( 'Background image', 'wp-proud-core' ),
           '#type' => 'select_media',
           '#default_value'  => '',
         ],
         'logo' => [
-          '#title' => __( 'Background', 'wp-proud-core' ),
+          '#title' => __( 'Logo', 'wp-proud-core' ),
           '#type' => 'select_media',
           '#default_value'  => '',
         ],
