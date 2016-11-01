@@ -486,7 +486,7 @@ class ActionsApp extends \ProudPlugin {
       return $local_path . '/service-center/dist/';
     }
     else {
-      return $path ? $path : '//service-center.proudcity.com';
+      return $path ? $path : '//service-center.proudcity.com/';
     }
   }
 
