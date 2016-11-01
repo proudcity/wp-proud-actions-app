@@ -16,96 +16,7 @@ class ActionsBox extends Core\ProudWidget {
   }
 
   function initialize() {
-    // Get answers topics
-    $topics = get_categories( [
-      'taxonomy' => 'faq-topic',
-      'orderby' => 'name',
-      'parent' => 0
-    ] );
-    $options = [];
-    if( !empty( $topics ) && empty( $topics['errors'] ) ) {
-      foreach ( $topics as $topic ) {
-        $options[$topic->slug] = $topic->name;
-      }
-    }
-    $this->settings = [
-      'active_tabs' => [
-        '#title' => 'Active tabs',
-        '#type' => 'checkboxes',
-        '#options' => [
-          'vote' => 'Vote',
-          'faq' => 'Answers',
-          'payments' => 'Payments',
-          'report' => 'Report an Issue',
-          'status' => 'Check status',
-          'custom' => 'Custom Tab'
-        ],
-        '#default_value' => ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'],
-        '#description' => 'Click all tabs you would like to appear',
-        '#to_js_settings' => true
-      ],
-      'custom_title' => [
-        '#type' => 'text',
-        '#title' => 'Custom tab title',
-        '#states' => [
-          'visible' => [
-            'active_tabs' => [
-              'operator' => '==',
-              'value' => ['custom'],
-              'glue' => '||'
-            ],
-          ],
-        ],
-        '#to_js_settings' => true
-      ],
-      'custom_icon' => [
-        '#type' => 'fa-icon',
-        '#title' => 'Custom tab icon',
-        '#states' => [
-          'visible' => [
-            'active_tabs' => [
-              'operator' => '==',
-              'value' => ['custom'],
-              'glue' => '||'
-            ],
-          ],
-        ],
-        '#to_js_settings' => true
-      ],
-      'custom_content' => [
-        '#type' => 'textarea',
-        '#title' => 'Custom tab content',
-        '#description' => 'Add any HTML content, including an iFrame embed.',
-        '#states' => [
-          'visible' => [
-            'active_tabs' => [
-              'operator' => '==',
-              'value' => ['custom'],
-              'glue' => '||'
-            ],
-          ],
-        ],
-        '#to_js_settings' => true
-      ],
-      'category_section' => [
-        '#type' => 'checkboxes',
-        '#title' => 'Answers section',
-        '#description' => 'Choose the faq "topics" you would like to be displayed.',
-        '#default_value' => array_keys( $options ),
-        '#options' => $options,
-        '#to_js_settings' => true
-      ],
-      'expand_section' => [
-        '#type' => 'checkbox',
-        '#title' => 'Advanced',
-        '#description' => 'Checking this box will expand all the top faq categories, displaying all options at once.',
-        '#return_value' => 'answers',
-        '#label_above' => true,
-        '#replace_title' => 'Expand Answers dropdowns',
-        '#default_value' => false,
-        '#to_js_settings' => true
-      ],
-    ];
+    $this->settings = Proud\ActionsApp\ActionsApp::get_settings();
   }
 
   public function registerLibraries() {
@@ -116,13 +27,7 @@ class ActionsBox extends Core\ProudWidget {
 
   public function enqueueFrontend() {
     $local_path = plugins_url('../includes/js', __FILE__);
-    $path = get_option( 'wp_proud_service_center_path', false );
-    if ($path == 'local') {
-      $path = $local_path . '/service-center/dist/';
-    }
-    else {
-      $path = $path ? $path : '//service-center.proudcity.com';
-    }
+    $path = Proud\ActionsApp\ActionsApp::get_app_path();
 
     // Running script
     wp_enqueue_script('proud-actions-app', $local_path . '/proud-actions-app.js', array('lodash','angular'), false, true);
