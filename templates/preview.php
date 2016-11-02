@@ -328,7 +328,8 @@ background: #fff;/*#1b1b1b; /* Old browsers */
 
 <div id="phone-controls">
 
-  <div id="types">
+  <div id="types" style="background-color: white;padding:5px;width:110%;border-radius:5px;">
+      <h3>Preview your Service Center</h3>
       <button value="standalone">Standalone</button>
       <button value="facebook">Facebook</button>
       <button value="embed">Embed</button>

@@ -14,6 +14,7 @@ namespace Proud\ActionsApp;
 
 if( is_admin() ) {
   require_once( plugin_dir_path(__FILE__) . 'settings/service-center.php' );
+  require_once( plugin_dir_path(__FILE__) . 'settings/settings.php' );
   require_once( plugin_dir_path(__FILE__) . 'settings/standalone.php' );
   require_once( plugin_dir_path(__FILE__) . 'settings/embed.php' );
   require_once( plugin_dir_path(__FILE__) . 'settings/facebook.php' );
