@@ -41,7 +41,7 @@
         </a>
     </div>
 
-    <div class="col-xs-12"><div ng-init="$root.appId = 'app'" class=""><div class="parent" ui-view></div></div></div>
+    <div ng-init="$root.appId = 'app'" class=""><div class="parent" ui-view></div></div>
         
     <script src="<?php echo $path ?>js/bootstrap.js"></script>
     <script src="<?php echo $path ?>js/angular.js"></script>
