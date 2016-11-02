@@ -41,6 +41,7 @@ class ServiceCenterPage
         'search_provider',
         'search_google_site',
         'local_services',
+        //'service_map_layers', // custom handling
         '311_service',
         '311_link_create',
         '311_link_status',
@@ -55,17 +56,19 @@ class ServiceCenterPage
         'police' => 'Police Department',
         'fire' => 'Fire Department',
         'school' => 'School',
+        'example' => 'Example Services'
       );
       $services_local_fields = [
         'local_services' => [
           '#type' => 'checkboxes',
           '#title' => __pcHelp('Active Local Services'),
           '#description' => __pcHelp('For each Local Service, you will need to upload or <a href="'. $geojson_url .'" target="_blank">create a GeoJSON GIS file</a> and upload it below. <a href="https://proudcity.com/support/create" target="_blank">Contact ProudCity support</a> for assistance configuring your Local Services.'),
-          '#name' => '311_service',
+          '#name' => 'local_services',
           '#options' => $services_local,
           '#value' => get_option('local_services', [])
         ]
       ];
+      print_r(get_option('local_services'));
       foreach ($services_local as $key => $value) {
         // @todo: make this work
         /*$services_local_fields[$key] = [
@@ -81,6 +84,7 @@ class ServiceCenterPage
       if ( is_plugin_active('wp-proud-issue/wp-proud-issue.php') ) {
         $services_311 = array_merge(array('wordpress' => __pcHelp( 'Custom categories')), $services_311);
       }
+
       $this->fields = [
         'search_provider' => [
           '#type' => 'radios',
@@ -110,6 +114,15 @@ class ServiceCenterPage
           ],
         ],
       ] + $services_local_fields + [
+        // @todo
+        /*'service_map_layers' => [
+          '#type' => 'checkboxes',
+          '#title' => __pcHelp('Service Map Layers'),
+          '#name' => 'service_map_layers',
+          '#basic_array' => true,
+          '#options' => $this->map_layer_options(),
+          '#value' => $this->map_layer_select( get_option('service_map_layers', $this->map_layer_built_in() )),
+        ],*/
         '311_service' => [
           '#type' => 'radios',
           '#title' => __pcHelp('Issues (311) provider'),
@@ -151,8 +164,56 @@ class ServiceCenterPage
       ];
     }
 
+    private function map_layer_built_in() {
+      return [
+        [
+          'type' => 'transit',
+          'icon' => 'fa-train',
+          'title' => 'Public Transit',
+        ],
+        [
+          'type' => 'bicycle',
+          'icon' => 'fa-bicycle',
+          'title' => 'Bicycle Routes',
+        ],
+        [
+          'type' => 'traffic',
+          'icon' => 'fa-car',
+          'title' => 'Traffic',
+        ],
+      ];
+    }
+
+    private function map_layer_options() {
+      $options = [];
+      return $this->map_layer_select($this->map_layer_built_in(), true);
+    }
+
+    private function map_layer_select($value, $labels = false) {
+      $out = [];
+      foreach ($value as $item) {
+        if ($labels) {
+          $out[json_encode($item)] = $item['title'];
+        }
+        else {
+          array_push($out, json_encode($item));
+        }
+      }
+      return $out;
+    }
+
+    private function map_layer_values($value) {
+      $out = [];
+      $value = gettype($value) == 'string' ? [$value] : $value;
+      foreach ($value as $item) {
+        print($item);
+        array_push($out, json_decode($item));
+      }
+      return $out;
+    }
+
     public function settings_page() {
-      $this->build_fields();
+      $this->build_fields(); 
 
       // Do we have post?
       if(isset($_POST['_wpnonce'])) {
@@ -187,6 +248,8 @@ class ServiceCenterPage
           update_option( $key, $value );
         }
       }
+      // @todo
+      //update_option( 'service_map_layers', $this->map_layer_values($values['service_map_layers']) );
     }
 }
 
