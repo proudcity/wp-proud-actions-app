@@ -324,6 +324,11 @@ class ActionsApp extends \ProudPlugin {
         ]
       ]
     ]);
+
+    // Add global settings
+    parent::addJsSettings(array(
+     'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
+    ), true);
     
     return array(
       'path' => $this->get_app_path(),
