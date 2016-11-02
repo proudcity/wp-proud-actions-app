@@ -1,5 +1,4 @@
 <?php
-
 ?>
 <!doctype html>
 <html class="no-js" lang="en" ng-app="311AppParent">
@@ -32,11 +31,18 @@
   </head>
   <body>
     <div class="container">
-        <img src="https://san-rafael-ca.proudcity.com/wp-content/themes/wp-proud-sr-ca-theme/dist/images/logo.svg" class="logo full-logo" title="Home" alt="Home">
+        <?php if( $logo_meta ): ?>
+            <?php \Proud\Core\print_responsive_image( $logo_meta, ['logo'] ) ?>
+        <?php else: ?>
+            <?php echo get_navbar_logo(); ?>
+        <?php endif; ?>
     </div>
 
     <div ng-init="$root.appId = 'app'" class="container spacing"><div class="parent" ui-view></div></div>
-        
+    
+    <?php if( $background_meta ): ?>
+        <div class="full-screen-background"><?php \Proud\Core\print_responsive_image( $background_meta ) ?></div>
+    <?php endif; ?>
     <script src="<?php echo $path ?>js/bootstrap.js"></script>
     <script src="<?php echo $path ?>js/angular.js"></script>
     <script src="<?php echo $path ?>js/angular-core.js"></script>
@@ -50,14 +56,9 @@
         .action-box>div {
             border: none;
         }
-        body{
-            background: url(https://san-rafael-ca.proudcity.com/wp-content/uploads/2016/02/Church.jpg);
-            background-size: cover;
-        }
-        .logo {
-            margin: 25px 0;
-            height: 100px;
-            width: auto;
+        body > .container{
+            position: relative;
+            z-index: 1;
         }
         .action-box{
             background: white;

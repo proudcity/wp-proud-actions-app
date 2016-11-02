@@ -289,15 +289,29 @@ class ActionsApp extends \ProudPlugin {
 
     do_action('wp_enqueue_scripts');
 
+    $settings = $this->get_values($key);
+
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'instances' => [
-          'app' => $this->get_values($key),
+          'app' => $settings,
         ]
       ]
     ]);
-    
+
+    // Get image background
+    $background_meta = !empty( $settings['background'] )
+                ? \Proud\Core\build_responsive_image_meta( $settings['background'] )
+                : '';
+
+    // Get custom logo
+    $logo_meta = !empty( $settings['logo'] )
+                ? \Proud\Core\build_responsive_image_meta( $settings['logo'] )
+                : '';
+
     return array(
+      'background_meta' => $background_meta,
+      'logo_meta' => $logo_meta,
       'path' => $this::get_app_path(),
       'google_analytics' => get_option('google_analytics_key'), 
       'title' =>  'ProudCity Service Center', //@todo
