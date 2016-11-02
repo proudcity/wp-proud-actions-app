@@ -44,6 +44,7 @@
     <div ng-init="$root.appId = 'app'" class=""><div class="parent" ui-view></div></div>
         
     <script src="<?php echo $path ?>js/bootstrap.js"></script>
+    <script src="<?php echo $path ?>js/angular.js"></script>
     <script src="<?php echo $path ?>js/angular-core.js"></script>
     <script src="<?php echo $path ?>js/angular-router-animate.js"></script>
     <script src="<?php echo $path ?>js/angular-lazy.js"></script>
