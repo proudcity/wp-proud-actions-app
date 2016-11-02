@@ -227,6 +227,7 @@ class ActionsApp extends \ProudPlugin {
     add_rewrite_rule('^fbtab/?', 'index.php?wp_proud_format=fbtab', 'top');
     add_rewrite_rule('^app/?', 'index.php?wp_proud_format=app', 'top');
     add_rewrite_rule('^preview/?', 'index.php?wp_proud_format=preview', 'top');
+    add_rewrite_rule('^service-center/?', 'index.php?wp_proud_format=preview', 'top');
     add_rewrite_rule('^form-embed/?', 'index.php?wp_proud_format=gravityforms_iframe', 'top');
 
     // Try to overwrite everything
@@ -272,7 +273,7 @@ class ActionsApp extends \ProudPlugin {
         require_once( plugin_dir_path(__FILE__) . 'templates/app.php' );
         break;
       case 'preview':
-        $url = '/app';
+        $url = '/';
         require_once( plugin_dir_path(__FILE__) . 'templates/preview.php' );
         break;
       case 'gravityforms_iframe':
@@ -290,10 +291,32 @@ class ActionsApp extends \ProudPlugin {
     do_action('wp_enqueue_scripts');
 
     $settings = $this->get_values($key);
+
+    // Add search settings
     $settings['search'] = $search;
     $settings['search_prefix'] = get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=';
     $site = get_option('search_google_site');
     $settings['search_suffix'] = !empty($site) ? ' site: '.$site : '';
+
+    // Add map settings
+    // @todo: temp:
+    $settings['map_layers'] = [
+      [
+        'type' => 'transit',
+        'icon' => 'fa-train',
+        'title' => 'Public Transit',
+      ],
+      [
+        'type' => 'bicycle',
+        'icon' => 'fa-bicycle',
+        'title' => 'Bicycle Routes',
+      ],
+      [
+        'type' => 'traffic',
+        'icon' => 'fa-car',
+        'title' => 'Traffic',
+      ],
+    ];
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'instances' => [

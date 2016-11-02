@@ -10,11 +10,15 @@
         <style>
           /*! normalize.css v3.0.2 | MIT License | git.io/normalize */html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,details,figcaption,figure,footer,header,hgroup,main,menu,nav,section,summary{display:block}audio,canvas,progress,video{display:inline-block;vertical-align:baseline}audio:not([controls]){display:none;height:0}[hidden],template{display:none}a{background-color:transparent}a:active,a:hover{outline:0}abbr[title]{border-bottom:1px dotted}b,strong{font-weight:bold}dfn{font-style:italic}h1{font-size:2em;margin:0.67em 0}mark{background:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-0.5em}sub{bottom:-0.25em}img{border:0}svg:not(:root){overflow:hidden}figure{margin:1em 40px}hr{-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box;height:0}pre{overflow:auto}code,kbd,pre,samp{font-family:monospace, monospace;font-size:1em}button,input,optgroup,select,textarea{color:inherit;font:inherit;margin:0}button{overflow:visible}button,select{text-transform:none}button,html input[type="button"],input[type="reset"],input[type="submit"]{-webkit-appearance:button;cursor:pointer}button[disabled],html input[disabled]{cursor:default}button::-moz-focus-inner,input::-moz-focus-inner{border:0;padding:0}input{line-height:normal}input[type="checkbox"],input[type="radio"]{-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:0}input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{height:auto}input[type="search"]{-webkit-appearance:textfield;-moz-box-sizing:content-box;-webkit-box-sizing:content-box;box-sizing:content-box}input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit-search-decoration{-webkit-appearance:none}fieldset{border:1px solid #c0c0c0;margin:0 2px;padding:0.35em 0.625em 0.75em}legend{border:0;padding:0}textarea{overflow:auto}optgroup{font-weight:bold}table{border-collapse:collapse;border-spacing:0}td,th{padding:0}          
         </style>
+        <link rel='stylesheet' id='external-fonts-css'  href='//fonts.googleapis.com/css?family=Lato%3A400%2C900%2C700%2C300&#038;ver=4.6.1' type='text/css' media='all' />
+        <link href="https://beta.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud-vendor.css" rel="stylesheet" />
+        <link href="https://example.proudcity.com/wp-content/themes/wp-proud-theme/dist/styles/proud.css" rel="stylesheet" />
         <style>
-          @import url(https://fonts.googleapis.com/css?family=Open+Sans:400,600,300);
 
   html{
     height:100%;
+    overflow-x: hidden; 
+    overflow-y: auto;
   }
 
   body {
@@ -25,8 +29,25 @@
 background: #fff;/*#1b1b1b; /* Old browsers */
   }
   /*Basic Phone styling*/
-  #wrapper {
-    background: url(file:///home/jeff/Downloads/facebook.png) center top no-repeat;
+  .mobile-only {
+    display: none;
+  }
+  .iframe-wrapper {
+    height: 100%;
+  }
+  .facebook-wrapper .iframe-wrapper {
+    padding: 107px 19px 0 234px;
+    background: url(//localhost/labspace/facebook.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+  }
+  .embed-wrapper .iframe-wrapper {
+    padding: 92px 141px 0 144px;
+    background: url(//localhost/labspace/embed.png);
+    background-repeat: no-repeat;
+  }
+  .embed-wrapper .iframe-wrapper iframe {
+    height: 396px;
   }
   .phone {
     position:relative;
@@ -42,13 +63,19 @@ background: #fff;/*#1b1b1b; /* Old browsers */
         -ms-animation: fadein 2s; /* Internet Explorer */
          -o-animation: fadein 2s; /* Opera < 12.1 */
             animation: fadein 2s;
-}
+  }
+  .no-phone {
+    border-width: 5px;
+    border-radius: 5px;
+  }
   
   .phone iframe {
     border: 0;
     width: 100%;
     height: 100%;
-    background-color:#000;
+    background-color:#fff;
+    overflow-x: hidden !important;
+    overflow-y: hidden;
   }
   /*Different Perspectives*/
   
@@ -115,7 +142,8 @@ background: #fff;/*#1b1b1b; /* Old browsers */
     padding-top:20px;
   }
 
-  #phones button {
+  #phones button,
+  #types button {
     outline: none;
     width: 198px;
     border: 1px solid #016aa0;
@@ -251,16 +279,41 @@ background: #fff;/*#1b1b1b; /* Old browsers */
     from { opacity: 0; }
     to   { opacity: 1; }
 }
+
+.text{
+  margin-left: 20px;
+  color: #000;
+  position: absolute;
+  width: 40%;
+  min-width: 200px;
+  font-size: 200%;
+}
+.text-top {
+  top: 20px;
+}
+.text-bottom {
+  position: absolute;
+  bottom: 20px;
+}
 </style>
   </head>
 
   <body>
 
     <!--The Main Thing-->
+<div class="text text-top">
+  <h2 style="margin-top:0"><img src="https://my.proudcity.com/images/FullLogoBlack.png" alt="ProudCity"><br/> Service Center</h2>
+</div>
+<div class="text text-bottom">
+  <h2>Write your content once. Build your forms once.</h2>
+  <h3>Serve your residents wherever they are trying to reach you: on your website, on Facebook, on their phones.</h3>
+</div>
 <div id="wrapper">
 <div class="phone view_2" id="phone_1">
   <div id="loader">Loading...</div>
-  <iframe src="<?php print $url ?>" id="frame_1"></iframe>
+  <div class="iframe-wrapper">
+    <iframe src="<?php print $url ?>app" id="frame_1" seamless="seamless"></iframe>
+  </div>
 </div>
 </div>
 
@@ -276,12 +329,19 @@ background: #fff;/*#1b1b1b; /* Old browsers */
 
 <div id="phone-controls">
 
-  <div id="views">
+  <div id="types">
+      <button value="standalone">Standalone</button>
+      <button value="facebook">Facebook</button>
+      <button value="embed">Embed</button>
+      <button value="mobile">Mobile</button>
+  </div>
+
+  <div id="views" class="mobile-only">
       <button value="1">Table View</button>
       <button value="2">Front View</button>
   </div>
 
-  <div id="phones">
+  <div id="phones" class="mobile-only">
       <button value="1">iPhone 6</button>
       <button value="2">Samsing Galaxy Note</button>
       <button value="3">Microsoft Lumia 1020</button>
@@ -290,12 +350,18 @@ background: #fff;/*#1b1b1b; /* Old browsers */
   </div>
 
 </div>
+<script
+  src="https://code.jquery.com/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+ 
 
     
         <script>
           /*Only needed for the controls*/
   phone = document.getElementById("phone_1"),
   iframe = document.getElementById("frame_1");
+  var url = '<?php print $url ?>';
 
 
 /*View*/
@@ -331,11 +397,10 @@ document.getElementById("views").addEventListener("click", function(evt) {
 });
 
 document.getElementById("phones").addEventListener("click", function(evt) {
-
-  if(evt.target.value == 1){
+  if(evt.target.value == 1 || evt.target.value == "mobile"){
     // iphone 6
     width = 375;
-    height = 667; 
+    height = 667;
   }
 
   if(evt.target.value == 2){
@@ -368,6 +433,52 @@ document.getElementById("phones").addEventListener("click", function(evt) {
 });
 
 
+document.getElementById("types").addEventListener("click", function(evt) {
+
+  if(evt.target.value == "mobile"){
+    // iphone 6
+    width = 375;
+    height = 667;
+    jQuery('.mobile-only').show();
+    jQuery('#phone_1').removeClass('no-phone').removeClass('embed-wrapper').removeClass('facebook-wrapper');
+    $('#frame_1').attr('src', url + 'app');
+  }
+  if(evt.target.value == "facebook"){
+    // facebook
+    width = 1200;
+    height = 790;
+    jQuery('.mobile-only').hide();
+    updateView(2);
+    jQuery('#phone_1').addClass('no-phone facebook-wrapper').removeClass('embed-wrapper');
+    console.log(jQuery('#phone_1').attr('class'));
+    $('#frame_1').attr('src', url + 'fbtab');
+  }
+  if(evt.target.value == "embed"){
+    // embed
+    width = 1186;
+    height = 916;
+    updateView(2);
+    jQuery('.mobile-only').hide();
+    jQuery('#phone_1').addClass('no-phone embed-wrapper').removeClass('facebook-wrapper');
+    $('#frame_1').attr('src', url + 'embed');
+  }
+  if(evt.target.value == "standalone"){
+    // embed
+    width = 1186;
+    height = 916;
+    updateView(2);
+    jQuery('.mobile-only').hide();
+    jQuery('#phone_1').addClass('no-phone').removeClass('facebook-wrapper').removeClass('embed-wrapper');
+    $('#frame_1').attr('src', url + 'standalone');
+  }
+
+    phone.style.width = width + "px";
+    phone.style.height = height + "px"; 
+    jQuery('.text').hide();
+
+});
+
+
  iframe = document.getElementById('frame_1');
 
   if (iframe.attachEvent){
@@ -379,9 +490,9 @@ document.getElementById("phones").addEventListener("click", function(evt) {
           afterLoading();
       };
   }
-
+var loaded = false;
 function afterLoading(){
-
+  if (!loaded) {
     setTimeout(function() {
         phone.className = "phone view_1";
         setTimeout(function() {
@@ -390,6 +501,8 @@ function afterLoading(){
             document.getElementById('loader').style.display = 'none';
         }, 1000);
     }, 1000);
+    loaded = true;
+  }
 
 }
 
