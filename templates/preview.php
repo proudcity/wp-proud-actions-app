@@ -36,14 +36,13 @@ background: #fff;/*#1b1b1b; /* Old browsers */
     height: 100%;
   }
   .facebook-wrapper .iframe-wrapper {
-    padding: 107px 19px 0 234px;
-    background: url(//localhost/labspace/facebook.png);
-    background-size: 100% 100%;
+    padding: 80px 14px 0 198px;
+    background: url(https://my.proudcity.com/images/wrappers/facebook.png);
     background-repeat: no-repeat;
   }
   .embed-wrapper .iframe-wrapper {
     padding: 92px 141px 0 144px;
-    background: url(//localhost/labspace/embed.png);
+    background: url(https://my.proudcity.com/images/wrappers/embed.png);
     background-repeat: no-repeat;
   }
   .embed-wrapper .iframe-wrapper iframe {
@@ -445,8 +444,8 @@ document.getElementById("types").addEventListener("click", function(evt) {
   }
   if(evt.target.value == "facebook"){
     // facebook
-    width = 1200;
-    height = 790;
+    width = 1033;
+    height = 683;
     jQuery('.mobile-only').hide();
     updateView(2);
     jQuery('#phone_1').addClass('no-phone facebook-wrapper').removeClass('embed-wrapper');
