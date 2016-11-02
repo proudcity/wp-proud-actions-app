@@ -256,19 +256,19 @@ class ActionsApp extends \ProudPlugin {
 
     switch( $wp->query_vars['wp_proud_format'] ) {
       case 'standalone':
-        extract( $this->proud_actions_standalone_311('service_center_standalone') );
+        extract( $this->proud_actions_standalone_311('service_center_standalone', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/standalone.php' );
         break;
       case 'fbtab':
-        extract( $this->proud_actions_standalone_311('service_center_facebook') );
+        extract( $this->proud_actions_standalone_311('service_center_facebook', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/facebook.php' );
         break;
       case 'embed':
-        extract( $this->proud_actions_standalone_311('service_center_embed') );
+        extract( $this->proud_actions_standalone_311('service_center_embed', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/facebook.php' );
         break;
       case 'app':
-        extract( $this->proud_actions_standalone_311('service_center_app') );
+        extract( $this->proud_actions_standalone_311('service_center_app', false) );
         require_once( plugin_dir_path(__FILE__) . 'templates/app.php' );
         break;
       case 'preview':
@@ -283,16 +283,21 @@ class ActionsApp extends \ProudPlugin {
     exit;
   }
 
-  private function proud_actions_standalone_311($key) {
+  private function proud_actions_standalone_311($key, $search) {
     global $proudcore;
     $this->proud_actions_print_311(false);
 
     do_action('wp_enqueue_scripts');
 
+    $settings = $this->get_values($key);
+    $settings['search'] = $search;
+    $settings['search_prefix'] = get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=';
+    $site = get_option('search_google_site');
+    $settings['search_suffix'] = !empty($site) ? ' site: '.$site : '';
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'instances' => [
-          'app' => $this->get_values($key),
+          'app' => $settings,
         ]
       ]
     ]);

@@ -17,7 +17,7 @@ class ServiceCenterAppPage
       $this->fields = [
         'submit_for_approval' => [
          '#type' => 'html',
-          '#html' => '<a target="_blank" href="https://proudcity.com/support/create" class="btn btn-default"><i class="fa fa-fw fa-plus"></i>Submit App for Approval</a><div class="help-block">Create a new ProudCity support ticket and we will generate your mobile app and submit it to the Apple Appstore and Google Play Store for approval.</div>',
+          '#html' => '<div class="field-group" style="margin-top:40px"><label>Submit to App Stores</label><div class="checkbox"><a target="_blank" href="https://proudcity.com/support/create" class="btn btn-default"><i class="fa fa-fw fa-plus"></i>Submit App for Approval</a><div class="help-block">Create a new ProudCity support ticket and we will generate your mobile app and submit it to the Apple Appstore and Google Play Store for approval.</div></div></div>',
         ]
       ];
     }
@@ -70,7 +70,7 @@ class ServiceCenterAppPage
         'name' => $this->key,
         'id' => $this->key,
       ]);
-      echo '<h3 id="preview-wrapper">Preview your mobile application <button class="btn btn-default" onclick="document.getElementById(\'preview\').contentDocument.location.reload(true);return false;"><i class="fa fa-fw fa-refresh"></i>Refresh preview</button></h3><iframe src="/preview" style="width:100%;height:1200px;border:0;" id="preview" scrolling="no"></iframe>';
+      echo '<h3 id="preview-wrapper">Preview your mobile application <!--<button class="btn btn-default" onclick="document.getElementById(\'preview\').contentDocument.location.reload(true);return false;"><i class="fa fa-fw fa-refresh"></i>Refresh preview</button>--><small>Click Save to refresh</small></h3><iframe src="/preview" style="width:100%;height:1200px;border:0;" id="preview" scrolling="no"></iframe>';
 
     }
 

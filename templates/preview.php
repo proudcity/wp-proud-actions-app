@@ -25,7 +25,9 @@
 background: #fff;/*#1b1b1b; /* Old browsers */
   }
   /*Basic Phone styling*/
-  
+  #wrapper {
+    background: url(file:///home/jeff/Downloads/facebook.png) center top no-repeat;
+  }
   .phone {
     position:relative;
     border: 40px solid #121212;

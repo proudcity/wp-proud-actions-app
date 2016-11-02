@@ -38,6 +38,8 @@ class ServiceCenterPage
       );
 
       $this->options = [
+        'search_provider',
+        'search_google_site',
         'local_services',
         '311_service',
         '311_link_create',
@@ -79,7 +81,35 @@ class ServiceCenterPage
       if ( is_plugin_active('wp-proud-issue/wp-proud-issue.php') ) {
         $services_311 = array_merge(array('wordpress' => __pcHelp( 'Custom categories')), $services_311);
       }
-      $this->fields = $services_local_fields + [
+      $this->fields = [
+        'search_provider' => [
+          '#type' => 'radios',
+          '#title' => __pcHelp('Advanced search provider'),
+          '#description' => __pcHelp('The Service Center has built-in autocomplete search.  Users can run an advanced search by hitting the search icon next to the box.  If you are using the Service Center only, select Google. If your website is hosted at proudcity, select Built-in site search.'),
+          '#name' => 'search_provider',
+          '#options' => [
+            'wordpress' => 'Built-in site search',
+            'google' => 'Google',
+          ],
+          '#value' => get_option('search_provider', 'google'),
+        ],
+        'search_google_site' => [
+          '#type' => 'text',
+          '#title' => __pcHelp('Google search site domain'),
+          '#value' => get_option('search_google_site'),
+          '#name' => 'search_google_site',
+          '#description' => __pcHelp('Enter the domain of your site, "example.com".  This will limit the Google search to only your websites by appending "site: example.com" to the search term.'),
+          '#states' => [
+            'visible' => [
+              'search_provider' => [
+                'operator' => '==',
+                'value' => ['google'],
+                'glue' => '||'
+              ],
+            ],
+          ],
+        ],
+      ] + $services_local_fields + [
         '311_service' => [
           '#type' => 'radios',
           '#title' => __pcHelp('Issues (311) provider'),
