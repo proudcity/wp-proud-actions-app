@@ -14,6 +14,7 @@ namespace Proud\ActionsApp;
 
 if( is_admin() ) {
   require_once( plugin_dir_path(__FILE__) . 'settings/service-center.php' );
+  require_once( plugin_dir_path(__FILE__) . 'settings/settings.php' );
   require_once( plugin_dir_path(__FILE__) . 'settings/standalone.php' );
   require_once( plugin_dir_path(__FILE__) . 'settings/embed.php' );
   require_once( plugin_dir_path(__FILE__) . 'settings/facebook.php' );
@@ -227,6 +228,7 @@ class ActionsApp extends \ProudPlugin {
     add_rewrite_rule('^fbtab/?', 'index.php?wp_proud_format=fbtab', 'top');
     add_rewrite_rule('^app/?', 'index.php?wp_proud_format=app', 'top');
     add_rewrite_rule('^preview/?', 'index.php?wp_proud_format=preview', 'top');
+    add_rewrite_rule('^service-center/?', 'index.php?wp_proud_format=preview', 'top');
     add_rewrite_rule('^form-embed/?', 'index.php?wp_proud_format=gravityforms_iframe', 'top');
 
     // Try to overwrite everything
@@ -256,23 +258,23 @@ class ActionsApp extends \ProudPlugin {
 
     switch( $wp->query_vars['wp_proud_format'] ) {
       case 'standalone':
-        extract( $this->proud_actions_standalone_311('service_center_standalone') );
+        extract( $this->proud_actions_standalone_311('service_center_standalone', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/standalone.php' );
         break;
       case 'fbtab':
-        extract( $this->proud_actions_standalone_311('service_center_facebook') );
+        extract( $this->proud_actions_standalone_311('service_center_facebook', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/facebook.php' );
         break;
       case 'embed':
-        extract( $this->proud_actions_standalone_311('service_center_embed') );
+        extract( $this->proud_actions_standalone_311('service_center_embed', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/facebook.php' );
         break;
       case 'app':
-        extract( $this->proud_actions_standalone_311('service_center_app') );
+        extract( $this->proud_actions_standalone_311('service_center_app', false) );
         require_once( plugin_dir_path(__FILE__) . 'templates/app.php' );
         break;
       case 'preview':
-        $url = '/app';
+        $url = '/';
         require_once( plugin_dir_path(__FILE__) . 'templates/preview.php' );
         break;
       case 'gravityforms_iframe':
@@ -283,7 +285,7 @@ class ActionsApp extends \ProudPlugin {
     exit;
   }
 
-  private function proud_actions_standalone_311($key) {
+  private function proud_actions_standalone_311($key, $search) {
     global $proudcore;
     $this->proud_actions_print_311(false);
 
@@ -291,6 +293,31 @@ class ActionsApp extends \ProudPlugin {
 
     $settings = $this->get_values($key);
 
+    // Add search settings
+    $settings['search'] = $search;
+    $settings['search_prefix'] = get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=';
+    $site = get_option('search_google_site');
+    $settings['search_suffix'] = !empty($site) ? ' site: '.$site : '';
+
+    // Add map settings
+    // @todo: temp:
+    $settings['map_layers'] = [
+      [
+        'type' => 'transit',
+        'icon' => 'fa-train',
+        'title' => 'Public Transit',
+      ],
+      [
+        'type' => 'bicycle',
+        'icon' => 'fa-bicycle',
+        'title' => 'Bicycle Routes',
+      ],
+      [
+        'type' => 'traffic',
+        'icon' => 'fa-car',
+        'title' => 'Traffic',
+      ],
+    ];
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'instances' => [
@@ -298,6 +325,11 @@ class ActionsApp extends \ProudPlugin {
         ]
       ]
     ]);
+    
+    // Add global settings
+    $proudcore->addJsSettings(array(
+     'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
+    ), true);
 
     // Get image background
     $background_meta = !empty( $settings['background'] )

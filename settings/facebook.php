@@ -20,7 +20,7 @@ class ServiceCenterFacebookPage
       $this->fields = [
         'facebook_add' => [
          '#type' => 'html',
-          '#html' => '<div class="field-group"><label>Add to Facebook</label><div class="checkbox"><a target="_blank" href="https://www.facebook.com/dialog/pagetab?app_id='. $fb_app .'&next='. $url .'" class="btn btn-default"><i class="fa fa-fw fa-facebook-square"></i>Add Tab to Facebook Page</a><div class="help-block">Once you have saved your configuration, click this button to add the Service Center tab to your Facebook page.</div></div></div>',
+          '#html' => '<div class="field-group" style="margin-top:40px"><label>Add to Facebook</label><div class="checkbox"><a target="_blank" href="https://www.facebook.com/dialog/pagetab?app_id='. $fb_app .'&next='. $url .'" class="btn btn-default"><i class="fa fa-fw fa-facebook-square"></i>Add Tab to Facebook Page</a><div class="help-block">Once you have saved your configuration, click this button to add the Service Center tab to your Facebook page.</div></div></div>',
         ]
       ];
     }
