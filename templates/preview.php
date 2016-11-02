@@ -153,7 +153,7 @@ background: #fff;/*#1b1b1b; /* Old browsers */
     -o-border-radius:5px;
     background-color: #016aa0;
     height: 40px;
-    margin: 10px 0;
+    margin: 5px 0;
     color: #fff;
     -webkit-transition: all 0.2s;
     transition: all 0.2s;
@@ -312,7 +312,7 @@ background: #fff;/*#1b1b1b; /* Old browsers */
 <div class="phone view_2" id="phone_1">
   <div id="loader">Loading...</div>
   <div class="iframe-wrapper">
-    <iframe src="<?php print $url ?>app" id="frame_1" seamless="seamless"></iframe>
+    <iframe src="<?php print $url ?>app#/city/answers" id="frame_1" seamless="seamless"></iframe>
   </div>
 </div>
 </div>
