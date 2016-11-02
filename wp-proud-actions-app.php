@@ -298,7 +298,7 @@ class ActionsApp extends \ProudPlugin {
     ]);
     
     return array(
-      'path' => $this->get_app_path(),
+      'path' => $this::get_app_path(),
       'google_analytics' => get_option('google_analytics_key'), 
       'title' =>  'ProudCity Service Center', //@todo
       'settings' => $proudcore->getJsSettings()
@@ -337,7 +337,7 @@ class ActionsApp extends \ProudPlugin {
   /**
    *  Get the form settings (used for the widget and on the app page configs).
    */
-  public function get_settings( $defaults = array(), $other_fields = array() ) {
+  public static function get_settings( $defaults = array(), $other_fields = array() ) {
     // Get answers topics
     $topics = get_categories( [
       'taxonomy' => 'faq-topic',
@@ -453,7 +453,7 @@ class ActionsApp extends \ProudPlugin {
 
     foreach ($fields as $key => $field) {
       $fields[$key]['#name'] = !empty($fields[$key]['#name']) ? $fields[$key]['#name'] : $key;
-      $fields[$key]['#value'] = $defaults[$key];
+      $fields[$key]['#value'] = !empty($defaults[$key]) ? $defaults[$key] : '';
     }
     return $fields;
   }
@@ -461,7 +461,7 @@ class ActionsApp extends \ProudPlugin {
   /**
    *  Get the values stored in an option.
    */
-  public function get_values($key) {
+  public static function get_values($key) {
     $values = get_option( $key, false );
     return $values;
     //return $values ? json_decode($values) : array();
@@ -470,7 +470,7 @@ class ActionsApp extends \ProudPlugin {
   /**
    *  Save the form settings (used for the widget and on the app page configs).
    */
-  public function save_values( $key, $values ) {
+  public static function save_values( $key, $values ) {
     unset($values['_wpnonce']);
     unset($values['_wp_http_referer']);
     return update_option($key, $values);
@@ -479,7 +479,7 @@ class ActionsApp extends \ProudPlugin {
   /**
    *  Get path to app based on `wp_proud_service_center_path` option.
    */
-  public function get_app_path() {
+  public static function get_app_path() {
     $local_path = plugins_url('includes/js', __FILE__);
     $path = get_option( 'wp_proud_service_center_path', false );
     if ($path == 'local') {
