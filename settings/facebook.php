@@ -16,13 +16,24 @@ class ServiceCenterFacebookPage
       $this->option = 'service_center_facebook';
 
       $url = get_site_url() . '/fbtab';
-      $fb_app = get_option('wp-service-center-fb-app', '165686929462');
-      $this->fields = [
-        'facebook_add' => [
-         '#type' => 'html',
-          '#html' => '<div class="field-group" style="margin-top:40px"><label>Add to Facebook</label><div class="checkbox"><a target="_blank" href="https://www.facebook.com/dialog/pagetab?app_id='. $fb_app .'&next='. $url .'" class="btn btn-default"><i class="fa fa-fw fa-facebook-square"></i>Add Tab to Facebook Page</a><div class="help-block">Once you have saved your configuration, click this button to add the Service Center tab to your Facebook page.</div></div></div>',
-        ]
-      ];
+      $fb_app = get_option('wp-service-center-fb-app', false);
+      if ($fb_app) {
+        $this->fields = [
+          'facebook_add' => [
+           '#type' => 'html',
+            '#html' => '<div class="field-group" style="margin-top:40px"><label>Add to Facebook</label><div class="checkbox"><a target="_blank" href="https://www.facebook.com/dialog/pagetab?app_id='. $fb_app .'&next='. $url .'" class="btn btn-default"><i class="fa fa-fw fa-facebook-square"></i>Add Tab to Facebook Page</a><div class="help-block">Once you have saved your configuration, click this button to add the Service Center tab to your Facebook page.</div></div></div>',
+          ]
+        ];
+      }
+      else {
+        $this->fields = [
+          'submit_for_approval' => [
+           '#type' => 'html',
+            '#html' => '<div class="field-group" style="margin-top:40px"><label>Generate Facebook App</label><div class="checkbox"><a target="_blank" href="https://proudcity.com/support/create" class="btn btn-default"><i class="fa fa-fw fa-plus"></i>Contact ProudCity</a><div class="help-block">Contact ProudCity Support and we will generate your Facebook app within one business day.</div></div></div>',
+          ]
+        ];
+      }
+      
     }
 
     // create custom plugin settings menu

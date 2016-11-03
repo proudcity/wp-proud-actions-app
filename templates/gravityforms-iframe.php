@@ -35,6 +35,7 @@ require_once( GFCommon::get_base_path() . '/form_display.php' );
     <meta charset="utf-8">
     <title>iFrame embed</title>
     <?php wp_print_styles(); ?>
+    <?php print $style ?>
     <?php wp_print_scripts(); ?>
   </head>
   <body>

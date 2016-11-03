@@ -40,6 +40,7 @@
     <script src="<?php echo $path ?>js/libraries.min.js"></script>
     <script src="<?php echo $path ?>js/app.min.js"></script>
 
+    <?php print $styles ?>
     <style>
         .action-box>div {
             border: none;

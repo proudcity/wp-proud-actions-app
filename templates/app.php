@@ -37,7 +37,11 @@
             <i class="fa fa-search fa-inverse"></i>
         </a>
         <a href="app.html#/city/local">
-            <img src="https://san-rafael-ca.proudcity.com/wp-content/themes/wp-proud-sr-ca-theme/dist/images/logo.svg" class="logo full-logo" title="Home" alt="Home">
+            <?php if( $logo_meta ): ?>
+                <?php \Proud\Core\print_responsive_image( $logo_meta, ['logo'] ) ?>
+            <?php else: ?>
+                <?php echo get_navbar_logo(); ?>
+            <?php endif; ?>
         </a>
     </div>
 
@@ -52,13 +56,14 @@
     <script src="<?php echo $path ?>js/libraries.min.js"></script>
     <script src="<?php echo $path ?>js/app.min.js"></script>
 
+    <?php print $styles ?>
     <style>
         .action-box>div {
             border: none;
         }
         .logo-bar {
             padding: 3px;
-            background: #0071BC;
+            background: <?php echo get_theme_mod( 'color_topnav', '#000000' ); ?>;
             position: fixed;
             width: 100%;
             z-index: 1000;

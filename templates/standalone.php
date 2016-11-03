@@ -29,7 +29,7 @@
         ga('create', '<?php echo $google_analytics ?>', 'auto');
     </script>
   </head>
-  <body>
+  <body style="background-color: #eee;">
     <div class="container">
         <?php if( $logo_meta ): ?>
             <?php \Proud\Core\print_responsive_image( $logo_meta, ['logo'] ) ?>
@@ -52,6 +52,7 @@
     <script src="<?php echo $path ?>js/libraries.min.js"></script>
     <script src="<?php echo $path ?>js/app.min.js"></script>
 
+    <?php print $styles ?>
     <style>
         .action-box>div {
             border: none;

@@ -347,7 +347,8 @@ class ActionsApp extends \ProudPlugin {
       'path' => $this::get_app_path(),
       'google_analytics' => get_option('google_analytics_key'), 
       'title' =>  'ProudCity Service Center', //@todo
-      'settings' => $proudcore->getJsSettings()
+      'settings' => $proudcore->getJsSettings(),
+      'styles' => function_exists('proud_customize_css') ? proud_customize_css() : '',
     );
   }
   

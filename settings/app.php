@@ -15,6 +15,12 @@ class ServiceCenterAppPage
       $this->key = 'service-center-app';
       $this->option = 'service_center_app';
       $this->fields = [
+        'logo' => [
+          '#title' => __( 'Logo', 'wp-proud-core' ),
+          '#type' => 'select_media',
+          '#default_value'  => '',
+          '#description' => 'You can customize colors and fonts in the Customize section.',
+        ],
         'submit_for_approval' => [
          '#type' => 'html',
           '#html' => '<div class="field-group" style="margin-top:40px"><label>Submit to App Stores</label><div class="checkbox"><a target="_blank" href="https://proudcity.com/support/create" class="btn btn-default"><i class="fa fa-fw fa-plus"></i>Submit App for Approval</a><div class="help-block">Create a new ProudCity support ticket and we will generate your mobile app and submit it to the Apple Appstore and Google Play Store for approval.</div></div></div>',
