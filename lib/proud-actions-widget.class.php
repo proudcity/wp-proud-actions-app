@@ -29,13 +29,14 @@ class ActionsBox extends Core\ProudWidget {
     $local_path = plugins_url('../includes/js', __FILE__);
     $path = Proud\ActionsApp\ActionsApp::get_app_path();
 
+    wp_enqueue_script('google-maps-api', '//maps.googleapis.com/maps/api/js?key=' . get_option( 'google_api_key', '' ) . '&libraries=places');
     // Running script
     wp_enqueue_script('proud-actions-app', $local_path . '/proud-actions-app.js', array('lodash','angular'), false, true);
     // Angular resources
     wp_enqueue_script('proud-actions-app-libraries', $path . '/js/libraries.min.js', array('angular'), false, true);
     wp_enqueue_script('proud-actions-app-app', $path . '/js/app.min.js', array('proud-actions-app-libraries'), false, true);
     wp_enqueue_script('proud-actions-app-templates', $path . '/views/app.templates.js', array('proud-actions-app-app'), false, true);
-    wp_enqueue_script('google-maps-api', '//maps.googleapis.com/maps/api/js?key=' . get_option( 'google_api_key', '' ) . '&libraries=places');
+    
     // @todo: make this work (file isn't getting included with this call, so I just added it to app.min.js)
     //if ($this->settings['active_tabs']['#options']['vote']) {
     //  wp_enqueue_script('proud-actions-app-vote', $path . 'js/vote.min.js', array('proud-actions-app-app'), false, true);
