@@ -16,7 +16,7 @@ class ServiceCenterFacebookPage
       $this->option = 'service_center_facebook';
 
       $url = get_site_url() . '/fbtab';
-      $fb_app = get_option('wp-service-center-fb-app', false);
+      $fb_app = get_option('proud_service_center_fb_app', false);
       if ($fb_app) {
         $this->fields = [
           'facebook_add' => [
