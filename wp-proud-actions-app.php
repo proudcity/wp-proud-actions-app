@@ -355,7 +355,7 @@ class ActionsApp extends \ProudPlugin {
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'global' => [
-          'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
+          'api_path' => get_option( 'proudcity_api', get_site_url() . '/wp-json/wp/v2/' ),
           'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered'],
           'issue' => array(
             'service' => get_option('311_service', 'seeclickfix'),
