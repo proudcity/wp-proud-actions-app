@@ -30,7 +30,7 @@
     </script>
   </head>
   <body style="background-color: #eee;">
-    <div class="container">
+    <div class="container logo-bar">
         <?php if( $logo_meta ): ?>
             <?php \Proud\Core\print_responsive_image( $logo_meta, ['logo'] ) ?>
         <?php else: ?>
@@ -70,6 +70,9 @@
         }
         .content-contain {
             min-height: 425px;
+        }
+        .logo-bar {
+            margin: 40px auto;
         }
     </style>
   </body>
