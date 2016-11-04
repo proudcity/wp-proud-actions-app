@@ -41,15 +41,7 @@ class ActionsBox extends Core\ProudWidget {
     //if ($this->settings['active_tabs']['#options']['vote']) {
     //  wp_enqueue_script('proud-actions-app-vote', $path . 'js/vote.min.js', array('proud-actions-app-app'), false, true);
     //}
-    
-    // Add global settings
-    parent::addJsSettings(array(
-     //'payment_key' => '', //@todo
-     'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
-     //'payment_url' => '',
-     //'track_url' => '',
-     //'seeclickfixUrl' => '',
-    ), true);
+
   }
 
   /**

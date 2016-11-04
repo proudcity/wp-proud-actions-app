@@ -326,11 +326,6 @@ class ActionsApp extends \ProudPlugin {
       ]
     ]);
     
-    // Add global settings
-    $proudcore->addJsSettings(array(
-     'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
-    ), true);
-
     // Get image background
     $background_meta = !empty( $settings['background'] )
                 ? \Proud\Core\build_responsive_image_meta( $settings['background'] )
@@ -360,6 +355,7 @@ class ActionsApp extends \ProudPlugin {
     $proudcore->addJsSettings([
       'proud_actions_app' => [
         'global' => [
+          'api_path' => get_option( 'proudcity_api', '/wp-json/wp/v2/' ),
           'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered'],
           'issue' => array(
             'service' => get_option('311_service', 'seeclickfix'),
