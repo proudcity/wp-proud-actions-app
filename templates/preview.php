@@ -58,7 +58,7 @@ background: #fff;/*#1b1b1b; /* Old browsers */
     overflow: hidden;
     -webkit-transition: all 0.5s ease;
     transition: all 0.5s ease;
-   -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
+    -webkit-animation: fadein 2s; /* Safari, Chrome and Opera > 12.1 */
        -moz-animation: fadein 2s; /* Firefox < 16 */
         -ms-animation: fadein 2s; /* Internet Explorer */
          -o-animation: fadein 2s; /* Opera < 12.1 */
@@ -302,12 +302,12 @@ background: #fff;/*#1b1b1b; /* Old browsers */
 
     <!--The Main Thing-->
 <div class="text text-top">
-  <h2 style="margin-top:0"><img src="https://my.proudcity.com/images/FullLogoBlack.png" alt="ProudCity"><br/> Service Center</h2>
+  <h2 style="margin-top:0"><img src="https://my.proudcity.com/images/logo-200w.png" alt="ProudCity"><br/> Service Center</h2>
 </div>
-<div class="text text-bottom">
+<!--<div class="text text-bottom">
   <h2>Write your content once. Build your forms once.</h2>
   <h3>Serve your residents wherever they are trying to reach you: on your website, on Facebook, on their phones.</h3>
-</div>
+</div>-->
 <div id="wrapper">
 <div class="phone view_2" id="phone_1">
   <div id="loader">Loading...</div>
