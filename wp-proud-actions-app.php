@@ -506,6 +506,9 @@ class ActionsApp extends \ProudPlugin {
    */
   public static function get_values($key) {
     $values = get_option( $key, false );
+    if (!empty($values['custom_content'])) {
+      $values['custom_content'] = str_replace('\"', '"', $values['custom_content']);
+    }
     return $values;
     //return $values ? json_decode($values) : array();
   }
