@@ -319,6 +319,9 @@ class ActionsApp extends \ProudPlugin {
       ],
     ];
     $proudcore->addJsSettings([
+      'global' => [
+        'rewrite_relative_link' => TRUE,
+      ],
       'proud_actions_app' => [
         'instances' => [
           'app' => $settings,
