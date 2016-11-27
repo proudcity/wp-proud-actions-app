@@ -1,5 +1,8 @@
 <?php
-require_once('../../../../wp-load.php');
+include_once( ABSPATH . 'wp-load.php' );
+include_once( ABSPATH . 'wp-content/plugins/gravityforms/includes/api.php' );
+
+
 
 do_action('wp_enqueue_scripts');
 wp_deregister_script( 'angular' );
@@ -7,7 +10,6 @@ wp_deregister_script( 'angular' );
 //if ( empty( $wp->query_vars['gfiframe'] ) || ( 'gfembed' != $wp->query_vars['gfiframe'] && 'gfembed.php' != $wp->query_vars['gfiframe'] ) ) {
 //  return;
 //}
-
 $form_id = null;
 if ( ! empty( $_GET['id'] ) ) {
   $form_id = absint( $_GET['id'] );
@@ -26,7 +28,9 @@ show_admin_bar( false );
 
 require_once( GFCommon::get_base_path() . '/form_display.php' );
 
-
+// We use this to not show the proudbar, among other things.
+global $is_iframe;
+$is_iframe = true;
 ?>
 
 <!doctype html>
