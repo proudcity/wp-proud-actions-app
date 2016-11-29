@@ -2,8 +2,6 @@
 include_once( ABSPATH . 'wp-load.php' );
 include_once( ABSPATH . 'wp-content/plugins/gravityforms/includes/api.php' );
 
-
-
 do_action('wp_enqueue_scripts');
 wp_deregister_script( 'angular' );
 
@@ -42,9 +40,9 @@ $is_iframe = true;
     <?php print $style ?>
     <?php wp_print_scripts(); ?>
   </head>
-  <body>
+  <body class="gravityforms-iframe">
 
-    <?php gravity_form( $form_id, false, false, false, false, true ); ?>
+    <?php gravity_form( $form_id, true, false, false, $_GET, true ); ?>
     <?php wp_footer(); ?>
   </body>
 </html>
