@@ -12,15 +12,6 @@ License:            Affero GPL v3
 
 namespace Proud\ActionsApp;
 
-if( is_admin() ) {
-  require_once( plugin_dir_path(__FILE__) . 'settings/service-center.php' );
-  require_once( plugin_dir_path(__FILE__) . 'settings/settings.php' );
-  require_once( plugin_dir_path(__FILE__) . 'settings/standalone.php' );
-  require_once( plugin_dir_path(__FILE__) . 'settings/embed.php' );
-  require_once( plugin_dir_path(__FILE__) . 'settings/facebook.php' );
-  require_once( plugin_dir_path(__FILE__) . 'settings/app.php' );
-}
-
 // Init rendered var for actions overlay
 $GLOBALS['proud_actions_app_rendered'] = false;
 
@@ -42,9 +33,8 @@ class ActionsApp extends \ProudPlugin {
       'plugin_path'    => __FILE__,
     ) );
 
+    $this->hook( 'init', 'register_actions_classes', 1 );
     $this->hook( 'init', 'create_service_center_tab' );
-    $this->hook( 'admin_init', 'service_center_tab_admin' );
-    $this->hook( 'save_post', 'add_service_center_tab_fields', 10, 2 );
     $this->hook( 'rest_api_init', 'service_center_tab_rest_support' );
 
     $this->hook( 'plugins_loaded', 'proud_actions_init_widgets' );
@@ -55,6 +45,23 @@ class ActionsApp extends \ProudPlugin {
 
   }
 
+  /**
+   * Register admin classes
+   * Necessary since plugin load order has this above proud admin
+   */ 
+  public function register_actions_classes() {
+    if( is_admin() ) {
+      // Actions meta
+      require_once( plugin_dir_path(__FILE__) . 'lib/actions-meta.class.php' );
+      // Settings pages
+      require_once( plugin_dir_path(__FILE__) . 'settings/service-center.php' );
+      require_once( plugin_dir_path(__FILE__) . 'settings/settings.php' );
+      require_once( plugin_dir_path(__FILE__) . 'settings/standalone.php' );
+      require_once( plugin_dir_path(__FILE__) . 'settings/embed.php' );
+      require_once( plugin_dir_path(__FILE__) . 'settings/facebook.php' );
+      require_once( plugin_dir_path(__FILE__) . 'settings/app.php' );
+    }
+  }
 
   public function create_service_center_tab() {
       $labels = array(
@@ -96,13 +103,7 @@ class ActionsApp extends \ProudPlugin {
       register_post_type( 'service_center_tab', $args );
   }
 
-  public function service_center_tab_admin() {
-    add_meta_box( 'service_center_tab_meta_box',
-      'Payment information',
-      array($this, 'display_service_center_tab_meta_box'),
-      'service_center_tab', 'normal', 'high'
-    );
-  }
+
 
   public function service_center_tab_rest_support() {
     register_api_field( 'service_center_tab',
@@ -120,98 +121,9 @@ class ActionsApp extends \ProudPlugin {
    * Add metadata to t$forms = RGFormsModel::get_forms( 1, 'title' );he post response
    */
   public function service_center_tab_rest_metadata( $object, $field_name, $request ) {
-      $return = array();
-      $this->build_service_center_tab_fields($object[ 'id' ]);
-      foreach ($this->fields as $key => $field) {
-        if ($value = get_post_meta( $object[ 'id' ], $key, true )) {
-          $return[$key] = $value;
-        }
-      }
-      return $return;
+    $Meta = new ActionsMeta;    
+    $Meta->get_options( $object['id'] );
   }
-
-  public function build_service_center_tab_fields($id) {
-    $this->fields = [];
-
-    $this->fields['type'] = [
-      '#type' => 'radios',
-      '#title' => __('Type'),
-      //'#description' => __('The type of search to fallback on when users don\'t find what they\'re looking for in the autosuggest search and make a full site search.', 'proud-settings'),
-      '#name' => 'type',
-      '#options' => array(
-        'content' => __( 'Content' ),
-        'gravityform' => __( 'Form' ),
-        'link' => __( 'External link' ),
-      ),
-      '#value' => get_post_meta( $id, 'type', true ),
-    ];
-    $this->fields['type']['#value'] = $this->fields['type']['#value'] ? $this->fields['type']['#value'] : 'content';
-
-    $this->fields['link'] = [
-      '#type' => 'text',
-      '#title' => __('URL'),
-      '#description' => __('Enter the full url that should load when this tab is clicked.'),
-      '#name' => 'link',
-      '#value' => get_post_meta( $id, 'link', true ),
-      '#states' => [
-        'visible' => [
-          'type' => [
-            'operator' => '==',
-            'value' => ['link'],
-            'glue' => '||'
-          ],
-        ],
-      ],
-    ];
-  
-    $this->fields['form'] = [
-      '#type' => 'gravityform',
-      '#title' => __('Form'),
-      '#description' => __('Select a form. <a href="admin.php?page=gf_edit_forms" target="_blank">Create a new form</a>.'),
-      '#name' => 'form',
-      '#value' => get_post_meta( $id, 'form', true ),
-      '#states' => [
-        'visible' => [
-          'type' => [
-            'operator' => '==',
-            'value' => ['gravityform'],
-            'glue' => '||'
-          ],
-        ],
-      ],
-    ];
-
-    $this->fields['icon'] = [
-      '#type' => 'fa-icon',
-      '#title' => __('Icon'),
-      '#description' => __('Selete the icon to use in the Actions app'),
-      '#name' => 'icon',
-      '#value' => get_post_meta( $id, 'icon', true ),
-    ];
-
-    return $this->fields;
-  }
-
-
-  public function display_service_center_tab_meta_box( $service_center_tab ) {
-    $this->build_service_center_tab_fields($service_center_tab->ID);
-    $form = new \Proud\Core\FormHelper( $this->key, $this->fields );
-    $form->printFields();
-  }
-
-  /**
-   * Saves contact metadata fields 
-   */
-  public function add_service_center_tab_fields( $id, $service_center_tab ) {
-    if ( $service_center_tab->post_type == 'service_center_tab' ) {
-      foreach ($this->build_service_center_tab_fields($id) as $key => $field) {
-        if ( !empty( $_POST[$key] ) ) {  // @todo: check if it has been set already to allow clearing of value
-          update_post_meta( $id, $key, $_POST[$key] );
-        }
-      }
-    }
-  }
-
 
   // Init on plugins loaded
   public function proud_actions_init_widgets() {
@@ -398,6 +310,7 @@ class ActionsApp extends \ProudPlugin {
       'active_tabs' => [
         '#title' => 'Active tabs',
         '#type' => 'checkboxes',
+        '#draggable' => true,
         '#options' => [
           'vote' => 'Vote',
           'local' => 'Local Services',
@@ -494,10 +407,6 @@ class ActionsApp extends \ProudPlugin {
 
     $fields = array_merge($fields, $other_fields);
 
-    foreach ($fields as $key => $field) {
-      $fields[$key]['#name'] = !empty($fields[$key]['#name']) ? $fields[$key]['#name'] : $key;
-      $fields[$key]['#value'] = !empty($defaults[$key]) ? $defaults[$key] : '';
-    }
     return $fields;
   }
 

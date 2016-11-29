@@ -13,7 +13,6 @@ class ServiceCenterPage
     {
       add_action( 'admin_menu', array($this, 'create_menu') );
       $this->key = 'service-center';
-      $this->fields = null;
     }
 
     // create custom plugin settings menu
@@ -40,7 +39,6 @@ class ServiceCenterPage
     }
 
     public function page() {
-      $form = new \Proud\Core\FormHelper( $this->key, $this->fields );
       echo '<h2>ProudCity Service Center</h2>';
       //echo '<h4>Your Service Center appears on your website, in Facebook, as a mobile app, or at a kiosk. Manage global settings on this page, and configure the Service Center everywhere it appears using the links on the left.</h4>';
       echo '<iframe src="/service-center" style="border:none;width:100%;height:900px" scrolling="no"></iframe>';
