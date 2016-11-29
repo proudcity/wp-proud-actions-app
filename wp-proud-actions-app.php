@@ -11,6 +11,8 @@ License:            Affero GPL v3
 */
 
 namespace Proud\ActionsApp;
+use Proud\Core;
+
 
 // Init rendered var for actions overlay
 $GLOBALS['proud_actions_app_rendered'] = false;
@@ -230,6 +232,102 @@ class ActionsApp extends \ProudPlugin {
         'title' => 'Traffic',
       ],
     ];
+
+    // @todo: temp
+    $settings['services'] = [
+      [
+        'type' => 'elected',
+        'icon' => 'fa-user',
+        'title' => 'Elected Officials',
+      ],
+      [
+        'type' => 'gis',
+        'title' => 'Neighborhood',
+        'file' => 'http://localhost:8080/wp-content/uploads/2016/11/neighborhoods.geojson',
+        'items' => [
+          'NAME' => 'Neighborhood',
+          'URL' => 'Url',
+        ],
+      ],
+      [
+        'type' => 'gis',
+        'icon' => 'fa-trash',
+        'title' => 'Marin Sanitary Service',
+        'questions' => 1,
+        'pattern' => '{SERV ADDR#} {SERV STREET} {SERV STRT-SUFX}',
+        'file' => 'http://localhost:8080/wp-content/uploads/2016/11/garbage.csv',
+        'items' => [
+          'DAY' => 'Garbage',
+          'recycling' => 'Recycling',
+          'green' => 'Geen Bin',
+        ],
+      ],
+      [
+        'type' => 'hours',
+        'icon' => 'fa-university',
+        'title' => 'City Hall',
+        'address' => '1400 5th Ave',
+        'hours' => 'Monday - Friday: 8:30am - 5:00pm<br/>Saturday - Sunday: Closed',
+        'items' => [
+          'NAME' => 'Neighborhood',
+          'URL' => 'Url',
+        ],
+      ],
+      [
+        'type' => 'hours',
+        'icon' => 'fa-car',
+        'title' => 'Parking Meters',
+        'hours' => 'Monday - Saturday: 8:00am - 6:00pm<br/>Sunday: Off',
+        'label' => ['Inactive', 'Active'],
+      ],
+    ];
+
+    // See if hours services are open of closed
+    foreach ($settings['services'] as $i => $service) {
+      if ($service['type'] == 'hours') {
+        $alert = '';
+        $settings['services'][$i]['open'] = Core\isTimeOpen($service['hours'], get_option('service_center_holidays', ''), $alert);
+        if (!empty($alert)) {
+          $settings['services'][$i]['alert'] = $alert;
+        }
+      }
+    }
+    //print_r($settings);
+
+/*json_decode('{"services" : [
+    
+    {
+        "type": "csv",
+        "title": "Marin Sanitary Service",
+        "file": "http://localhost:8080/wp-content/uploads/2016/11/garbage.csv",
+        "icon": "fa-trash",
+        //"alert": "Special holiday hours are in effect from 11/23 - 11/27.",
+        "questions": 1,
+        "pattern": "{SERV ADDR#} {SERV STREET} {SERV STRT-SUFX}",
+        "items": {
+            "DAY": "Garbage",
+            "recycling": "Recycling",
+            "green": "Geen Bin",
+        }
+    },
+    {
+        "type": "hours",
+        "title": "City Hall",
+        "address": "1400 5th Ave",
+        "icon": "fa-university",
+        "open": "true",
+        "hours": "Monday - Friday: 8:30am - 5:00pm<br/>Saturday - Sunday: Closed",
+        "alert": "Special holiday hours are in effect from 11/23 - 11/27."
+    },
+    {
+        "type": "hours",
+        "title": "Parking Meters",
+        "icon": "fa-car",
+        "open": "true",
+        "hours": "Monday - Saturday: 8:00am - 6:00pm<br/>Sunday: Off"
+    }
+]}'*/
+
     $proudcore->addJsSettings([
       'global' => [
         'rewrite_relative_link' => TRUE,
@@ -277,12 +375,13 @@ class ActionsApp extends \ProudPlugin {
             'link_create' => get_option('311_link_create'), 
             'link_status' => get_option('311_link_status'),
           ),
-          'gravityforms_iframe' => plugins_url('templates/gravityforms-iframe.php', __FILE__) . '?id=',
+          'gravityforms_iframe' => get_site_url() . 'form-embed/?id=',
           //'payment' => array(
           //  'service' => get_option('payment_service', 'stripe'),
           //  'stripe_key' => get_option('payment_stripe_key'), 
           //),
           'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
+          'holidays' => esc_html( Core\federalHolidays() . "\r" . get_option('service_center_holidays', '') ),
         ]
       ]
     ]);
