@@ -199,7 +199,7 @@ class ActionsApp extends \ProudPlugin {
     exit;
   }
 
-  private function proud_actions_standalone_311($key, $search) {
+  private function proud_actions_standalone_311( $key, $search ) {
     global $proudcore;
     $this->proud_actions_print_311(false);
 
@@ -362,7 +362,7 @@ class ActionsApp extends \ProudPlugin {
   
   // Respond to navbar footer hook
   // Print widget if has not been rendered elsewhere
-  public function proud_actions_print_311($render = true) {
+  public function proud_actions_print_311( $render = true ) {
     global $proudcore;
     // Add rendered variable to JS
     $proudcore->addJsSettings([
