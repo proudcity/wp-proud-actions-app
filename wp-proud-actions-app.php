@@ -199,12 +199,10 @@ class ActionsApp extends \ProudPlugin {
     exit;
   }
 
-  private function proud_actions_standalone_311( $key, $search ) {
-    global $proudcore;
-    $this->proud_actions_print_311(false);
-
-    do_action('wp_enqueue_scripts');
-
+  /**
+   * Builds instance settings for service center app
+   */
+  private function proud_actions_standalone_settings( $key, $search ) {
     $settings = $this->get_values($key);
 
     // Add search settings
@@ -286,12 +284,26 @@ class ActionsApp extends \ProudPlugin {
     foreach ($settings['services'] as $i => $service) {
       if ($service['type'] == 'hours') {
         $alert = '';
-        $settings['services'][$i]['open'] = Core\isTimeOpen($service['hours'], get_option('service_center_holidays', ''), $alert);
+        $holidays = get_option( 'service_center_holidays', '' );
+        $settings['services'][$i]['open'] = Core\isTimeOpen( $service['hours'], $holidays, $alert);
         if (!empty($alert)) {
           $settings['services'][$i]['alert'] = $alert;
         }
       }
     }
+    return $settings;
+  }
+
+  /**
+   * Builds page settings for standalone service center
+   */
+  private function proud_actions_standalone_311( $key, $search ) {
+    global $proudcore;
+    $this->proud_actions_print_311(false);
+
+    do_action('wp_enqueue_scripts');
+
+    $settings = $this->proud_actions_standalone_settings( $key, $search );
     //print_r($settings);
 
 /*json_decode('{"services" : [
@@ -387,7 +399,12 @@ class ActionsApp extends \ProudPlugin {
     ]);
     // if not rendered on page yet, render in overlay
     if(!$GLOBALS['proud_actions_app_rendered'] && $render) {
-      the_widget('ActionsBox');
+      // @TODO use standard settings?
+      $settings = $this->proud_actions_standalone_settings( 'service_center_standalone', false );
+      // Set expanded to false
+      $settings['expand_section'] = false;
+      // Print widget
+      the_widget( 'ActionsBox', $settings );
     }
   }
 
