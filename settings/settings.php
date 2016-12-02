@@ -21,6 +21,11 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           'search_google_site' => '',
           'services_local' => '',
           'services_hours' => '', 
+          'active_toolbar_buttons' => [ 
+            'answers' => 'answers', 
+            'payments' => 'payments', 
+            'report' => 'report' 
+          ],
           '311_service' => '',
           '311_link_create' => '',
           '311_link_status' => ''
@@ -202,6 +207,16 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           '#options' => $this->map_layer_options(),
           '#value' => $this->map_layer_select( get_option('service_map_layers', $this->map_layer_built_in() )),
         ],*/
+        'active_toolbar_buttons' => [
+          '#type' => 'checkboxes',
+          '#title' => 'Active navbar buttons',
+          '#description' => 'Choose which buttons you would like to display in the top bar.',
+          '#options' => [
+            'answers' => __pcHelp( 'Answers' ), 
+            'payments' => __pcHelp( 'Payments' ), 
+            'report' => __pcHelp( 'Report Issue' ),
+          ],
+        ],
         '311_service' => [
           '#type' => 'radios',
           '#title' => __pcHelp('Issues (311) provider'),
