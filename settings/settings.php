@@ -20,7 +20,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           'search_provider' => '',
           'search_google_site' => '',
           'services_local' => '',
-          'services_hours' => '', 
+          'services_map' => '',
           'active_toolbar_buttons' => [ 
             'answers' => 'answers', 
             'payments' => 'payments', 
@@ -119,7 +119,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
               '#to_js_settings' => false
             ],
             'type' => [
-              '#title' => 'File type',
+              '#title' => 'Type of service',
               '#type' => 'radios',
               '#default_value' => 'gis',
               '#options' => array(
@@ -131,12 +131,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             ],
             'hours' => [
               '#title' => 'Hours',
-              '#type' => 'radios',
-              '#default_value' => 'gis',
-              '#options' => array(
-                'gis' => 'GeoJSON GIS file',
-                'csv' => 'CSV (Comma Separated Values) file',
-              ),
+              '#type' => 'textarea',
               '#description' => __pcHelp('For each Local Service, you will need to upload a CSV (Comma Separated Values) or <a href="'. $geojson_url .'" target="_blank">GeoJSON GIS</a> file and upload it below. <a href="https://proudcity.com/support/create" target="_blank">Contact ProudCity support</a> for assistance configuring your Local Services.'),
               '#states' => [
                 'visible' => [
@@ -148,10 +143,99 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
                 ],
               ],
             ],
+            'address' => [
+              '#title' => 'Address',
+              '#type' => 'text',
+              '#description' => __pcHelp('Just the street address.'),
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['hours'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
+            'file_location' => [
+              '#title' => __( 'File location', 'wp-proud-core' ),
+              '#type' => 'radios',
+              '#default_value'  => 'upload',
+              //'#description' => 'Select a CSV or GeoJSON (.json or .geojson) file.',
+              '#options' => [
+                'upload' => 'Upload',
+                'url' => 'Enter URL to remote file',
+              ],
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['gis', 'csv'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
             'file' => [
               '#title' => __( 'File', 'wp-proud-core' ),
               '#type' => 'select_media',
               '#default_value'  => '',
+              '#description' => 'Select a CSV or GeoJSON (.json or .geojson) file.',
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['gis', 'csv'],
+                    'glue' => '||'
+                  ],
+                  'file_location' => [
+                    'operator' => '==',
+                    'value' => ['upload'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
+            'file_url' => [
+              '#title' => 'URL to remote file',
+              '#type' => 'text',
+              '#default_value' => '',
+              '#description' => 'Enter the full url to the CSV or GeoJSON (.json or .geojson) file (including https:// or http://).',
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['gis', 'csv'],
+                    'glue' => '||'
+                  ],
+                  'file_location' => [
+                    'operator' => '==',
+                    'value' => ['url'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
+            'pattern' => [
+              '#title' => 'Address pattern',
+              '#type' => 'text',
+              '#default_value' => '',
+              '#description' => 'Enter a field or combination of fields to use to match the street address. Wrap the column headers from the first row in curly brackets. Examples:<br/>{STREET_NUM} {STREET}<br/>{street addresss}',
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['csv'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
+            'items' => [
+              '#title' => 'Field mapping',
+              '#type' => 'textarea',
+              '#default_value' => '',
+              '#description' => 'Enter one per line as key|label. For CSV files, the key is the column header from the first line. For GeoJSON files, the key is the attribute key in the Feature Properties. The label is the text you want to display in the front end. Example:<br/>GARBAGE|Trash pick-up</br>RECYCLING|Recycling pick up',
               '#states' => [
                 'visible' => [
                   'type' => [
@@ -163,16 +247,21 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
               ],
             ],
             'alert' => [
-              '#title' => 'Status alert notice',
+              '#title' => 'Alert message',
               '#type' => 'text',
               '#default_value' => '',
               '#description' => 'This could include information about service interruptions due to holidays, or other similar temporary service status alert notices.',
-              '#to_js_settings' => false
             ],
           ],
         ],
-        'services_hours' => [
-          '#title' => __( 'Now Services', 'wp-proud-core' ),
+        'services_map' => [
+          '#title' => __( 'Service Map Layers', 'wp-proud-core' ),
+          '#type' => 'checkboxes',
+          '#draggable' => true,
+          '#options' => $this->map_layer_options(),
+        ],
+        /*'services_map' => [
+          '#title' => __( 'Service Map Layers', 'wp-proud-core' ),
           '#type' => 'group',
           '#group_title_field' => 'title',
           '#sub_items_template' => [
@@ -188,16 +277,47 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
               '#default_value' => '',
               '#to_js_settings' => false
             ],
-            
-            'alert' => [
-              '#title' => 'Status alert notice',
-              '#type' => 'text',
-              '#default_value' => '',
-              '#description' => 'This could include information about service interruptions due to holidays, or other similar temporary service status alert notices.',
-              '#to_js_settings' => false
+            'type' => [
+              '#title' => 'Type of map',
+              '#type' => 'radios',
+              '#default_value' => 'layer',
+              '#options' => array(
+                'layer' => 'Select map layer',
+                'traffic' => 'Traffic',
+                'bicycle' => 'Bicycle routes',
+                'transit' => 'Public transit',
+              ),
+              //'#description' => __pcHelp('')
+            ],
+            'layer' => [
+              '#title' => 'Map layer',
+              '#type' => 'select',
+              '#options' => $layers,
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['layer'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
             ],
           ],
+        ],*/
+        'services_elected_text' => [
+          '#type' => 'text',
+          '#title' => 'Elected official text',
+          '#default_value' => '',
+          '#description' => 'Useful for creating a link to a list of city council members, etc.'
         ],
+        'weather_alert' => [
+          '#type' => 'text',
+          '#title' => 'Weather alert',
+          '#default_value' => '',
+          '#description' => 'May include links and more to weather information.'
+        ],
+
         // @todo
         /*'service_map_layers' => [
           '#type' => 'checkboxes',
@@ -251,53 +371,15 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
       ];
     }
 
-    private function map_layer_built_in() {
-      return [
-        [
-          'type' => 'transit',
-          'icon' => 'fa-train',
-          'title' => 'Public Transit',
-        ],
-        [
-          'type' => 'bicycle',
-          'icon' => 'fa-bicycle',
-          'title' => 'Bicycle Routes',
-        ],
-        [
-          'type' => 'traffic',
-          'icon' => 'fa-car',
-          'title' => 'Traffic',
-        ],
-      ];
-    }
-
-    private function map_layer_options() {
+    private function map_layer_options( $filter = null ) {
       $options = [];
-      return $this->map_layer_select($this->map_layer_built_in(), true);
+
+      foreach ( Proud\ActionsApp\ActionsApp::map_layers( $filter, false ) as $key => $item ) {
+        $options[$item['slug']] = $item['title'];
+      }
+      return $options;
     }
 
-    private function map_layer_select($value, $labels = false) {
-      $out = [];
-      foreach ($value as $item) {
-        if ($labels) {
-          $out[json_encode($item)] = $item['title'];
-        }
-        else {
-          array_push($out, json_encode($item));
-        }
-      }
-      return $out;
-    }
-
-    private function map_layer_values($value) {
-      $out = [];
-      $value = gettype($value) == 'string' ? [$value] : $value;
-      foreach ($value as $item) {
-        print($item);
-        array_push($out, json_decode($item));
-      }
-      return $out;
-    }
 
     /**
      * Print page content
@@ -316,8 +398,6 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
      */
     public function save( &$values ) {
       $values = parent::save( $values );
-      // @todo
-      //update_option( 'service_map_layers', $this->map_layer_values($values['service_map_layers']) );
     }
 }
 

@@ -199,10 +199,12 @@ class ActionsApp extends \ProudPlugin {
     exit;
   }
 
-  /**
-   * Builds instance settings for service center app
-   */
-  private function proud_actions_standalone_settings( $key, $search ) {
+  private function proud_actions_standalone_311( $key, $search ) {
+    global $proudcore;
+    $this->proud_actions_print_311(false);
+
+    do_action('wp_enqueue_scripts');
+
     $settings = $this->get_values($key);
 
     // Add search settings
@@ -210,135 +212,6 @@ class ActionsApp extends \ProudPlugin {
     $settings['search_prefix'] = get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=';
     $site = get_option('search_google_site');
     $settings['search_suffix'] = !empty($site) ? ' site: '.$site : '';
-
-    // Add map settings
-    // @todo: temp:
-    $settings['map_layers'] = [
-      [
-        'type' => 'transit',
-        'icon' => 'fa-train',
-        'title' => 'Public Transit',
-      ],
-      [
-        'type' => 'bicycle',
-        'icon' => 'fa-bicycle',
-        'title' => 'Bicycle Routes',
-      ],
-      [
-        'type' => 'traffic',
-        'icon' => 'fa-car',
-        'title' => 'Traffic',
-      ],
-    ];
-
-    // @todo: temp
-    $settings['services'] = [
-      [
-        'type' => 'elected',
-        'icon' => 'fa-user',
-        'title' => 'Elected Officials',
-      ],
-      [
-        'type' => 'gis',
-        'title' => 'Neighborhood',
-        'file' => 'http://localhost:8080/wp-content/uploads/2016/11/neighborhoods.geojson',
-        'items' => [
-          'NAME' => 'Neighborhood',
-          'URL' => 'Url',
-        ],
-      ],
-      [
-        'type' => 'gis',
-        'icon' => 'fa-trash',
-        'title' => 'Marin Sanitary Service',
-        'questions' => 1,
-        'pattern' => '{SERV ADDR#} {SERV STREET} {SERV STRT-SUFX}',
-        'file' => 'http://localhost:8080/wp-content/uploads/2016/11/garbage.csv',
-        'items' => [
-          'DAY' => 'Garbage',
-          'recycling' => 'Recycling',
-          'green' => 'Geen Bin',
-        ],
-      ],
-      [
-        'type' => 'hours',
-        'icon' => 'fa-university',
-        'title' => 'City Hall',
-        'address' => '1400 5th Ave',
-        'hours' => 'Monday - Friday: 8:30am - 5:00pm<br/>Saturday - Sunday: Closed',
-        'items' => [
-          'NAME' => 'Neighborhood',
-          'URL' => 'Url',
-        ],
-      ],
-      [
-        'type' => 'hours',
-        'icon' => 'fa-car',
-        'title' => 'Parking Meters',
-        'hours' => 'Monday - Saturday: 8:00am - 6:00pm<br/>Sunday: Off',
-        'label' => ['Inactive', 'Active'],
-      ],
-    ];
-
-    // See if hours services are open of closed
-    foreach ($settings['services'] as $i => $service) {
-      if ($service['type'] == 'hours') {
-        $alert = '';
-        $holidays = get_option( 'service_center_holidays', '' );
-        $settings['services'][$i]['open'] = Core\isTimeOpen( $service['hours'], $holidays, $alert);
-        if (!empty($alert)) {
-          $settings['services'][$i]['alert'] = $alert;
-        }
-      }
-    }
-    return $settings;
-  }
-
-  /**
-   * Builds page settings for standalone service center
-   */
-  private function proud_actions_standalone_311( $key, $search ) {
-    global $proudcore;
-    $this->proud_actions_print_311(false);
-
-    do_action('wp_enqueue_scripts');
-
-    $settings = $this->proud_actions_standalone_settings( $key, $search );
-    //print_r($settings);
-
-/*json_decode('{"services" : [
-    
-    {
-        "type": "csv",
-        "title": "Marin Sanitary Service",
-        "file": "http://localhost:8080/wp-content/uploads/2016/11/garbage.csv",
-        "icon": "fa-trash",
-        //"alert": "Special holiday hours are in effect from 11/23 - 11/27.",
-        "questions": 1,
-        "pattern": "{SERV ADDR#} {SERV STREET} {SERV STRT-SUFX}",
-        "items": {
-            "DAY": "Garbage",
-            "recycling": "Recycling",
-            "green": "Geen Bin",
-        }
-    },
-    {
-        "type": "hours",
-        "title": "City Hall",
-        "address": "1400 5th Ave",
-        "icon": "fa-university",
-        "open": "true",
-        "hours": "Monday - Friday: 8:30am - 5:00pm<br/>Saturday - Sunday: Closed",
-        "alert": "Special holiday hours are in effect from 11/23 - 11/27."
-    },
-    {
-        "type": "hours",
-        "title": "Parking Meters",
-        "icon": "fa-car",
-        "open": "true",
-        "hours": "Monday - Saturday: 8:00am - 6:00pm<br/>Sunday: Off"
-    }
-]}'*/
 
     $proudcore->addJsSettings([
       'global' => [
@@ -376,6 +249,46 @@ class ActionsApp extends \ProudPlugin {
   // Print widget if has not been rendered elsewhere
   public function proud_actions_print_311( $render = true ) {
     global $proudcore;
+
+    // Local services settings
+    $services = get_option('services_local', array());
+    foreach ($services as $i => $item) {
+
+      if ($item['type'] == 'hours') {
+        $services[$i]['hours'] = nl2br(esc_html($item['hours']));
+      }
+      else {
+        // Get file path
+        if ($item['file_location'] == 'upload') {
+          $services[$i]['file'] = wp_get_attachment_url($item['file']);
+        }
+        else {
+          $services[$i]['file'] = $item['file_url'];
+        }
+        unset($services[$i]['file_location']);
+        unset($services[$i]['file_url']);
+
+        // Split items string into array
+        $p = array();
+        preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
+        $services[$i]['items'] = array_combine($p[1], $p[2]);  
+      }         
+    }
+
+    // See if hours services are open or closed
+    foreach ($services as $i => $service) {
+      if ($service['type'] == 'hours') {
+        $alert = '';
+        $services[$i]['open'] = Core\isTimeOpen($service['hours'], get_option('service_center_holidays', ''), $alert);
+        if (!empty($alert)) {
+          $services[$i]['alert'] = $alert;
+        }
+      }
+    }
+
+    // Services map layers
+    $map_layers = ActionsApp::map_layers( array_keys( get_option('services_map', array()) ) );
+
     // Add rendered variable to JS
     $proudcore->addJsSettings([
       'proud_actions_app' => [
@@ -393,18 +306,15 @@ class ActionsApp extends \ProudPlugin {
           //  'stripe_key' => get_option('payment_stripe_key'), 
           //),
           'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
-          'holidays' => esc_html( Core\federalHolidays() . "\r" . get_option('service_center_holidays', '') ),
+          'holidays' => nl2br( esc_html( get_option('service_center_holidays', Core\federalHolidays()) ) ),
+          'services' => $services,
+          'map_layers' => $map_layers,
         ]
       ]
     ]);
     // if not rendered on page yet, render in overlay
     if(!$GLOBALS['proud_actions_app_rendered'] && $render) {
-      // @TODO use standard settings?
-      $settings = $this->proud_actions_standalone_settings( 'service_center_standalone', false );
-      // Set expanded to false
-      $settings['expand_section'] = false;
-      // Print widget
-      the_widget( 'ActionsBox', $settings );
+      the_widget('ActionsBox');
     }
   }
 
@@ -562,6 +472,57 @@ class ActionsApp extends \ProudPlugin {
     else {
       return $path ? $path : '//service-center.proudcity.com/';
     }
+  }
+
+  public function map_layer_built_in() {
+    return [
+      [
+        'type' => 'transit',
+        'slug' => 'transit',
+        'icon' => 'fa-train',
+        'title' => 'Public Transit',
+      ],
+      [
+        'type' => 'bicycle',
+        'slug' => 'bicycle',
+        'icon' => 'fa-bicycle',
+        'title' => 'Bicycle Routes',
+      ],
+      [
+        'type' => 'traffic',
+        'slug' => 'traffic',
+        'icon' => 'fa-car',
+        'title' => 'Traffic',
+      ],
+    ];
+  }
+
+  public function map_layers( $filter = null, $meta = true ) {
+    $layers = [];
+    foreach( ActionsApp::map_layer_built_in() as $item ) {
+      if ( empty($filter) || in_array( $item['slug'], $filter ) ) {
+        array_push($layers, $item );
+      }
+    }
+    $topics = get_categories( [
+      'taxonomy' => 'location-taxonomy',
+      'orderby' => 'name',
+    ] );
+    if( !empty( $topics ) && empty( $topics['errors'] ) ) {
+      foreach ( $topics as $topic ) {
+        if ( empty($filter) || in_array( $topic->slug, $filter ) ) {
+          array_push($layers, [
+            'type' => 'wordpress',
+            'slug' => $topic->slug,
+            'title' => $topic->name,
+            'icon' => $meta ? get_term_meta( $topic->term_id, 'icon', true ) : null,
+            'color' => $meta ? get_term_meta( $topic->term_id, 'color', true ) : null,
+          ]);
+        }
+        
+      }
+    }
+    return $layers;
   }
 
 }
