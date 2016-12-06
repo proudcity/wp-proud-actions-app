@@ -17,7 +17,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
         ],
         '', // Option
         [ // Options
-          'search_provider' => '',
+          'search_provider' => 'wordpress',
           'search_google_site' => '',
           'services_local' => '',
           'services_map' => '',
@@ -133,6 +133,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
               '#title' => 'Hours',
               '#type' => 'textarea',
               '#description' => __pcHelp('For each Local Service, you will need to upload a CSV (Comma Separated Values) or <a href="'. $geojson_url .'" target="_blank">GeoJSON GIS</a> file and upload it below. <a href="https://proudcity.com/support/create" target="_blank">Contact ProudCity support</a> for assistance configuring your Local Services.'),
+              '#default_value' => '',
               '#states' => [
                 'visible' => [
                   'type' => [
@@ -146,6 +147,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             'address' => [
               '#title' => 'Address',
               '#type' => 'text',
+              '#default_value' => '',
               '#description' => __pcHelp('Just the street address.'),
               '#states' => [
                 'visible' => [
@@ -308,13 +310,11 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
         'services_elected_text' => [
           '#type' => 'text',
           '#title' => 'Elected official text',
-          '#default_value' => '',
           '#description' => 'Useful for creating a link to a list of city council members, etc.'
         ],
         'weather_alert' => [
           '#type' => 'text',
           '#title' => 'Weather alert',
-          '#default_value' => '',
           '#description' => 'May include links and more to weather information.'
         ],
 

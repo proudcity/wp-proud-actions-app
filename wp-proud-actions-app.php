@@ -237,7 +237,7 @@ class ActionsApp extends \ProudPlugin {
     return array(
       'background_meta' => $background_meta,
       'logo_meta' => $logo_meta,
-      'path' => $this::get_app_path(),
+      'path' => self::get_app_path(),
       'google_analytics' => get_option('google_analytics_key'), 
       'title' =>  'ProudCity Service Center', //@todo
       'settings' => $proudcore->getJsSettings(),
@@ -474,7 +474,7 @@ class ActionsApp extends \ProudPlugin {
     }
   }
 
-  public function map_layer_built_in() {
+  public static function map_layer_built_in() {
     return [
       [
         'type' => 'transit',
@@ -497,9 +497,9 @@ class ActionsApp extends \ProudPlugin {
     ];
   }
 
-  public function map_layers( $filter = null, $meta = true ) {
+  public static function map_layers( $filter = null, $meta = true ) {
     $layers = [];
-    foreach( ActionsApp::map_layer_built_in() as $item ) {
+    foreach( self::map_layer_built_in() as $item ) {
       if ( empty($filter) || in_array( $item['slug'], $filter ) ) {
         array_push($layers, $item );
       }
