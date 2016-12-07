@@ -209,9 +209,6 @@ class ActionsApp extends \ProudPlugin {
 
     // Add search settings
     $settings['search'] = $search;
-    $settings['search_prefix'] = get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=';
-    $site = get_option('search_google_site');
-    $settings['search_suffix'] = !empty($site) ? ' site: '.$site : '';
 
     $proudcore->addJsSettings([
       'global' => [
@@ -249,6 +246,10 @@ class ActionsApp extends \ProudPlugin {
   // Print widget if has not been rendered elsewhere
   public function proud_actions_print_311( $render = true ) {
     global $proudcore;
+
+    //Search settings
+    $search_site = get_option('search_google_site');
+    $search_additional = get_option( 'search_additional', array() );
 
     // Local services settings
     $services = get_option('services_local', array());
@@ -309,6 +310,10 @@ class ActionsApp extends \ProudPlugin {
           'holidays' => nl2br( esc_html( get_option('service_center_holidays', Core\federalHolidays()) ) ),
           'services' => $services,
           'map_layers' => $map_layers,
+          'search_prefix' => get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=',
+          'search_suffix' => !empty($search_site) ? ' site: '.$search_site : '',
+          'search_additional' => $search_additional,
+          'search_granicus_site' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_site', array() ) : null,
         ]
       ]
     ]);

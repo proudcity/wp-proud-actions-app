@@ -19,6 +19,8 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
         [ // Options
           'search_provider' => 'wordpress',
           'search_google_site' => '',
+          'search_additional' => '',
+          'search_granicus_site' => '',
           'services_local' => '',
           'services_map' => '',
           'active_toolbar_buttons' => [ 
@@ -96,6 +98,28 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
               'search_provider' => [
                 'operator' => '==',
                 'value' => ['google'],
+                'glue' => '||'
+              ],
+            ],
+          ],
+        ],
+        'search_additional' => [
+          '#type' => 'checkboxes',
+          '#title' => __pcHelp('Search addons'),
+          '#options' => [
+            'granicus' => 'Granicus',
+            //'municode' => 'MuniCode',
+          ],
+        ],
+        'search_granicus_site' => [
+          '#type' => 'text',
+          '#title' => __pcHelp('Granicus Site'),
+          '#description' => __pcHelp('Enter your granicus portal site. Example: cityofproudcity.granicus.com'),
+          '#states' => [
+            'visible' => [
+              'search_additional' => [
+                'operator' => '==',
+                'value' => ['granicus'],
                 'glue' => '||'
               ],
             ],
