@@ -145,7 +145,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             'type' => [
               '#title' => 'Type of service',
               '#type' => 'radios',
-              '#default_value' => 'gis',
+              //'#default_value' => 'gis',
               '#options' => array(
                 'hours' => 'Hours',
                 'gis' => 'GeoJSON GIS file',
@@ -178,6 +178,34 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
                   'type' => [
                     'operator' => '==',
                     'value' => ['hours'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
+            'phone' => [
+              '#title' => 'Phone number',
+              '#type' => 'text',
+              '#default_value' => '',
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['hours', 'gis', 'csv'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
+            ],
+            'questions' => [
+              '#title' => 'Contact form',
+              '#type' => 'gravityform',
+              '#default_value' => '',
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['hours', 'gis', 'csv'],
                     'glue' => '||'
                   ],
                 ],
@@ -274,9 +302,24 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             ],
             'alert' => [
               '#title' => 'Alert message',
-              '#type' => 'text',
+              '#type' => 'textarea',
               '#default_value' => '',
               '#description' => 'This could include information about service interruptions due to holidays, or other similar temporary service status alert notices.',
+            ],
+            'disclaimer' => [
+              '#title' => 'Disclaimer',
+              '#type' => 'textarea',
+              '#default_value' => '',
+              '#description' => 'Appears as a button in the right sidebar.',
+              '#states' => [
+                'visible' => [
+                  'type' => [
+                    'operator' => '==',
+                    'value' => ['gis', 'csv'],
+                    'glue' => '||'
+                  ],
+                ],
+              ],
             ],
           ],
         ],
