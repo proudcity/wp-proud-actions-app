@@ -272,15 +272,7 @@ class ActionsApp extends \ProudPlugin {
         // Split items string into array
         $p = array();
         preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
-        // $services[$i]['items'] = array_combine($p[1], $p[2]); // Can't use: Needed to trim()
-        $services[$i]['items'] = [];
-        for ($j = 0; $j < 3; $j++) {
-          $key = trim($p[1][$j]);
-          if (!empty($key)) {
-            $services[$j]['items'][$key] = trim($p[2][$j]);
-          }
-        }
-
+        $services[$i]['items'] = array_combine($p[1], $p[2]);
       }         
     }
 
