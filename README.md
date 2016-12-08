@@ -12,7 +12,7 @@ git clone git@github.com:proudcity/service-center.git
 wp --allow-root option update wp_proud_service_center_path 'local'
 
 # Use beta version
-wp --allow-root option update wp_proud_service_center_path '//service-center-beta.proudcity.com'
+wp --allow-root option update wp_proud_service_center_path '//service-center-beta.proudcity.com/'
 
 # Use production version (https://service-center.proudcity.com)
 wp --allow-root option delete wp_proud_service_center_path
