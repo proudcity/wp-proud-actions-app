@@ -503,29 +503,38 @@ class ActionsApp extends \ProudPlugin {
   }
 
   public static function map_layers( $filter = null, $meta = true ) {
-    $layers = [];
-    foreach( self::map_layer_built_in() as $item ) {
-      if ( empty($filter) || in_array( $item['slug'], $filter ) ) {
-        array_push($layers, $item );
-      }
-    }
+    $layers = self::map_layer_built_in();
+
     $topics = get_categories( [
       'taxonomy' => 'location-taxonomy',
       'orderby' => 'name',
     ] );
+
     if( !empty( $topics ) && empty( $topics['errors'] ) ) {
+
       foreach ( $topics as $topic ) {
-        if ( empty($filter) || in_array( $topic->slug, $filter ) ) {
-          array_push($layers, [
-            'type' => 'wordpress',
-            'slug' => $topic->slug,
-            'title' => $topic->name,
-            'icon' => $meta ? get_term_meta( $topic->term_id, 'icon', true ) : null,
-            'color' => $meta ? get_term_meta( $topic->term_id, 'color', true ) : null,
-          ]);
-        }
-        
+        array_push($layers, [
+          'type' => 'wordpress',
+          'slug' => $topic->slug,
+          'title' => $topic->name,
+          'icon' => $meta ? get_term_meta( $topic->term_id, 'icon', true ) : null,
+          'color' => $meta ? get_term_meta( $topic->term_id, 'color', true ) : null,
+        ]);
       }
+      
+    }
+
+    // Apply filter and ordering
+    if (!empty($filter)) {
+      $out = [];
+      foreach ($filter as $filter_item) {
+        foreach ($layers as $layer) { 
+          if ( $filter_item == $layer['slug'] ) {
+            array_push($out, $layer);
+          }
+        }
+      }
+      $layers = $out;
     }
     return $layers;
   }
