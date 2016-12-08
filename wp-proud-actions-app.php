@@ -272,7 +272,12 @@ class ActionsApp extends \ProudPlugin {
         // Split items string into array
         $p = array();
         preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
-        $services[$i]['items'] = array_combine(trim($p[1]), trim($p[2]));  
+        // $services[$i]['items'] = array_combine($p[1], $p[2]); // Can't use: Needed to trim()
+        $services = [];
+        foreach ($p as $key => $item) {
+          $services[trim($key)] = trim($item);
+        }
+        $services[$i]['items'] = $services;
       }         
     }
 
@@ -301,7 +306,7 @@ class ActionsApp extends \ProudPlugin {
             'link_create' => get_option('311_link_create'), 
             'link_status' => get_option('311_link_status'),
           ),
-          'gravityforms_iframe' => get_site_url() . '/form-embed/?id=',
+          'gravityforms_iframe' => get_site_url() . 'form-embed/?id=',
           //'payment' => array(
           //  'service' => get_option('payment_service', 'stripe'),
           //  'stripe_key' => get_option('payment_stripe_key'), 
