@@ -275,7 +275,10 @@ class ActionsApp extends \ProudPlugin {
         // $services[$i]['items'] = array_combine($p[1], $p[2]); // Can't use: Needed to trim()
         $services[$i]['items'] = [];
         for ($j = 0; $j < 3; $j++) {
-          $services[$j]['items'][trim($p[1][$j])] = trim($p[2][$j]);
+          $key = trim($p[1][$j]);
+          if (!empty($key)) {
+            $services[$j]['items'][$key] = trim($p[2][$j]);
+          }
         }
 
       }         
