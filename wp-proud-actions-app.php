@@ -280,7 +280,11 @@ class ActionsApp extends \ProudPlugin {
     foreach ($services as $i => $service) {
       if ($service['type'] == 'hours') {
         $alert = '';
-        $services[$i]['open'] = Core\isTimeOpen($service['hours'], get_option('service_center_holidays', ''), $alert);
+        // Set the possible values depending on if this is parking or not
+        $values = strpos( strtolower($service['title']), 'parking') ? 
+          array('Off', 'Active', 'Start soon', 'Stop soon') :
+          array('Closed', 'Open', 'Opening soon', 'Closing soon');
+        $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
         if (!empty($alert)) {
           $services[$i]['alert'] = $alert;
         }
@@ -301,7 +305,7 @@ class ActionsApp extends \ProudPlugin {
             'link_create' => get_option('311_link_create'), 
             'link_status' => get_option('311_link_status'),
           ),
-          'gravityforms_iframe' => get_site_url() . 'form-embed/?id=',
+          'gravityforms_iframe' => get_site_url() . '/form-embed/?id=',
           //'payment' => array(
           //  'service' => get_option('payment_service', 'stripe'),
           //  'stripe_key' => get_option('payment_stripe_key'), 
@@ -496,7 +500,7 @@ class ActionsApp extends \ProudPlugin {
       [
         'type' => 'traffic',
         'slug' => 'traffic',
-        'icon' => 'fa-car',
+        'icon' => 'fa-road',
         'title' => 'Traffic',
       ],
     ];

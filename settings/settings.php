@@ -375,12 +375,12 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           ],
         ],*/
         'services_elected_text' => [
-          '#type' => 'text',
+          '#type' => 'textarea',
           '#title' => 'Elected official text',
           '#description' => 'Useful for creating a link to a list of city council members, etc.'
         ],
         'weather_alert' => [
-          '#type' => 'text',
+          '#type' => 'textarea',
           '#title' => 'Weather alert',
           '#description' => 'May include links and more to weather information.'
         ],
