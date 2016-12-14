@@ -64,6 +64,9 @@
         .action-box{
             background: white;
         }
+        .or-bar span {               
+            background: white;
+        }   
 
         .nav-contain {
             padding: 0 12px 0 12px;
