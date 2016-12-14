@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" ng-attr-content="{{metaDescription()}}" />
     <meta name="keywords" ng-attr-content="{{metaKeywords()}}" />
+    <?php wp_favicon_request(); ?>
     <title ng-bind="pageTitle();">ProudCity Service Center</title>
     <?php wp_print_styles(); ?>
     <script type="text/javascript">
