@@ -333,7 +333,12 @@ class ActionsApp extends \ProudPlugin {
     ]);
     // if not rendered on page yet, render in overlay
     if(!$GLOBALS['proud_actions_app_rendered'] && $render) {
-      the_widget('ActionsBox');
+      // @TODO use standard settings?
+      $settings = $this->get_values( 'service_center_standalone' );
+      // Set expanded to false
+      $settings['expand_section'] = false;
+      // Print widget
+      the_widget( 'ActionsBox', $settings );
     }
   }
 
