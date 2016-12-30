@@ -44,7 +44,17 @@ class ActionsApp extends \ProudPlugin {
     $this->hook( 'init', 'register_rewrite_rules');
     $this->hook( 'query_vars', 'query_vars');
     $this->hook( 'template_redirect', 'template_redirect');
+    // Remove tabs from search results 
+    add_filter( 'proud_search_exclude', array( $this, 'searchfilter' ) );
 
+  }
+
+  /**
+   * Adds tabs to search blacklist
+   */
+  public function searchfilter($posts) {
+    array_push( $posts, 'service_center_tab' );
+    return $posts;
   }
 
   /**
