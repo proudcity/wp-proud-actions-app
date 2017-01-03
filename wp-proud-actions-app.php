@@ -118,7 +118,7 @@ class ActionsApp extends \ProudPlugin {
 
 
   public function service_center_tab_rest_support() {
-    register_api_field( 'service_center_tab',
+    register_rest_field( 'service_center_tab',
           'meta',
           array(
               'get_callback'    => array( $this, 'service_center_tab_rest_metadata' ),
