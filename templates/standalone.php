@@ -69,6 +69,9 @@
             border-radius: 4px;
             padding: 3px;
         }
+        .action-box{
+            background: white;
+        }
         .or-bar span {               
             background: white;
         }   
@@ -77,6 +80,8 @@
             padding: 0 12px 0 12px;
         }
         .content-contain {
+            padding-left: 15px;
+            padding-right: 15px;
             min-height: 425px;
         }
         .logo-bar {
