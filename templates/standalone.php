@@ -59,11 +59,15 @@
             border: none;
         }
         body > .container{
+            padding-left: 9px;
+            padding-right: 9px;
             position: relative;
             z-index: 1;
         }
-        .action-box{
+        .parent {
             background: white;
+            border-radius: 4px;
+            padding: 3px;
         }
         .or-bar span {               
             background: white;
