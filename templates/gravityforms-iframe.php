@@ -2,6 +2,8 @@
 include_once( ABSPATH . 'wp-load.php' );
 include_once( ABSPATH . 'wp-content/plugins/gravityforms/includes/api.php' );
 
+global $proudcore;
+$proudcore::$libraries->addBundleToLoad( 'iframe-resizer-child' );
 do_action('wp_enqueue_scripts');
 wp_deregister_script( 'angular' );
 
@@ -32,17 +34,21 @@ $is_iframe = true;
 ?>
 
 <!doctype html>
-<html class="no-js" lang="en" ng-app="311AppParent">
+<html class="no-js" lang="en">
   <head>
     <meta charset="utf-8">
     <title>iFrame embed</title>
     <?php wp_print_styles(); ?>
-    <?php print $style ?>
+    <?php if(!empty($style)) { print $style; } ?>
+    <style>
+        body { background: none; }
+    </style>
     <?php wp_print_scripts(); ?>
   </head>
   <body class="gravityforms-iframe">
 
     <?php gravity_form( $form_id, true, false, false, $_GET, true ); ?>
+    <div data-iframe-height="true" class="iframe-target"></div>
     <?php wp_footer(); ?>
   </body>
 </html>

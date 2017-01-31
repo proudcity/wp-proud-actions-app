@@ -23,6 +23,10 @@ class ActionsBox extends Core\ProudWidget {
     global $proudcore;
     $proudcore::$libraries->addMaps();
     $proudcore::$libraries->addAngular(true, true, true);
+    // If proud issue exits, add ifame resizer
+    if ( class_exists( '\Proud\Issue\ProudIssue' ) ) {
+      $proudcore::$libraries->addBundleToLoad( 'iframe-resizer' );
+    }
   }
 
   public function enqueueFrontend() {
@@ -34,7 +38,12 @@ class ActionsBox extends Core\ProudWidget {
     wp_enqueue_script('proud-actions-app', $local_path . '/proud-actions-app.js', array('lodash','angular'), false, true);
     // Angular resources
     wp_enqueue_script('proud-actions-app-libraries', $path . 'js/libraries.min.js', array('angular'), false, true);
-    wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js', array('proud-actions-app-libraries'), false, true);
+    $deps = array('proud-actions-app-libraries');
+    // If proud issue exits, add ifame resizer
+    if ( class_exists( '\Proud\Issue\ProudIssue' ) ) {
+      $deps[] = 'iframe-resizer';
+    }
+    wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js', $deps, false, true);
     wp_enqueue_script('proud-actions-app-templates', $path . 'views/app.templates.js', array('proud-actions-app-app'), false, true);
     
     // @todo: make this work (file isn't getting included with this call, so I just added it to app.min.js)
