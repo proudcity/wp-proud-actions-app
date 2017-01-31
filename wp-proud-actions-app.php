@@ -265,7 +265,7 @@ class ActionsApp extends \ProudPlugin {
     $services = get_option('services_local', array());
     foreach ($services as $i => $item) {
 
-      if ($item['type'] == 'hours') {
+      if (isset($item['type']) && $item['type'] == 'hours') {
         $services[$i]['hours'] = nl2br(esc_html($item['hours']));
       }
       else {
@@ -288,7 +288,7 @@ class ActionsApp extends \ProudPlugin {
 
     // See if hours services are open or closed
     foreach ($services as $i => $service) {
-      if ($service['type'] == 'hours') {
+      if (isset($service['type']) && $service['type'] == 'hours') {
         $alert = '';
         // Set the possible values depending on if this is parking or not
         $values = strpos( strtolower($service['title']), 'parking') ? 
@@ -301,8 +301,11 @@ class ActionsApp extends \ProudPlugin {
       }
     }
 
+    $service_map_layers = get_option('services_map');
     // Services map layers
-    $map_layers = ActionsApp::map_layers( array_keys( get_option('services_map', array()) ) );
+    $map_layers = ActionsApp::map_layers( 
+      is_array($service_map_layers) ? array_keys( $service_map_layers ) : []
+    );
 
     // Add rendered variable to JS
     $proudcore->addJsSettings([
