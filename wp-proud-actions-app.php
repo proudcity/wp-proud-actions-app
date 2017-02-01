@@ -147,13 +147,13 @@ class ActionsApp extends \ProudPlugin {
    * Add custom rewrite rules for the templates pages.
    */
   public function register_rewrite_rules() {
-    add_rewrite_rule('^standalone/?', 'index.php?wp_proud_format=standalone', 'top');
-    add_rewrite_rule('^embed/?', 'index.php?wp_proud_format=embed', 'top');
-    add_rewrite_rule('^fbtab/?', 'index.php?wp_proud_format=fbtab', 'top');
-    add_rewrite_rule('^app/?', 'index.php?wp_proud_format=app', 'top');
-    add_rewrite_rule('^preview/?', 'index.php?wp_proud_format=preview', 'top');
-    add_rewrite_rule('^service-center/?', 'index.php?wp_proud_format=preview', 'top');
-    add_rewrite_rule('^form-embed/?', 'index.php?wp_proud_format=gravityforms_iframe', 'top');
+    add_rewrite_rule('^standalone\/?', 'index.php?wp_proud_format=standalone', 'top');
+    add_rewrite_rule('^embed\/?', 'index.php?wp_proud_format=embed', 'top');
+    add_rewrite_rule('^fbtab\/?', 'index.php?wp_proud_format=fbtab', 'top');
+    add_rewrite_rule('^mobile-app\/?', 'index.php?wp_proud_format=app', 'top');
+    add_rewrite_rule('^preview\/?', 'index.php?wp_proud_format=preview', 'top');
+    add_rewrite_rule('^service-center\/?', 'index.php?wp_proud_format=preview', 'top');
+    add_rewrite_rule('^form-embed\/?', 'index.php?wp_proud_format=gravityforms_iframe', 'top');
 
     // Try to overwrite everything
     //add_rewrite_rule('^.', 'index.php?wp_proud_format=standalone', 'top');

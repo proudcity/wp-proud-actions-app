@@ -442,7 +442,7 @@ document.getElementById("types").addEventListener("click", function(evt) {
     height = 667;
     jQuery('.mobile-only').show();
     jQuery('#phone_1').removeClass('no-phone').removeClass('embed-wrapper').removeClass('facebook-wrapper');
-    $('#frame_1').attr('src', url + 'app');
+    $('#frame_1').attr('src', url + 'mobile-app');
   }
   if(evt.target.value == "facebook"){
     // facebook
