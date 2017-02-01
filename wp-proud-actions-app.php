@@ -77,37 +77,37 @@ class ActionsApp extends \ProudPlugin {
 
   public function create_service_center_tab() {
       $labels = array(
-          'name'               => _x( 'Custom Tabs', 'post name', 'wp-service_center_tab' ),
-          'singular_name'      => _x( 'Custom Tab', 'post type singular name', 'wp-service_center_tab' ),
-          'menu_name'          => _x( 'Custom Tabs', 'admin menu', 'wp-service_center_tab' ),
-          'name_admin_bar'     => _x( 'Custom Tab', 'add new on admin bar', 'wp-service_center_tab' ),
-          'add_new'            => _x( 'Add New', 'service_center_tab', 'wp-service_center_tab' ),
-          'add_new_item'       => __( 'Add New Custom Tab', 'wp-service_center_tab' ),
-          'new_item'           => __( 'New Custom Tab', 'wp-service_center_tab' ),
-          'edit_item'          => __( 'Edit Custom Tab', 'wp-service_center_tab' ),
-          'view_item'          => __( 'View Custom Tab', 'wp-service_center_tab' ),
-          'all_items'          => __( 'All Custom Tabs', 'wp-service_center_tab' ),
-          'search_items'       => __( 'Search service_center_tab', 'wp-service_center_tab' ),
-          'parent_item_colon'  => __( 'Parent service_center_tab:', 'wp-service_center_tab' ),
-          'not_found'          => __( 'No service_center_tabs found.', 'wp-service_center_tab' ),
-          'not_found_in_trash' => __( 'No service_center_tabs found in Trash.', 'wp-service_center_tab' )
+          'name'               => _x( 'Custom Tabs', 'post name', 'wp-proud-actions-app' ),
+          'singular_name'      => _x( 'Custom Tab', 'post type singular name', 'wp-proud-actions-app' ),
+          'menu_name'          => _x( 'Custom Tabs', 'admin menu', 'wp-proud-actions-app' ),
+          'name_admin_bar'     => _x( 'Custom Tab', 'add new on admin bar', 'wp-proud-actions-app' ),
+          'add_new'            => _x( 'Add New', 'service_center_tab', 'wp-proud-actions-app' ),
+          'add_new_item'       => __( 'Add New Custom Tab', 'wp-proud-actions-app' ),
+          'new_item'           => __( 'New Custom Tab', 'wp-proud-actions-app' ),
+          'edit_item'          => __( 'Edit Custom Tab', 'wp-proud-actions-app' ),
+          'view_item'          => __( 'View Custom Tab', 'wp-proud-actions-app' ),
+          'all_items'          => __( 'Custom Tabs', 'wp-proud-actions-app' ),
+          'search_items'       => __( 'Search service_center_tab', 'wp-proud-actions-app' ),
+          'parent_item_colon'  => __( 'Parent service_center_tab:', 'wp-proud-actions-app' ),
+          'not_found'          => __( 'No service_center_tabs found.', 'wp-proud-actions-app' ),
+          'not_found_in_trash' => __( 'No service_center_tabs found in Trash.', 'wp-proud-actions-app' )
       );
 
       $args = array(
           'labels'             => $labels,
-          'description'        => __( 'Description.', 'wp-service_center_tab' ),
+          'description'        => __( 'Description.', 'wp-proud-actions-app' ),
           'public'             => true,
           'publicly_queryable' => true,
           'show_ui'            => true,
-          'show_in_menu'       => false,//'admin.php?page=service-center',
+          'show_in_menu'       => 'service-center',
           'query_var'          => true,
-          'rewrite'            => array( 'slug' => 'custom_tabs' ),
+          'rewrite'            => array( 'slug' => 'tab' ),
           'capability_type'    => 'post',
           'has_archive'        => false,
           'hierarchical'       => false,
           'menu_position'      => null,
           'show_in_rest'       => true,
-          'rest_base'          => 'custom-tabs',
+          'rest_base'          => 'tabs',
           'rest_controller_class' => 'WP_REST_Posts_Controller',
           'supports'           => array( 'title', 'editor', 'thumbnail',)
       );
@@ -133,8 +133,9 @@ class ActionsApp extends \ProudPlugin {
    * Add metadata to t$forms = RGFormsModel::get_forms( 1, 'title' );he post response
    */
   public function service_center_tab_rest_metadata( $object, $field_name, $request ) {
-    $Meta = new ActionsMeta;    
-    $Meta->get_options( $object['id'] );
+    require_once( plugin_dir_path(__FILE__) . 'lib/actions-meta.class.php' );
+    $Meta = new \Proud\ActionsApp\ActionsMeta;    
+    return $Meta->get_options( $object['id'] );
   }
 
   // Init on plugins loaded
@@ -334,6 +335,40 @@ class ActionsApp extends \ProudPlugin {
         ]
       ]
     ]);
+    
+    // Re-write the `active_tabs` array to include icon, title information (rather than doing this in the app)
+    $updates = array();
+    $tabs = [
+      'local' => ['title' => 'Local Services', 'state' => 'local', 'icon' => 'fa-map-marker'],
+      'faq' => ['title' => 'Get Answers', 'state' => 'faq', 'icon' => 'fa-question-circle'],
+      'payments' => ['title' => 'Make a Payment', 'state' => 'payments', 'icon' => 'fa-credit-card'],
+      'report' => ['title' => 'Report an Issue', 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
+      'status' => ['title' => 'Check Status', 'state' => 'status', 'icon' => 'fa-wrench'],
+      'map' => ['title' => 'Maps', 'state' => 'map', 'icon' => 'fa-map'],
+      'vote' => ['title' => 'Vote', 'state' => 'vote', 'icon' => 'fa-check-square-o'],
+    ];
+    foreach($proudcore::$jsSettings['proud_actions_app']['instances'] as $key => $instance) {
+      $updates[$key]['active_tabs'] = [];
+      foreach($instance['active_tabs'] as $tab_key => $tab) {
+        if ( !empty($tabs[$tab]) ) {
+         $item = $tabs[$tab];
+        }
+        elseif (strpos($tab, 'custom') !== false) {
+          $post_id = (int)str_replace('custom:', '', $tab);
+          $item =[
+            'title' => get_the_title($post_id),
+            'state' => 'custom',
+            'params' => [ 'slug' => basename( get_permalink($post_id) ) ],
+            'icon' => get_post_meta($post_id, 'icon', true),
+          ];
+        }
+        if ($item) {
+          $updates[$key]['active_tabs'][$tab_key] = $item;
+        }
+      }
+    }
+    $proudcore->addJsSettings(['proud_actions_app' => ['instances' => $updates]]);
+
     // if not rendered on page yet, render in overlay
     if(!$GLOBALS['proud_actions_app_rendered'] && $render) {
       // @TODO use standard settings?
@@ -374,7 +409,7 @@ class ActionsApp extends \ProudPlugin {
           'payments' => 'Payments',
           'report' => 'Report an Issue',
           'status' => 'Check status',
-          'custom' => 'Custom Tab'
+          //'custom' => 'Custom Tab'
         ],
         '#default_value' => ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'],
         //'#description' => 'Click all tabs you would like to appear',
@@ -416,7 +451,7 @@ class ActionsApp extends \ProudPlugin {
           ],
         ],
       ],
-      'custom_title' => [
+      /*'custom_title' => [
         '#type' => 'text',
         '#title' => 'Custom tab title',
         '#states' => [
@@ -458,8 +493,18 @@ class ActionsApp extends \ProudPlugin {
           ],
         ],
         '#to_js_settings' => true
-      ],
+      ],*/
     ];
+
+    // Build a list of custom tabs
+    $query = new \WP_Query( [
+      'post_type' => 'service_center_tab',
+      'post_status' => 'publish',
+      'posts_per_page' => 100,
+    ] );
+    foreach ($query->posts as $post) {
+      $fields['active_tabs']['#options']['custom:' . $post->ID] = __( 'Custom Tab: ', 'wp-proud-actions-app' ) . $post->post_title; 
+    }
 
     $fields = array_merge($fields, $other_fields);
 
@@ -471,9 +516,9 @@ class ActionsApp extends \ProudPlugin {
    */
   public static function get_values($key) {
     $values = get_option( $key, false );
-    if (!empty($values['custom_content'])) {
-      $values['custom_content'] = str_replace('\"', '"', $values['custom_content']);
-    }
+    //if (!empty($values['custom_content'])) {
+    //  $values['custom_content'] = str_replace('\"', '"', $values['custom_content']);
+    //}
     return $values;
     //return $values ? json_decode($values) : array();
   }

@@ -2,6 +2,7 @@
 /**
  * @author ProudCity
  */
+namespace Proud\ActionsApp;
 
 // Attach actions metabox
 class ActionsMeta extends \ProudMetaBox {
@@ -16,7 +17,7 @@ class ActionsMeta extends \ProudMetaBox {
   public function __construct() {
     parent::__construct( 
       'service_center_tab', // key
-      'Payment information', // title
+      'Tab information', // title
       'service_center_tab', // screen
       'normal',  // position
       'high' // priority

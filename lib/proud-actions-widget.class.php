@@ -43,7 +43,7 @@ class ActionsBox extends Core\ProudWidget {
     if ( class_exists( '\Proud\Issue\ProudIssue' ) ) {
       $deps[] = 'iframe-resizer';
     }
-    wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js', $deps, false, true);
+    wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js?1', $deps, false, true);
     wp_enqueue_script('proud-actions-app-templates', $path . 'views/app.templates.js', array('proud-actions-app-app'), false, true);
     
     // @todo: make this work (file isn't getting included with this call, so I just added it to app.min.js)
