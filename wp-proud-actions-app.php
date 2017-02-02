@@ -210,17 +210,16 @@ class ActionsApp extends \ProudPlugin {
     exit;
   }
 
-  private function proud_actions_standalone_311( $key, $search ) {
+  /**
+   * Builds out settings for actions_box
+   */
+  private function proud_actions_standalone_settings( $key, $search ) {
+    // Build base settings
     global $proudcore;
-    $this->proud_actions_print_311(false);
-
-    do_action('wp_enqueue_scripts');
-
     $settings = $this->get_values($key);
 
     // Add search settings
     $settings['search'] = $search;
-
     $proudcore->addJsSettings([
       'global' => [
         'rewrite_relative_link' => TRUE,
@@ -231,6 +230,18 @@ class ActionsApp extends \ProudPlugin {
         ]
       ]
     ]);
+    return $settings;
+  }
+
+  /**
+   * Builds up standalone app, exports settings
+   */
+  private function proud_actions_standalone_311( $key, $search ) {
+    global $proudcore;
+    $settings = $this->proud_actions_standalone_settings( $key, $search );
+    // Attach advanced settings
+    $this->proud_actions_print_311(false);
+    do_action('wp_enqueue_scripts');
     
     // Get image background
     $background_meta = !empty( $settings['background'] )
@@ -258,84 +269,97 @@ class ActionsApp extends \ProudPlugin {
   public function proud_actions_print_311( $render = true ) {
     global $proudcore;
 
-    //Search settings
-    $search_site = get_option('search_google_site');
-    $search_additional = get_option( 'search_additional', array() );
+    // Only build globals on first run
+    static $has_run = null;
+    if( $has_run === null ) {
 
-    // Local services settings
-    $services = get_option('services_local', array());
-    foreach ($services as $i => $item) {
+      //Search settings
+      $search_site = get_option('search_google_site');
+      $search_additional = get_option( 'search_additional', array() );
 
-      if (isset($item['type']) && $item['type'] == 'hours') {
-        $services[$i]['hours'] = nl2br(esc_html($item['hours']));
-      }
-      else {
-        // Get file path
-        if ($item['file_location'] == 'upload') {
-          $services[$i]['file'] = wp_get_attachment_url($item['file']);
+      // Local services settings
+      $services = get_option('services_local', array());
+      foreach ($services as $i => $item) {
+
+        if (isset($item['type']) && $item['type'] == 'hours') {
+          $services[$i]['hours'] = nl2br(esc_html($item['hours']));
         }
         else {
-          $services[$i]['file'] = $item['file_url'];
-        }
-        unset($services[$i]['file_location']);
-        unset($services[$i]['file_url']);
+          // Get file path
+          if ($item['file_location'] == 'upload') {
+            $services[$i]['file'] = wp_get_attachment_url($item['file']);
+          }
+          else {
+            $services[$i]['file'] = $item['file_url'];
+          }
+          unset($services[$i]['file_location']);
+          unset($services[$i]['file_url']);
 
-        // Split items string into array
-        $p = array();
-        preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
-        $services[$i]['items'] = array_combine($p[1], $p[2]);
-      }         
-    }
+          // Split items string into array
+          $p = array();
+          preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
+          $services[$i]['items'] = array_combine($p[1], $p[2]);
+        }         
+      }
 
-    // See if hours services are open or closed
-    foreach ($services as $i => $service) {
-      if (isset($service['type']) && $service['type'] == 'hours') {
-        $alert = '';
-        // Set the possible values depending on if this is parking or not
-        $values = strpos( strtolower($service['title']), 'parking') ? 
-          array('Off', 'Active', 'Start soon', 'Stop soon') :
-          array('Closed', 'Open', 'Opening soon', 'Closing soon');
-        $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
-        if (!empty($alert)) {
-          $services[$i]['alert'] = $alert;
+      // See if hours services are open or closed
+      foreach ($services as $i => $service) {
+        if (isset($service['type']) && $service['type'] == 'hours') {
+          $alert = '';
+          // Set the possible values depending on if this is parking or not
+          $values = strpos( strtolower($service['title']), 'parking') ? 
+            array('Off', 'Active', 'Start soon', 'Stop soon') :
+            array('Closed', 'Open', 'Opening soon', 'Closing soon');
+          $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
+          if (!empty($alert)) {
+            $services[$i]['alert'] = $alert;
+          }
         }
       }
+
+      $service_map_layers = get_option('services_map');
+      // Services map layers
+      $map_layers = ActionsApp::map_layers( 
+        is_array($service_map_layers) ? array_keys( $service_map_layers ) : []
+      );
+
+      // Add rendered variable to JS
+      $proudcore->addJsSettings([
+        'proud_actions_app' => [
+          'global' => [
+            'api_path' => get_option( 'proudcity_api', get_site_url() . '/wp-json/wp/v2/' ),
+            'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered'],
+            'issue' => array(
+              'service' => get_option('311_service', 'seeclickfix'),
+              'link_create' => get_option('311_link_create'), 
+              'link_status' => get_option('311_link_status'),
+            ),
+            'gravityforms_iframe' => get_site_url() . '/form-embed/?id=',
+            //'payment' => array(
+            //  'service' => get_option('payment_service', 'stripe'),
+            //  'stripe_key' => get_option('payment_stripe_key'), 
+            //),
+            'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
+            'holidays' => nl2br( esc_html( get_option('service_center_holidays', Core\federalHolidays()) ) ),
+            'services' => $services,
+            'map_layers' => $map_layers,
+            'search_prefix' => get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=',
+            'search_suffix' => !empty($search_site) ? ' site: '.$search_site : '',
+            'search_additional' => $search_additional,
+            'search_granicus_site' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_site', array() ) : null,
+          ]
+        ]
+      ]);
+      $has_run = true;
     }
 
-    $service_map_layers = get_option('services_map');
-    // Services map layers
-    $map_layers = ActionsApp::map_layers( 
-      is_array($service_map_layers) ? array_keys( $service_map_layers ) : []
-    );
-
-    // Add rendered variable to JS
-    $proudcore->addJsSettings([
-      'proud_actions_app' => [
-        'global' => [
-          'api_path' => get_option( 'proudcity_api', get_site_url() . '/wp-json/wp/v2/' ),
-          'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered'],
-          'issue' => array(
-            'service' => get_option('311_service', 'seeclickfix'),
-            'link_create' => get_option('311_link_create'), 
-            'link_status' => get_option('311_link_status'),
-          ),
-          'gravityforms_iframe' => get_site_url() . '/form-embed/?id=',
-          //'payment' => array(
-          //  'service' => get_option('payment_service', 'stripe'),
-          //  'stripe_key' => get_option('payment_stripe_key'), 
-          //),
-          'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
-          'holidays' => nl2br( esc_html( get_option('service_center_holidays', Core\federalHolidays()) ) ),
-          'services' => $services,
-          'map_layers' => $map_layers,
-          'search_prefix' => get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=',
-          'search_suffix' => !empty($search_site) ? ' site: '.$search_site : '',
-          'search_additional' => $search_additional,
-          'search_granicus_site' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_site', array() ) : null,
-        ]
-      ]
-    ]);
-    
+    // No instance is created yet, so attach standalone settings, re-call this, exit
+    if(empty( $proudcore::$jsSettings['proud_actions_app']['instances'] ) ) {
+      $this->proud_actions_standalone_settings( 'service_center_standalone', false );
+      $this->proud_actions_print_311( true );
+      return;
+    }
+      
     // Re-write the `active_tabs` array to include icon, title information (rather than doing this in the app)
     $updates = array();
     $tabs = [
@@ -348,6 +372,7 @@ class ActionsApp extends \ProudPlugin {
       'vote' => ['title' => 'Vote', 'state' => 'vote', 'icon' => 'fa-check-square-o'],
     ];
     foreach($proudcore::$jsSettings['proud_actions_app']['instances'] as $key => $instance) {
+      $updates[$key] = $instance;
       $updates[$key]['active_tabs'] = [];
       foreach($instance['active_tabs'] as $tab_key => $tab) {
         if ( !empty($tabs[$tab]) ) {
@@ -371,12 +396,10 @@ class ActionsApp extends \ProudPlugin {
 
     // if not rendered on page yet, render in overlay
     if(!$GLOBALS['proud_actions_app_rendered'] && $render) {
-      // @TODO use standard settings?
-      $settings = $this->get_values( 'service_center_standalone' );
       // Set expanded to false
-      $settings['expand_section'] = false;
+      $updates['app']['expand_section'] = false;
       // Print widget
-      the_widget( 'ActionsBox', $settings );
+      the_widget( 'ActionsBox', $updates['app'] );
     }
   }
 
