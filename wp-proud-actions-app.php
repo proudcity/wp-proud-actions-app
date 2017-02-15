@@ -47,6 +47,10 @@ class ActionsApp extends \ProudPlugin {
     // Remove tabs from search results 
     add_filter( 'proud_search_exclude', array( $this, 'searchfilter' ) );
 
+
+    add_filter( 'redirect_canonical', array( $this, 'vir_override_canonical' ), 10, 2 );
+
+
   }
 
   /**
@@ -157,7 +161,14 @@ class ActionsApp extends \ProudPlugin {
     add_rewrite_rule('^form-embed\/?', 'index.php?wp_proud_format=gravityforms_iframe', 'top');
 
     // Try to overwrite everything
-    //add_rewrite_rule('^.', 'index.php?wp_proud_format=standalone', 'top');
+    if (get_option('service_center_distro', false)) {
+      add_rewrite_rule('^.', 'index.php?wp_proud_format=standalone', 'top');
+      add_rewrite_rule('^', 'index.php?wp_proud_format=standalone', 'top'); // @todo: homepage
+    }
+  }
+
+  public function vir_override_canonical( $redirect_url, $requested_url ) {
+    return false;
   }
 
   /**
@@ -277,7 +288,7 @@ class ActionsApp extends \ProudPlugin {
       $search_site = get_option('search_google_site');
       $search_additional = get_option( 'search_additional', array() );
 
-      // Local services settings
+      // My services settings
       $services = get_option('services_local', array());
       foreach ($services as $i => $item) {
 
@@ -363,7 +374,7 @@ class ActionsApp extends \ProudPlugin {
     // Re-write the `active_tabs` array to include icon, title information (rather than doing this in the app)
     $updates = array();
     $tabs = [
-      'local' => ['title' => 'Local Services', 'state' => 'local', 'icon' => 'fa-map-marker'],
+      'local' => ['title' => 'My Services', 'state' => 'local', 'icon' => 'fa-map-marker'],
       'faq' => ['title' => 'Get Answers', 'state' => 'faq', 'icon' => 'fa-question-circle'],
       'payments' => ['title' => 'Make a Payment', 'state' => 'payments', 'icon' => 'fa-credit-card'],
       'report' => ['title' => 'Report an Issue', 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
@@ -427,7 +438,7 @@ class ActionsApp extends \ProudPlugin {
         '#draggable' => true,
         '#options' => [
           'vote' => 'Vote',
-          'local' => 'Local Services',
+          'local' => 'My Services',
           'faq' => 'Answers',
           'payments' => 'Payments',
           'report' => 'Report an Issue',
@@ -681,4 +692,3 @@ function attach_actions_meta(&$post) {
   }
   return;
 }
-
