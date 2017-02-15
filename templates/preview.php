@@ -312,7 +312,7 @@ background: #fff;/*#1b1b1b; /* Old browsers */
 <div class="phone view_2" id="phone_1">
   <div id="loader">Loading...</div>
   <div class="iframe-wrapper">
-    <iframe src="<?php print $url ?>app#/city/answers" id="frame_1" seamless="seamless"></iframe>
+    <iframe src="<?php print $url ?>mobile-app#/city/answers" id="frame_1" seamless="seamless"></iframe>
   </div>
 </div>
 </div>

@@ -30,4 +30,4 @@ wp --allow-root option delete wp_proud_service_center_path
   ```
 
 
-All bug reports, feature requests and other issues should be added to the [wp-proudcity Issue Queue](https://github.com/proudcity/wp-proudcity/issues).c
+All bug reports, feature requests and other issues should be added to the [wp-proudcity Issue Queue](https://github.com/proudcity/wp-proudcity/issues).
