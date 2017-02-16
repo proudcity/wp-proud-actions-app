@@ -21,6 +21,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           'search_google_site' => '',
           'search_additional' => '',
           'search_granicus_site' => '',
+          'search_granicus_link_local' => '',
           'services_local' => '',
           'services_map' => '',
           'active_toolbar_buttons' => [ 
@@ -115,6 +116,20 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           '#type' => 'text',
           '#title' => __pcHelp('Granicus Site'),
           '#description' => __pcHelp('Enter your granicus portal site. Example: cityofproudcity.granicus.com'),
+          '#states' => [
+            'visible' => [
+              'search_additional' => [
+                'operator' => '==',
+                'value' => ['granicus'],
+                'glue' => '||'
+              ],
+            ],
+          ],
+        ],
+        'search_granicus_link_local' => [
+          '#type' => 'text',
+          '#title' => __pcHelp('Granicus Local Page'),
+          '#description' => __pcHelp('A local granicus page you would like to appear in granicus search'),
           '#states' => [
             'visible' => [
               'search_additional' => [

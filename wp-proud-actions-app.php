@@ -358,6 +358,7 @@ class ActionsApp extends \ProudPlugin {
             'search_suffix' => !empty($search_site) ? ' site: '.$search_site : '',
             'search_additional' => $search_additional,
             'search_granicus_site' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_site', array() ) : null,
+            'search_granicus_link_local' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_link_local', '' ) : null,
           ]
         ]
       ]);
