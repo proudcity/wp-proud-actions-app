@@ -46,6 +46,15 @@
         .action-box>div {
             border: none;
         }
+        .action-box .nav-contain {
+            padding-top:0;
+        }
+        .action-box {
+            background-color: white;
+        }
+        .app-wrap {
+            padding-bottom:0;
+        }
     </style>
   </body>
 </html>
