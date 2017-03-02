@@ -1,3 +1,8 @@
+<?php
+if (!empty($_GET['tabs_added'])) {
+    header( 'Location: /wp-admin/admin.php?page=service-center-facebook&msg=fbtab_success' ) ;
+}
+?>
 <!doctype html>
 <html class="no-js" lang="en" ng-app="311AppParent">
   <head>

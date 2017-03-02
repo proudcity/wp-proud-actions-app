@@ -11,7 +11,7 @@ class ServiceCenterPage
      */
     public function __construct()
     {
-      add_action( 'admin_menu', array($this, 'create_menu') );
+      add_action( 'admin_menu', array($this, 'create_menu'), 1 );
       $this->key = 'service-center';
     }
 

@@ -17,7 +17,8 @@ class ServiceCenterAppPage extends ProudSettingsPage
           'capability' => 'edit_proud_options',
         ],
         'service_center_app', // Option
-        [] // Options
+        [], // Options
+        9 // Weight
       );
     }
 

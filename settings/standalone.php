@@ -16,7 +16,8 @@ class ServiceCenterStandalonePage extends ProudSettingsPage
           'capability' => 'edit_proud_options',
         ],
         'service_center_standalone', // Option
-        [] // Options
+        [], // Options
+        9 // Weight
       );
     }
 

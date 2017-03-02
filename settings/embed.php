@@ -16,7 +16,8 @@ class ServiceCenterEmbedPage extends ProudSettingsPage
           'capability' => 'edit_proud_options',
         ],
         'service_center_embed', // Option
-        [] // Options
+        [], // Options
+        9 // Weight
       );
     }
 

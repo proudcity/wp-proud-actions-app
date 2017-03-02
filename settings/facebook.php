@@ -17,7 +17,8 @@ class ServiceCenterFacebookPage extends ProudSettingsPage
           'capability' => 'edit_proud_options',
         ],
         'service_center_facebook', // Option
-        []   // Options
+        [], // Options
+        9 // Weight
       );
     }
 
@@ -57,6 +58,9 @@ class ServiceCenterFacebookPage extends ProudSettingsPage
       <h2 class="form-header">Facebook Tab Settings</h2>
       <h4 class="form-header">Set up a "Service Center" tab on your Facebook page. Select the tabs you would like to appear, save the page, and click on the "Add Facebook Tab" button.</h4>
       <?php
+      if ($_GET['msg'] == 'fbtab_success') {
+        print '<div class="notice1 notice-success is-dismissible1"><h4>Facebook tab successfully added.</h4></div>';
+      }
       
       $this->print_form( );
     }

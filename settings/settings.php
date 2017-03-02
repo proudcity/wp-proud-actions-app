@@ -32,7 +32,8 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           '311_service' => '',
           '311_link_create' => '',
           '311_link_status' => ''
-        ] 
+        ],
+        9 // Weight
       );
     }
 
