@@ -172,7 +172,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             'hours' => [
               '#title' => 'Hours',
               '#type' => 'textarea',
-              '#description' => __pcHelp('For each Local Service, you will need to upload a CSV (Comma Separated Values) or <a href="'. $geojson_url .'" target="_blank">GeoJSON GIS</a> file and upload it below. <a href="https://proudcity.com/support/create" target="_blank">Contact ProudCity support</a> for assistance configuring your Local Services.'),
+              '#description' => __pcHelp('Enter one day (or range of days separated by a dash) per line.  Note that times must include the minutes (8:00am is good; 8am is bad). Examples:<br/>Monday: 8:00am - 6:00pm<br/>Tuesday - Friday: 8:00AM-5:00PM<br/>Saturday-Sunday: Closed'),
               '#default_value' => '',
               '#states' => [
                 'visible' => [
