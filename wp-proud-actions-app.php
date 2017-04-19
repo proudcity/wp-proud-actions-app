@@ -386,6 +386,10 @@ class ActionsApp extends \ProudPlugin {
     foreach($proudcore::$jsSettings['proud_actions_app']['instances'] as $key => $instance) {
       $updates[$key] = $instance;
       $updates[$key]['active_tabs'] = [];
+      // @TODO defaults?
+      // if(empty($instance['active_tabs'])) {
+      //   $instance['active_tabs'] = ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status']
+      // }
       foreach($instance['active_tabs'] as $tab_key => $tab) {
         if ( !empty($tabs[$tab]) ) {
          $item = $tabs[$tab];

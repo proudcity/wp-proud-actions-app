@@ -52,6 +52,7 @@
     <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?libraries=places&key=<?php print $settings['global']['google_key'] ?>"></script>
     <script src="<?php echo $path ?>js/libraries.min.js"></script>
     <script src="<?php echo $path ?>js/app.min.js"></script>
+    <script src="<?php echo $path ?>views/app.templates.js"></script>
 
     <?php print $styles ?>
     <style>
