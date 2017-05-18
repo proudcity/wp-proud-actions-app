@@ -47,7 +47,7 @@ class ServiceCenterStandalonePage extends ProudSettingsPage
      */
     public function settings_content() {
       ?>
-      <h2 class="form-header">Standalone Page Settings <a class="btn btn-default" href="/standalone" target="_blank"><i class="fa fa-fw fa-eye"></i>View standalone website</a></h2>
+      <h2 class="form-header">Standalone Page Settings <a class="btn btn-default" href="/standalone" target="_blank"><i aria-hidden="true" class="fa fa-fw fa-eye"></i>View standalone website</a></h2>
       <h4 class="form-header">Serve your residents with the tools they need without the window dressing.  Countless analytics serveys have shown that people come to city websites to get answers, report issues, and pay bills. Make it easy for <?php echo get_option('city', 'your') ?> residents to do just that.</h4>
       <?php
 

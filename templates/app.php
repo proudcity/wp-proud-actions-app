@@ -35,7 +35,7 @@
   
    <div class="container logo-bar">
         <a class="pull-right btn-search" href="#/city/search" title="Search">
-            <i class="fa fa-search fa-inverse"></i>
+            <i aria-hidden="true" class="fa fa-search fa-inverse"></i>
         </a>
         <a href="app.html#/city/local">
             <?php if( $logo_meta ): ?>

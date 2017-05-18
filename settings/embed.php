@@ -43,7 +43,7 @@ class ServiceCenterEmbedPage extends ProudSettingsPage
      */
     public function settings_content() {
       ?>
-      <h2 class="form-header">Embed Code <a class="btn btn-default" href="/embed" target="_blank"><i class="fa fa-fw fa-eye"></i>Preview your embeded app</a></h2>
+      <h2 class="form-header">Embed Code <a class="btn btn-default" href="/embed" target="_blank"><i aria-hidden="true" class="fa fa-fw fa-eye"></i>Preview your embeded app</a></h2>
       <h4 class="form-header">Start Proudly Serving your residents without rebuilding your entire website. Embed the Service Center on your homepage. Select the tabs you would like to appear, save the page, and copy and paste the embed code on your existing website. <a href="https://proudcity.com/support/create" target="_blank">Need help?</a></h4>
       <?php 
 

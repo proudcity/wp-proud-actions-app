@@ -30,10 +30,10 @@ class ActionsMenu extends Core\ProudWidget {
   public function printWidget( $args, $instance ) {
     ?>
     <ul class="list-unstyled">
-      <li><a data-proud-navbar="answers" href="#"><!--<i class="fa fa-question-circle"></i>--> Get Answers</a></li>
-      <li><a data-proud-navbar="payments"  href="#"><!--<i class="fa fa-usd"></i>--> Make a Payment</a></li>
-      <li><a data-proud-navbar="report" href="#"><!--<i class="fa fa-exclamation-triangle"></i>--> Report an Issue</a></li>
-      <li><a data-proud-navbar="status" href="#"><!--<i class="fa fa-wrench"></i>--> Check Status</a></li>
+      <li><a data-proud-navbar="answers" href="#"><!--<i aria-hidden="true" class="fa fa-question-circle"></i>--> Get Answers</a></li>
+      <li><a data-proud-navbar="payments"  href="#"><!--<i aria-hidden="true" class="fa fa-usd"></i>--> Make a Payment</a></li>
+      <li><a data-proud-navbar="report" href="#"><!--<i aria-hidden="true" class="fa fa-exclamation-triangle"></i>--> Report an Issue</a></li>
+      <li><a data-proud-navbar="status" href="#"><!--<i aria-hidden="true" class="fa fa-wrench"></i>--> Check Status</a></li>
     </ul>
     <?php
   }

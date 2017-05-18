@@ -32,7 +32,7 @@ class ServiceCenterFacebookPage extends ProudSettingsPage
         $fields = [
           'facebook_add' => [
            '#type' => 'html',
-            '#html' => '<div class="field-group" style="margin-top:40px"><label>Add to Facebook</label><div class="checkbox"><a target="_blank" href="https://www.facebook.com/dialog/pagetab?app_id='. $fb_app .'&next='. $url .'" class="btn btn-default"><i class="fa fa-fw fa-facebook-square"></i>Add Tab to Facebook Page</a><div class="help-block">Once you have saved your configuration, click this button to add the Service Center tab to your Facebook page.</div></div></div>',
+            '#html' => '<div class="field-group" style="margin-top:40px"><label>Add to Facebook</label><div class="checkbox"><a target="_blank" href="https://www.facebook.com/dialog/pagetab?app_id='. $fb_app .'&next='. $url .'" class="btn btn-default"><i aria-hidden="true"class="fa fa-fw fa-facebook-square"></i>Add Tab to Facebook Page</a><div class="help-block">Once you have saved your configuration, click this button to add the Service Center tab to your Facebook page.</div></div></div>',
           ]
         ];
       }
@@ -40,7 +40,7 @@ class ServiceCenterFacebookPage extends ProudSettingsPage
         $fields = [
           'submit_for_approval' => [
            '#type' => 'html',
-            '#html' => '<div class="field-group" style="margin-top:40px"><label>Generate Facebook App</label><div class="checkbox"><a target="_blank" href="https://proudcity.com/support/create" class="btn btn-default"><i class="fa fa-fw fa-plus"></i>Contact ProudCity</a><div class="help-block">Contact ProudCity Support and we will generate your Facebook app within one business day.</div></div></div>',
+            '#html' => '<div class="field-group" style="margin-top:40px"><label>Generate Facebook App</label><div class="checkbox"><a target="_blank" href="https://proudcity.com/support/create" class="btn btn-default"><i aria-hidden="true" class="fa fa-fw fa-plus"></i>Contact ProudCity</a><div class="help-block">Contact ProudCity Support and we will generate your Facebook app within one business day.</div></div></div>',
           ]
         ];
       }
