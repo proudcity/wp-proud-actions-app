@@ -41,7 +41,11 @@ $is_iframe = true;
     <?php wp_print_styles(); ?>
     <?php if(!empty($style)) { print $style; } ?>
     <style>
-        body { background: none; }
+        body {
+          background: none;
+          padding-right: 2px;
+          overflow-x: hidden;
+        }
     </style>
     <?php wp_print_scripts(); ?>
   </head>
