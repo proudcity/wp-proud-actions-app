@@ -46,6 +46,10 @@ $is_iframe = true;
           padding-right: 2px;
           overflow-x: hidden;
         }
+
+      .ginput_cardinfo_right {
+        position: relative;
+      }
     </style>
     <?php wp_print_scripts(); ?>
   </head>
