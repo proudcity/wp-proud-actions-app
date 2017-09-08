@@ -75,6 +75,7 @@ class ActionsApp extends \ProudPlugin {
       require_once( plugin_dir_path(__FILE__) . 'settings/standalone.php' );
       require_once( plugin_dir_path(__FILE__) . 'settings/embed.php' );
       require_once( plugin_dir_path(__FILE__) . 'settings/facebook.php' );
+      require_once( plugin_dir_path(__FILE__) . 'settings/kiosk.php' );
       require_once( plugin_dir_path(__FILE__) . 'settings/app.php' );
     }
   }
@@ -156,6 +157,7 @@ class ActionsApp extends \ProudPlugin {
     add_rewrite_rule('^embed\/?', 'index.php?wp_proud_format=embed', 'top');
     add_rewrite_rule('^fbtab\/?', 'index.php?wp_proud_format=fbtab', 'top');
     add_rewrite_rule('^mobile-app\/?', 'index.php?wp_proud_format=app', 'top');
+    add_rewrite_rule('^kiosk\/?', 'index.php?wp_proud_format=kiosk', 'top');
     add_rewrite_rule('^preview\/?', 'index.php?wp_proud_format=preview', 'top');
     add_rewrite_rule('^service-center\/?', 'index.php?wp_proud_format=preview', 'top');
     add_rewrite_rule('^form-embed\/?', 'index.php?wp_proud_format=gravityforms_iframe', 'top');
@@ -200,6 +202,10 @@ class ActionsApp extends \ProudPlugin {
       case 'fbtab':
         extract( $this->proud_actions_standalone_311('service_center_facebook', true) );
         require_once( plugin_dir_path(__FILE__) . 'templates/facebook.php' );
+        break;
+      case 'kiosk':
+        extract( $this->proud_actions_standalone_311('service_center_kiosk', true) );
+        require_once( plugin_dir_path(__FILE__) . 'templates/kiosk.php' );
         break;
       case 'embed':
         extract( $this->proud_actions_standalone_311('service_center_embed', true) );
@@ -379,7 +385,7 @@ class ActionsApp extends \ProudPlugin {
       'faq' => ['title' => 'Get Answers', 'state' => 'faq', 'icon' => 'fa-question-circle'],
       'payments' => ['title' => 'Make a Payment', 'state' => 'payments', 'icon' => 'fa-credit-card'],
       'report' => ['title' => 'Report an Issue', 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
-      'status' => ['title' => 'Check Status', 'state' => 'status', 'icon' => 'fa-wrench'],
+      //'status' => ['title' => 'Check Status', 'state' => 'status', 'icon' => 'fa-wrench'],
       'map' => ['title' => 'Maps', 'state' => 'map', 'icon' => 'fa-map'],
       'vote' => ['title' => 'Vote', 'state' => 'vote', 'icon' => 'fa-check-square-o'],
     ];
@@ -387,9 +393,9 @@ class ActionsApp extends \ProudPlugin {
       $updates[$key] = $instance;
       $updates[$key]['active_tabs'] = [];
       // @TODO defaults?
-      // if(empty($instance['active_tabs'])) {
-      //   $instance['active_tabs'] = ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status']
-      // }
+//       if(empty($instance['active_tabs'])) {
+//         $instance['active_tabs'] = ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'];
+//       }
       foreach($instance['active_tabs'] as $tab_key => $tab) {
         if ( !empty($tabs[$tab]) ) {
          $item = $tabs[$tab];
@@ -447,7 +453,9 @@ class ActionsApp extends \ProudPlugin {
           'faq' => 'Answers',
           'payments' => 'Payments',
           'report' => 'Report an Issue',
-          'status' => 'Check status',
+          //'status' => 'Check status',
+          'map' => 'Maps',
+          //'' => 'Maps',
           //'custom' => 'Custom Tab'
         ],
         '#default_value' => ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'],
