@@ -316,15 +316,22 @@ class ActionsApp extends \ProudPlugin {
       // See if hours services are open or closed
       foreach ($services as $i => $service) {
         if (isset($service['type']) && $service['type'] == 'hours') {
-          $alert = '';
-          // Set the possible values depending on if this is parking or not
-          $values = strpos( strtolower($service['title']), 'parking') ? 
-            array('Off', 'Active', 'Start soon', 'Stop soon') :
-            array('Closed', 'Open', 'Opening soon', 'Closing soon');
-          $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
-          if (!empty($alert)) {
-            $services[$i]['alert'] = $alert;
+
+          if (isset($service['disable_currently']) && $service['disable_currently']) {
+            $services[$i]['status'] = null;
           }
+          else {
+            $alert = '';
+            // Set the possible values depending on if this is parking or not
+            $values = strpos( strtolower($service['title']), 'parking') ?
+              array('Off', 'Active', 'Start soon', 'Stop soon') :
+              array('Closed', 'Open', 'Opening soon', 'Closing soon');
+            $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
+            if (!empty($alert)) {
+              $services[$i]['alert'] = $alert;
+            }
+          }
+
         }
       }
 

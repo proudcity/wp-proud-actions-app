@@ -184,6 +184,13 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
                 ],
               ],
             ],
+            'disable_currently' => [
+              '#type' => 'checkbox',
+              '#title' => __pcHelp('Hide current info'),
+              '#return_value' => '1',
+              '#label_above' => true,
+              '#replace_title' => __pcHelp( 'Do not show the "Currently: Open/Closed" information' ),
+            ],
             'address' => [
               '#title' => 'Address',
               '#type' => 'text',
