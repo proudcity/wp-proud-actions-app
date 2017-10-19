@@ -33,18 +33,13 @@
 </head>
 <body class="service-center-kiosk service-center-app service-center-navbar-left">
 
-<div class="container logo-bar">
-  <a class="pull-right btn-search" href="#/city/search" title="Search">
-    <i aria-hidden="true" class="fa fa-search fa-inverse"></i>
-  </a>
-  <a href="app.html#/city/local">
-      <?php if( $logo_meta ): ?>
-          <?php \Proud\Core\print_responsive_image( $logo_meta, ['logo'] ) ?>
-      <?php else: ?>
-          <?php echo get_navbar_logo(); ?>
-      <?php endif; ?>
-  </a>
-</div>
+<!--
+<?php if( $logo_meta ): ?>
+  <?php \Proud\Core\print_responsive_image( $logo_meta, ['logo'] ) ?>
+<?php else: ?>
+  <?php echo get_navbar_logo(); ?>
+<?php endif; ?>
+-->
 
 <div ng-init="$root.appId = 'app'" class=""><div class="parent" ui-view></div></div>
 
@@ -84,9 +79,12 @@
     padding: 0 10px;
   }
   .parent {
-    padding-top: 55px;
-    padding-bottom: 50px;
     height: 100%;
+  }
+
+  body {
+    background: url(https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/02/Boats-1200x1333.jpg);
+    background-size: cover;
   }
 </style>
 </body>

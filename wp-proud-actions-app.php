@@ -44,7 +44,7 @@ class ActionsApp extends \ProudPlugin {
     $this->hook( 'init', 'register_rewrite_rules');
     $this->hook( 'query_vars', 'query_vars');
     $this->hook( 'template_redirect', 'template_redirect');
-    // Remove tabs from search results 
+    // Remove tabs from search results
     add_filter( 'proud_search_exclude', array( $this, 'searchfilter' ) );
 
 
@@ -64,7 +64,7 @@ class ActionsApp extends \ProudPlugin {
   /**
    * Register admin classes
    * Necessary since plugin load order has this above proud admin
-   */ 
+   */
   public function register_actions_classes() {
     if( is_admin() ) {
       // Actions meta
@@ -139,7 +139,7 @@ class ActionsApp extends \ProudPlugin {
    */
   public function service_center_tab_rest_metadata( $object, $field_name, $request ) {
     require_once( plugin_dir_path(__FILE__) . 'lib/actions-meta.class.php' );
-    $Meta = new \Proud\ActionsApp\ActionsMeta;    
+    $Meta = new \Proud\ActionsApp\ActionsMeta;
     return $Meta->get_options( $object['id'] );
   }
 
@@ -259,7 +259,7 @@ class ActionsApp extends \ProudPlugin {
     // Attach advanced settings
     $this->proud_actions_print_311(false);
     do_action('wp_enqueue_scripts');
-    
+
     // Get image background
     $background_meta = !empty( $settings['background'] )
                 ? \Proud\Core\build_responsive_image_meta( $settings['background'] )
@@ -274,13 +274,13 @@ class ActionsApp extends \ProudPlugin {
       'background_meta' => $background_meta,
       'logo_meta' => $logo_meta,
       'path' => self::get_app_path(),
-      'google_analytics' => get_option('google_analytics_key'), 
+      'google_analytics' => get_option('google_analytics_key'),
       'title' =>  'ProudCity Service Center', //@todo
       'settings' => $proudcore->getJsSettings(),
       'styles' => function_exists('proud_customize_css') ? proud_customize_css() : '',
     );
   }
-  
+
   // Respond to navbar footer hook
   // Print widget if has not been rendered elsewhere
   public function proud_actions_print_311( $render = true ) {
@@ -316,7 +316,7 @@ class ActionsApp extends \ProudPlugin {
           $p = array();
           preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
           $services[$i]['items'] = array_combine($p[1], $p[2]);
-        }         
+        }
       }
 
       // See if hours services are open or closed
@@ -324,7 +324,7 @@ class ActionsApp extends \ProudPlugin {
         if (isset($service['type']) && $service['type'] == 'hours') {
           $alert = '';
           // Set the possible values depending on if this is parking or not
-          $values = strpos( strtolower($service['title']), 'parking') ? 
+          $values = strpos( strtolower($service['title']), 'parking') ?
             array('Off', 'Active', 'Start soon', 'Stop soon') :
             array('Closed', 'Open', 'Opening soon', 'Closing soon');
           $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
@@ -336,7 +336,7 @@ class ActionsApp extends \ProudPlugin {
 
       $service_map_layers = get_option('services_map');
       // Services map layers
-      $map_layers = ActionsApp::map_layers( 
+      $map_layers = ActionsApp::map_layers(
         is_array($service_map_layers) ? array_keys( $service_map_layers ) : []
       );
 
@@ -348,13 +348,13 @@ class ActionsApp extends \ProudPlugin {
             'render_in_overlay' => !$GLOBALS['proud_actions_app_rendered'],
             'issue' => array(
               'service' => get_option('311_service', 'seeclickfix'),
-              'link_create' => get_option('311_link_create'), 
+              'link_create' => get_option('311_link_create'),
               'link_status' => get_option('311_link_status'),
             ),
             'gravityforms_iframe' => get_site_url() . '/form-embed/?id=',
             //'payment' => array(
             //  'service' => get_option('payment_service', 'stripe'),
-            //  'stripe_key' => get_option('payment_stripe_key'), 
+            //  'stripe_key' => get_option('payment_stripe_key'),
             //),
             'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
             'holidays' => nl2br( esc_html( get_option('service_center_holidays', Core\federalHolidays()) ) ),
@@ -365,6 +365,7 @@ class ActionsApp extends \ProudPlugin {
             'search_additional' => $search_additional,
             'search_granicus_site' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_site', array() ) : null,
             'search_granicus_link_local' => !empty($search_additional['granicus']) ? get_option( 'search_granicus_link_local', '' ) : null,
+            'payments_label' => get_option( 'payments_label', 'Payment' ),
           ]
         ]
       ]);
@@ -377,7 +378,7 @@ class ActionsApp extends \ProudPlugin {
       $this->proud_actions_print_311( true );
       return;
     }
-      
+
     // Re-write the `active_tabs` array to include icon, title information (rather than doing this in the app)
     $updates = array();
     $tabs = [
@@ -388,6 +389,7 @@ class ActionsApp extends \ProudPlugin {
       //'status' => ['title' => 'Check Status', 'state' => 'status', 'icon' => 'fa-wrench'],
       'map' => ['title' => 'Maps', 'state' => 'map', 'icon' => 'fa-map'],
       'vote' => ['title' => 'Vote', 'state' => 'vote', 'icon' => 'fa-check-square-o'],
+      'directory' => ['title' => 'Directory', 'state' => 'directory', 'icon' => 'fa-sitemap'],
     ];
     foreach($proudcore::$jsSettings['proud_actions_app']['instances'] as $key => $instance) {
       $updates[$key] = $instance;
@@ -457,6 +459,7 @@ class ActionsApp extends \ProudPlugin {
           'map' => 'Maps',
           //'' => 'Maps',
           //'custom' => 'Custom Tab'
+          'directory' => 'Directory',
         ],
         '#default_value' => ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'],
         //'#description' => 'Click all tabs you would like to appear',
@@ -550,7 +553,7 @@ class ActionsApp extends \ProudPlugin {
       'posts_per_page' => 100,
     ] );
     foreach ($query->posts as $post) {
-      $fields['active_tabs']['#options']['custom:' . $post->ID] = __( 'Custom Tab: ', 'wp-proud-actions-app' ) . $post->post_title; 
+      $fields['active_tabs']['#options']['custom:' . $post->ID] = __( 'Custom Tab: ', 'wp-proud-actions-app' ) . $post->post_title;
     }
 
     $fields = array_merge($fields, $other_fields);
@@ -635,14 +638,14 @@ class ActionsApp extends \ProudPlugin {
           'color' => $meta ? get_term_meta( $topic->term_id, 'color', true ) : null,
         ]);
       }
-      
+
     }
 
     // Apply filter and ordering
     if (!empty($filter)) {
       $out = [];
       foreach ($filter as $filter_item) {
-        foreach ($layers as $layer) { 
+        foreach ($layers as $layer) {
           if ( $filter_item == $layer['slug'] ) {
             array_push($out, $layer);
           }
@@ -658,14 +661,14 @@ class ActionsApp extends \ProudPlugin {
 new ActionsApp;
 
 /**
- *  Attach information about a question's topic 
+ *  Attach information about a question's topic
  */
 function attach_actions_meta(&$post) {
   if( $post->post_type === 'question' ) {
     // Try to get tax
     // Term cache should already be primed by 'update_post_term_cache'.
     $terms = get_object_term_cache( $post->ID, 'faq-topic' );
-    
+
     // Guess not
     if( empty( $terms ) ) {
         $terms = wp_get_object_terms( $post->ID, 'faq-topic' );

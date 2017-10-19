@@ -15,7 +15,8 @@ class ServiceCenterKioskPage extends ProudSettingsPage {
                 'capability'  => 'edit_proud_options',
             ],
             'service_center_kiosk', // Option
-            [], // Options
+            [
+            ], // Options
             9 // Weight
         );
     }
@@ -32,6 +33,21 @@ class ServiceCenterKioskPage extends ProudSettingsPage {
                     '#type'          => 'select_media',
                     '#default_value' => '',
                     '#description'   => 'You can customize colors and fonts in the Customize section.',
+                ],
+                'background'       => [
+                  '#title'         => __('Homepage background image', 'wp-proud-core'),
+                  '#type'          => 'select_media',
+                  '#default_value' => '',
+                ],
+                'directions_start'       => [
+                  '#title'         => __('Start Location', 'wp-proud-core'),
+                  '#type'          => 'text',
+                  '#description' => __('Describe the location for the start place for directions (ex: "{cityname} City Hall")', 'wp-proud-core'),
+                ],
+                'text_url_gravityform'       => [
+                  '#title'         => __('Send to Phone form', 'wp-proud-core'),
+                  '#type'          => 'gravityform',
+                  '#description' => 'Form to use for Send to Phone functionality typically allowing you to send a text or email to your phone.',
                 ],
                 'google_analytics_key' => [
                     '#type' => 'text',
