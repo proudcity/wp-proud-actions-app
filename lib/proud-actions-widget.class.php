@@ -72,7 +72,46 @@ class ActionsBox extends Core\ProudWidget {
 
     ?>
     <div id="<?php print $this->id; ?>" class="col-sm-12">
-      <div ng-init="$root.appId = '<?php print $this->id; ?>'" class="container spacing" in-view="faqCompile = faqCompile || '<?php print $lazy_html; ?>'" lazy-compile="faqCompile" lazy-decode="true"></div>
+      <div ng-init="$root.appId = '<?php print $this->id; ?>'" class="container spacing" in-view="faqCompile = faqCompile || '<?php print $lazy_html; ?>'" lazy-compile="faqCompile" lazy-decode="true">
+      </div>
+      <div aria-hidden="true" id="<?php print $this->id; ?>-shadow" class="place-shadow place-shadow-actions app-wrap">
+        <p aria-label="Skip link" class="sr-only">This content is for decoration only <a class="sr-only" href="#<?php print $this->id; ?>-shadow-after">skip decoration</a>.</p>
+        <div class="action-box" id="wrapper-311">
+          <div class="row">
+            <div class="col-sm-12 nav-contain">
+              <ul class="nav nav-pills nav-stacked" role="tablist">
+                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
+                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
+                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
+                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
+              </ul>
+            </div>
+            <div class="col-sm-12 content-contain">
+              <div class="body-content animation-wrap">
+                <div class="main-311 transform clearfix">
+                  <div class="slide-left-2 column">
+                    <ol class="breadcrumb clean"><li class="active"><i class="shadow-icon"></i> <span class="shadow-text"></span></li></ol>
+                    <dl class="angular-311-2col" role="tablist" aria-multiselectable="true">
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                    </dl>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="<?php print $this->id; ?>-shadow-after">&nbsp;</div>
+      </div>
     </div>
     <?php
   }
