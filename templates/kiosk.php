@@ -1,5 +1,11 @@
 <?php
+$settings['proud_actions_app']['instances']['app']['menu_style'] = 'left';
 
+$logo = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['logo']);
+$logo = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/08/CityOfSRLogo_onWhite.png';
+$bg = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['background']);
+$bg = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/02/Boats.jpg';
+$bg = null;
 ?>
 <!doctype html>
 <html class="no-js" lang="en" ng-app="311AppParent">
@@ -17,10 +23,8 @@
   <title ng-bind="pageTitle();">ProudCity Service Center</title>
     <?php wp_print_styles(); ?>
   <script type="text/javascript">
-
     var Proud = {};
     Proud.settings = <?php echo json_encode($settings) ?>
-
   </script>
   <script type="text/javascript">
     (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -31,7 +35,7 @@
     ga('create', '<?php echo $google_analytics ?>', 'auto');
   </script>
 </head>
-<body class="service-center-kiosk service-center-app service-center-navbar-left">
+<body class="service-center-kiosk service-center-app service-center-navbar-left unclicked">
 
 <!--
 <?php if( $logo_meta ): ?>
@@ -54,8 +58,8 @@
 <script src="<?php echo $path ?>views/app.templates.js"></script>
 
 <?php print $styles ?>
-<style>
-  .action-box>div {
+<style type="text/css">
+  /*.action-box>div {
     border: none;
   }
   .logo-bar {
@@ -80,12 +84,41 @@
   }
   .parent {
     height: 100%;
-  }
+  }*/
 
-  body {
-    background: url(https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/02/Boats-1200x1333.jpg);
-    background-size: cover;
-  }
+  <?php if($bg): ?>
+    body.unclicked {
+      background: url(<?php echo $bg ?>);
+      background-size: cover;
+    }
+    body.unclicked .action-box {
+      background-color: transparent !important;
+    }
+    body.unclicked .action-box dl h4 span {
+      color: black !important;
+    }
+    body.unclicked .service-center-navbar-vertical .col-nav {
+      background: rgba(255, 255, 255, 0.4);
+    }
+  <?php endif; ?>
+
+
+  <?php if($logo): ?>
+    .service-center-navbar-vertical .col-nav ul.nav {
+      background: url(<?php echo $logo ?>) 0 10px no-repeat;
+      background-size: auto 70px;
+      padding-top: 96px;
+    }
+  <?php endif; ?>
+
+
 </style>
+
+<script language="JavaScript">
+  jQuery('body').bind('click', function() {
+    jQuery(this).removeClass('unclicked');
+  });
+</script>
+
 </body>
 </html>
