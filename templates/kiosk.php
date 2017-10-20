@@ -108,9 +108,9 @@ $bg = str_replace('-150x150', '', $bg);
 
   <?php if($logo): ?>
     .service-center-navbar-vertical .col-nav ul.nav {
-      background: url(<?php echo $logo ?>) 0 10px no-repeat;
-      background-size: auto 70px;
-      padding-top: 96px;
+      background: url(<?php echo $logo ?>) 10px 10px no-repeat;
+      background-size: auto 80px;
+      padding-top: 106px;
     }
   <?php endif; ?>
 
