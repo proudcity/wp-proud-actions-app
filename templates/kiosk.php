@@ -2,10 +2,10 @@
 $settings['proud_actions_app']['instances']['app']['menu_style'] = 'left';
 
 $logo = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['logo']);
-$logo = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/08/CityOfSRLogo_onWhite.png';
+//$logo = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/08/CityOfSRLogo_onWhite.png';
 $bg = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['background']);
-$bg = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/02/Boats.jpg';
-$bg = null;
+//$bg = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/02/Boats.jpg';
+//$bg = null;
 ?>
 <!doctype html>
 <html class="no-js" lang="en" ng-app="311AppParent">
