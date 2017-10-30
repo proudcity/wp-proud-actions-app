@@ -1,9 +1,12 @@
 <?php
 $settings['proud_actions_app']['instances']['app']['menu_style'] = 'left';
+$settings['global']['external_link_prefix'] = '/kiosk#/city/iframe?url=';
 
 $logo = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['logo']);
 $logo = str_replace('-150x150', '', $logo);
-//$logo = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/08/CityOfSRLogo_onWhite.png';
+$logo = 'https://storage.googleapis.com/proudcity/sanrafaelca/uploads/2016/08/CityOfSRLogo_onWhite.png';
+$settings['proud_actions_app']['instances']['app']['logo'] = $logo;
+
 $bg = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['background']);
 $bg = str_replace('-150x150', '', $bg);
 
@@ -104,16 +107,6 @@ $bg = str_replace('-150x150', '', $bg);
       background: rgba(255, 255, 255, 0.4);
     }
   <?php endif; ?>
-
-
-  <?php if($logo): ?>
-    .service-center-navbar-vertical .col-nav ul.nav {
-      background: url(<?php echo $logo ?>) 10px 10px no-repeat;
-      background-size: auto 80px;
-      padding-top: 106px;
-    }
-  <?php endif; ?>
-
 
 </style>
 
