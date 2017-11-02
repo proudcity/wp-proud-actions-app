@@ -39,6 +39,11 @@ class ServiceCenterKioskPage extends ProudSettingsPage {
                   '#type'          => 'select_media',
                   '#default_value' => '',
                 ],
+                'icon'       => [
+                  '#title'         => __('Icon image for the mobile version', 'wp-proud-core'),
+                  '#type'          => 'select_media',
+                  '#default_value' => '',
+                ],
                 'directions_start'       => [
                   '#title'         => __('Start Location', 'wp-proud-core'),
                   '#type'          => 'text',
@@ -48,6 +53,11 @@ class ServiceCenterKioskPage extends ProudSettingsPage {
                   '#title'         => __('Send to Phone form', 'wp-proud-core'),
                   '#type'          => 'gravityform',
                   '#description' => 'Form to use for Send to Phone functionality typically allowing you to send a text or email to your phone.',
+                ],
+                'feedback_gravityform'       => [
+                  '#title'         => __('Feedback form', 'wp-proud-core'),
+                  '#type'          => 'gravityform',
+                  '#description' => 'Form to use for Feedback button.',
                 ],
                 'google_analytics_key' => [
                     '#type' => 'text',
