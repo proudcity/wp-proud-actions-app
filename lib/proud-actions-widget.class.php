@@ -76,7 +76,7 @@ class ActionsBox extends Core\ProudWidget {
       </div>
       <div aria-hidden="true" id="<?php print $this->id; ?>-shadow" class="place-shadow place-shadow-actions app-wrap">
         <p aria-label="Skip link" class="sr-only">This content is for decoration only <a class="sr-only" href="#<?php print $this->id; ?>-shadow-after">skip decoration</a>.</p>
-        <div class="action-box" id="wrapper-311">
+        <div class="action-box">
           <div class="row">
             <?php if ( !empty( $instance['active_tabs'] ) && count( $instance['active_tabs'] ) > 1 ): ?>
               <div class="col-sm-12 nav-contain">
