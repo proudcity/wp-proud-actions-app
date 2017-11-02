@@ -78,31 +78,24 @@ class ActionsBox extends Core\ProudWidget {
         <p aria-label="Skip link" class="sr-only">This content is for decoration only <a class="sr-only" href="#<?php print $this->id; ?>-shadow-after">skip decoration</a>.</p>
         <div class="action-box" id="wrapper-311">
           <div class="row">
-            <div class="col-sm-12 nav-contain">
-              <ul class="nav nav-pills nav-stacked" role="tablist">
-                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
-                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
-                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
-                <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
-              </ul>
-            </div>
+            <?php if ( !empty( $instance['active_tabs'] ) && count( $instance['active_tabs'] ) > 1 ): ?>
+              <div class="col-sm-12 nav-contain">
+                <ul class="nav nav-pills nav-stacked" role="tablist">
+                <?php foreach ( $instance['active_tabs'] as $tab ): ?>
+                  <li role="presentation"><a class="btn place-shadow-button"><i class="shadow-icon"></i><span class="shadow-text"></span></a></li>
+                <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endif; ?>
             <div class="col-sm-12 content-contain">
               <div class="body-content animation-wrap">
                 <div class="main-311 transform clearfix">
                   <div class="slide-left-2 column">
                     <ol class="breadcrumb clean"><li class="active"><i class="shadow-icon"></i> <span class="shadow-text"></span></li></ol>
                     <dl class="angular-311-2col" role="tablist" aria-multiselectable="true">
+                    <?php for ( $i = 1; $i < 9; $i++ ): ?>
                       <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                    <?php endfor; ?>
                     </dl>
                   </div>
                 </div>
