@@ -32,19 +32,16 @@ class ActionsBox extends Core\ProudWidget {
   public function enqueueFrontend() {
     $local_path = plugins_url('../includes/js', __FILE__);
     $path = Proud\ActionsApp\ActionsApp::get_app_path();
+    $release = get_option( 'proud_release', '' );
 
     wp_enqueue_script('google-maps-api', '//maps.googleapis.com/maps/api/js?key=' . get_option( 'google_api_key', '' ) . '&libraries=places');
     // Running script
     wp_enqueue_script('proud-actions-app', $local_path . '/proud-actions-app.js', array('lodash','angular'), false, true);
     // Angular resources
-    wp_enqueue_script('proud-actions-app-libraries', $path . 'js/libraries.min.js', array('angular'), false, true);
-    $deps = array('proud-actions-app-libraries');
-    // If proud issue exits, add ifame resizer
-    if ( class_exists( '\Proud\Issue\ProudIssue' ) ) {
-      $deps[] = 'iframe-resizer';
-    }
-    wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js?1', $deps, false, true);
-    wp_enqueue_script('proud-actions-app-templates', $path . 'views/app.templates.js', array('proud-actions-app-app'), false, true);
+    wp_enqueue_script('proud-actions-app-libraries', $path . 'js/libraries.min.js?' . $release, array('angular'), false, true);
+    $deps = array('proud-actions-app-libraries', 'iframe-resizer');
+    wp_enqueue_script('proud-actions-app-app', $path . 'js/app.min.js?' . $release, $deps, false, true);
+    wp_enqueue_script('proud-actions-app-templates', $path . 'views/app.templates.js?' . $release, array('proud-actions-app-app'), false, true);
     
     // @todo: make this work (file isn't getting included with this call, so I just added it to app.min.js)
     //if ($this->settings['active_tabs']['#options']['vote']) {
