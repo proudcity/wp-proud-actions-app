@@ -10,6 +10,8 @@ we can use the local or beta version.:
 cd ./includes/js
 git clone git@github.com:proudcity/service-center.git
 wp --allow-root option update wp_proud_service_center_path 'local'
+# OR
+wp --allow-root option update wp_proud_service_center_path '/wp-content/plugins/wp-proud-actions-app/includes/js/service-center/dist/'
 
 # Use beta version
 wp --allow-root option update wp_proud_service_center_path '//service-center-beta.proudcity.com/'
