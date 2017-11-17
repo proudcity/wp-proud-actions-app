@@ -1,6 +1,6 @@
 <?php
 $settings['proud_actions_app']['instances']['app']['menu_style'] = 'left';
-$settings['global']['external_link_prefix'] = '/kiosk#/city/iframe?url=';
+$settings['global']['external_link_prefix'] = home_url() . '/kiosk#/city/iframe?url=';
 
 $logo = wp_get_attachment_image_url($settings['proud_actions_app']['instances']['app']['logo']);
 $logo = str_replace('-150x150', '', $logo);
