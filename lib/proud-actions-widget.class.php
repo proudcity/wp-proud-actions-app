@@ -91,7 +91,7 @@ class ActionsBox extends Core\ProudWidget {
                     <ol class="breadcrumb clean"><li class="active"><i class="shadow-icon"></i> <span class="shadow-text"></span></li></ol>
                     <dl class="angular-311-2col" role="tablist" aria-multiselectable="true">
                     <?php for ( $i = 1; $i < 9; $i++ ): ?>
-                      <dd role="presentation" class="col-sm-6 col-md-4"><h4 role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></h4></dd>
+                      <dd role="presentation" class="col-sm-6 col-md-4"><div class="h4" role="tab"><a role="button"><i class="shadow-icon"></i><span><i class="shadow-text"></i></span></a></div></dd>
                     <?php endfor; ?>
                     </dl>
                   </div>
