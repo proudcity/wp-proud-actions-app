@@ -72,7 +72,7 @@ class ActionsBox extends Core\ProudWidget {
       <div ng-init="$root.appId = '<?php print $this->id; ?>'" class="container spacing" in-view="faqCompile = faqCompile || '<?php print $lazy_html; ?>'" lazy-compile="faqCompile" lazy-decode="true">
       </div>
       <div aria-hidden="true" id="<?php print $this->id; ?>-shadow" class="place-shadow place-shadow-actions app-wrap">
-        <p aria-label="Skip link" class="sr-only">This content is for decoration only <a class="sr-only" href="#<?php print $this->id; ?>-shadow-after">skip decoration</a>.</p>
+        <p aria-label="Skip placeholder" class="sr-only">This content is for decoration only <a href="#<?php print $this->id; ?>-shadow-after">skip decoration</a>.</p>
         <div class="action-box">
           <div class="row">
             <?php if ( !empty( $instance['active_tabs'] ) && count( $instance['active_tabs'] ) > 1 ): ?>
