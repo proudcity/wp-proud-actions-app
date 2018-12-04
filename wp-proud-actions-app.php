@@ -557,7 +557,8 @@ class ActionsApp extends \ProudPlugin {
     $query = new \WP_Query( [
       'post_type' => 'service_center_tab',
       'post_status' => 'publish',
-      'posts_per_page' => 100,
+      'limit' => 100,
+      'no_found_rows' => true,
     ] );
     foreach ($query->posts as $post) {
       $fields['active_tabs']['#options']['custom:' . $post->ID] = __( 'Custom Tab: ', 'wp-proud-actions-app' ) . $post->post_title;
