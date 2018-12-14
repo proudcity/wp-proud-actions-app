@@ -2,7 +2,7 @@
 (function($, Proud) {
   Proud.behaviors.proud_actions_app = {
     attach: function(context, settings) {
-      var instances = _.get(settings, 'proud_actions_app.instances');
+      var instances = lodash.get(settings, 'proud_actions_app.instances');
       // initialize instances
       if (instances) {
 
@@ -25,7 +25,7 @@
               case 'payments':
               case 'report':
               case 'status':
-                if(_.get(settings, 'proud_actions_app.global.render_in_overlay')) {
+                if(lodash.get(settings, 'proud_actions_app.global.render_in_overlay')) {
                   event.callback(true);
                 }
                 else {
