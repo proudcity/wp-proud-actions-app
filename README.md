@@ -24,7 +24,7 @@ wp --allow-root option delete wp_proud_service_center_path
 
 See https://github.com/proudcity/service-center/wiki/Setting-up-Facebook-app
 
-### Setting up Facebook app
+### Generating Geojson files for the service center
 
 Turning shp files into geojson files:
 1. Upload all file(s) in https://mapshaper.org
