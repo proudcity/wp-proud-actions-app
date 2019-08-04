@@ -332,7 +332,8 @@ class ActionsApp extends \ProudPlugin {
             $values = strpos( strtolower($service['title']), 'parking') ?
               array('Off', 'Active', 'Start soon', 'Stop soon') :
               array('Closed', 'Open', 'Opening soon', 'Closing soon');
-            $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, get_option('service_center_holidays', ''), true, $values);
+            $holidays = get_option('service_center_holidays_mode', '') === 'custom' ?  get_option('service_center_holidays', Core\federalHolidays()) : Core\federalHolidays();
+            $services[$i]['status'] = Core\isTimeOpen($service['hours'], $alert, $holidays, false, $values);
             if (!empty($alert)) {
               $services[$i]['alert'] = $alert;
             }
@@ -348,6 +349,7 @@ class ActionsApp extends \ProudPlugin {
       );
 
       // Add rendered variable to JS
+      $holidays = get_option('service_center_holidays_mode', '') === 'custom' ?  get_option('service_center_holidays', Core\federalHolidays()) : Core\federalHolidays();
       $proudcore->addJsSettings([
         'proud_actions_app' => [
           'global' => [
@@ -364,7 +366,7 @@ class ActionsApp extends \ProudPlugin {
             //  'stripe_key' => get_option('payment_stripe_key'),
             //),
             'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
-            'holidays' => nl2br( esc_html( get_option('service_center_holidays', Core\federalHolidays()) ) ),
+            'holidays' => nl2br( esc_html( $holidays ) ),
             'services' => $services,
             'map_layers' => $map_layers,
             'search_prefix' => get_option('search_provider') == 'google' ? 'https://www.google.com/search?q=' : get_site_url() . '/search-site/?term=',

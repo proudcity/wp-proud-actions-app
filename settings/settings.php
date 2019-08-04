@@ -1,4 +1,7 @@
 <?php
+
+use Proud\Core;
+
 class ServiceCenterSettingsPage extends ProudSettingsPage
 {
 
@@ -23,6 +26,8 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
           'search_granicus_site' => '',
           'search_granicus_link_local' => '',
           'services_local' => '',
+          'service_center_holidays_mode' => 'default',
+          'service_center_holidays' => Core\federalHolidays(),
           'services_map' => '',
           'active_toolbar_buttons' => [ 
             'answers' => 'answers', 
@@ -346,6 +351,31 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             ],
           ],
         ],
+        'service_center_holidays_mode' => [
+          '#title' => __( 'Holidays', 'wp-proud-core' ),
+          '#type' => 'radios',
+          '#options' => [
+            'default' => 'Use default Federal Holidays',
+            'custom' => 'Customize holidays'
+          ],
+          '#default_value' => 'default',
+        ],
+        'service_center_holidays' => [
+          '#title' => __( 'Custom Holidays', 'wp-proud-core' ),
+          '#type' => 'textarea',
+          '#save_method' => 'stripslashes',
+          '#description' => __( 'Be sure to update your holidays every year', 'wp-proud-core' ),
+          '#default_value' => Core\federalHolidays(),
+          '#states' => [
+            'visible' => [
+              'service_center_holidays_mode' => [
+                'operator' => '==',
+                'value' => ['custom'],
+                'glue' => '||'
+              ],
+            ],
+          ],
+        ],
         'services_map' => [
           '#title' => __( 'Service Map Layers', 'wp-proud-core' ),
           '#type' => 'checkboxes',
@@ -487,6 +517,13 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
      * Saves form values
      */
     public function save( &$values ) {
+
+        if (empty($values['service_center_holidays']) || $values['service_center_holidays'] == Core\federalHolidays()) {
+            unset($values['service_center_holidays']);
+            //print_r('unset');
+        }
+
+       // print_R($values);exit;
       $values = parent::save( $values );
     }
 }
