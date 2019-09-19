@@ -413,11 +413,14 @@ class ActionsApp extends \ProudPlugin {
         }
         elseif (strpos($tab, 'custom') !== false) {
           $post_id = (int)str_replace('custom:', '', $tab);
+          $type = get_post_meta($post_id, 'type', true);
           $item =[
             'title' => get_the_title($post_id),
-            'state' => 'custom',
+            'state' => $type === 'link' ? null : 'custom',
             'params' => [ 'slug' => basename( get_permalink($post_id) ) ],
             'icon' => get_post_meta($post_id, 'icon', true),
+            'type' => $type,
+            'url' => get_post_meta($post_id, 'link', true),
           ];
         }
         if ($item) {
