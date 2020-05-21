@@ -391,14 +391,14 @@ class ActionsApp extends \ProudPlugin {
     // Re-write the `active_tabs` array to include icon, title information (rather than doing this in the app)
     $updates = array();
     $tabs = [
-      'local' => ['title' => 'My Services', 'state' => 'local', 'icon' => 'fa-map-marker'],
-      'faq' => ['title' => 'Get Answers', 'state' => 'faq', 'icon' => 'fa-question-circle'],
-      'payments' => ['title' => 'Make a Payment', 'state' => 'payments', 'icon' => 'fa-credit-card'],
-      'report' => ['title' => 'Report an Issue', 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
-      //'status' => ['title' => 'Check Status', 'state' => 'status', 'icon' => 'fa-wrench'],
-      'map' => ['title' => 'Maps', 'state' => 'map', 'icon' => 'fa-map'],
-      'vote' => ['title' => 'Vote', 'state' => 'vote', 'icon' => 'fa-check-square-o'],
-      'directory' => ['title' => 'Directory', 'state' => 'directory', 'icon' => 'fa-sitemap'],
+      'local' => ['title' => __( 'My Services', 'wp-proud-actions-app' ), 'state' => 'local', 'icon' => 'fa-map-marker'],
+      'faq' => ['title' => __( 'Get Answers', 'wp-proud-actions-app' ), 'state' => 'faq', 'icon' => 'fa-question-circle'],
+      'payments' => ['title' => __( 'Make a Payment', 'wp-proud-actions-app' ), 'state' => 'payments', 'icon' => 'fa-credit-card'],
+      'report' => ['title' => __( 'Report an Issue', 'wp-proud-actions-app' ), 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
+      //'status' => ['title' => __( 'Check Status', 'wp-proud-actions-app' ), 'state' => 'status', 'icon' => 'fa-wrench'],
+      'map' => ['title' => __( 'Maps', 'wp-proud-actions-app' ), 'state' => 'map', 'icon' => 'fa-map'],
+      'vote' => ['title' => __( 'Vote', 'wp-proud-actions-app' ), 'state' => 'vote', 'icon' => 'fa-check-square-o'],
+      'directory' => ['title' => __( 'Directory', 'wp-proud-actions-app' ), 'state' => 'directory', 'icon' => 'fa-sitemap'],
     ];
     foreach($proudcore::$jsSettings['proud_actions_app']['instances'] as $key => $instance) {
       $updates[$key] = $instance;
@@ -466,7 +466,7 @@ class ActionsApp extends \ProudPlugin {
           'local' => 'My Services',
           'faq' => 'Answers',
           'payments' => 'Payments',
-          'report' => 'Report an Issue',
+          'report' => __( 'Report an Issue', 'wp-proud-actions-app' ),
           //'status' => 'Check status',
           'map' => 'Maps',
           //'' => 'Maps',
