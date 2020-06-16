@@ -455,6 +455,8 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             'answers' => __pcHelp( 'Answers' ), 
             'payments' => __pcHelp( 'Payments' ), 
             'report' => __pcHelp( 'Report Issue' ),
+            'google_translate' => __pcHelp('Translate'),
+            // 'font_size' => __pcHelp('Font Size'),
           ],
         ],
         '311_service' => [
