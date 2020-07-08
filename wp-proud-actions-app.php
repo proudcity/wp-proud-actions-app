@@ -235,6 +235,10 @@ class ActionsApp extends \ProudPlugin {
     global $proudcore;
     $settings = $this->get_values($key);
 
+    // Don't print logo to angular if logo set for page
+    $logo = !empty( $settings['logo'] ) ? $settings['logo'] : '';
+    $settings['logo'] = '';
+
     // Add search settings
     $settings['search'] = $search;
     $proudcore->addJsSettings([
@@ -247,6 +251,9 @@ class ActionsApp extends \ProudPlugin {
         ]
       ]
     ]);
+
+    $settings['logo'] = $logo;
+
     return $settings;
   }
 
