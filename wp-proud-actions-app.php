@@ -372,7 +372,7 @@ class ActionsApp extends \ProudPlugin {
             //  'service' => get_option('payment_service', 'stripe'),
             //  'stripe_key' => get_option('payment_stripe_key'),
             //),
-            'google_election_id' => get_option( 'google_election_id', '5000' ),// @todo: change to 5000 for 2016 election
+            'google_election_id' => get_option( 'google_election_id', '7000' ),// 2020 US general election. Get this value: https://developers.google.com/civic-information/docs/v2/elections/electionQuery
             'holidays' => nl2br( esc_html( $holidays ) ),
             'services' => $services,
             'map_layers' => $map_layers,
