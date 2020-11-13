@@ -8,18 +8,18 @@ class ServiceCenterAppPage extends ProudSettingsPage
      */
     public function __construct()
     {
-      parent::__construct(
-        'service-center-app', // Key
-        [ // Submenu settings
-          'parent_slug' => 'service-center',
-          'page_title' => 'Mobile App',
-          'menu_title' => 'Mobile App',
-          'capability' => 'edit_proud_options',
-        ],
-        'service_center_app', // Option
-        [], // Options
-        9 // Weight
-      );
+    //   parent::__construct(
+    //     'service-center-app', // Key
+    //     [ // Submenu settings
+    //       'parent_slug' => 'service-center',
+    //       'page_title' => 'Mobile App',
+    //       'menu_title' => 'Mobile App',
+    //       'capability' => 'edit_proud_options',
+    //     ],
+    //     'service_center_app', // Option
+    //     [], // Options
+    //     9 // Weight
+    //   );
     }
 
     /** 

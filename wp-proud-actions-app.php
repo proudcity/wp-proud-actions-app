@@ -76,7 +76,7 @@ class ActionsApp extends \ProudPlugin {
       require_once( plugin_dir_path(__FILE__) . 'settings/embed.php' );
       require_once( plugin_dir_path(__FILE__) . 'settings/facebook.php' );
       require_once( plugin_dir_path(__FILE__) . 'settings/kiosk.php' );
-      require_once( plugin_dir_path(__FILE__) . 'settings/app.php' );
+    //   require_once( plugin_dir_path(__FILE__) . 'settings/app.php' );
     }
   }
 

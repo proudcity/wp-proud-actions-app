@@ -509,7 +509,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
     public function settings_content() {
       ?>
       <h2 class="form-header">ProudCity Service Center</h2>
-      <h4 class="form-header">Your Service Center appears on your website, in Facebook, as a mobile app, or at a kiosk. Manage global settings on this page, and configure the Service Center everywhere it appears using the links on the left.</h4>
+      <h4 class="form-header">Your Service Center appears on your website, in Facebook, or at a kiosk. Manage global settings on this page, and configure the Service Center everywhere it appears using the links on the left.</h4>
       <?php
 
       $this->print_form( );

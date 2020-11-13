@@ -334,7 +334,7 @@ background: #fff;/*#1b1b1b; /* Old browsers */
       <button value="standalone">Standalone</button>
       <button value="facebook">Facebook</button>
       <button value="embed">Embed</button>
-      <button value="mobile">Mobile</button>
+      <!-- <button value="mobile">Mobile</button> -->
   </div>
 
   <div id="views" class="mobile-only">

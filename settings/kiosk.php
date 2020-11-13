@@ -86,11 +86,7 @@ class ServiceCenterKioskPage extends ProudSettingsPage {
                                                 href="#preview-wrapper"><i
             aria-hidden="true" class="fa fa-fw fa-eye"></i>Preview your mobile
           app</a></h2>'
-      <h4 class="form-header">Add <?php echo get_option('city', 'your city') ?>
-        to the Apple App Store and Google Play. The ProudCity mobile app pulls
-        from the same database your website uses, so you enter all of your
-        content in one place. Add push notifications for an easy way to keep in
-        touch with your residents.</h4>
+
         <?php
 
         $this->print_form();
