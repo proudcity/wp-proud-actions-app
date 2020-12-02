@@ -40,6 +40,14 @@ $is_iframe = true;
     <title>iFrame embed</title>
     <?php wp_print_styles(); ?>
     <?php if(!empty($style)) { print $style; } ?>
+    <?php 
+        try {
+            // Get theme color settings
+            \proud_customize_css();
+        } catch (\Throwable $e) {
+            // Don't care
+        }
+    ?>
     <style>
         body {
           background: none;
