@@ -722,7 +722,7 @@ function attach_actions_meta(&$post) {
         $post->action_hash = '/embed/' . $post->post_name;
         break;
       case 'form':
-        $post->action_url = $post->guid;
+        $post->action_url = html_entity_decode($post->guid);
         break;
     }
   }
