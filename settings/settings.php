@@ -34,6 +34,7 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             'payments' => 'payments', 
             'report' => 'report' 
           ],
+          'toolbar_button_class' => '',
           '311_service' => '',
           '311_link_create' => '',
           '311_link_status' => ''
@@ -457,6 +458,14 @@ class ServiceCenterSettingsPage extends ProudSettingsPage
             'report' => __pcHelp( 'Report Issue' ),
             'google_translate' => __pcHelp('Translate'),
             // 'font_size' => __pcHelp('Font Size'),
+          ],
+        ],
+        'toolbar_button_class' => [
+          '#type' => 'radios',
+          '#title' => 'Navbar button style',
+          '#options' => [
+            '' => __pcHelp( 'Only display icons' ), 
+            'show-label' => __pcHelp( 'Show text labels next to icons' ), 
           ],
         ],
         '311_service' => [
