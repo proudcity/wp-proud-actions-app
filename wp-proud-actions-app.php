@@ -398,10 +398,10 @@ class ActionsApp extends \ProudPlugin {
     // Re-write the `active_tabs` array to include icon, title information (rather than doing this in the app)
     $updates = array();
     $tabs = [
-      'local' => ['title' => __( 'My Services', 'wp-proud-actions-app' ), 'state' => 'local', 'icon' => 'fa-map-marker'],
-      'faq' => ['title' => __( 'Get Answers', 'wp-proud-actions-app' ), 'state' => 'faq', 'icon' => 'fa-question-circle'],
-      'payments' => ['title' => __( 'Make a Payment', 'wp-proud-actions-app' ), 'state' => 'payments', 'icon' => 'fa-credit-card'],
-      'report' => ['title' => __( 'Report an Issue', 'wp-proud-actions-app' ), 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
+      'local' => ['title' => __( 'My services', 'wp-proud-actions-app' ), 'state' => 'local', 'icon' => 'fa-map-marker'],
+      'faq' => ['title' => __( 'Get answers', 'wp-proud-actions-app' ), 'state' => 'faq', 'icon' => 'fa-question-circle'],
+      'payments' => ['title' => __( 'Make a payment', 'wp-proud-actions-app' ), 'state' => 'payments', 'icon' => 'fa-credit-card'],
+      'report' => ['title' => __( 'Report an issue', 'wp-proud-actions-app' ), 'state' => 'report', 'icon' => 'fa-exclamation-triangle'],
       //'status' => ['title' => __( 'Check Status', 'wp-proud-actions-app' ), 'state' => 'status', 'icon' => 'fa-wrench'],
       'map' => ['title' => __( 'Maps', 'wp-proud-actions-app' ), 'state' => 'map', 'icon' => 'fa-map'],
       'vote' => ['title' => __( 'Vote', 'wp-proud-actions-app' ), 'state' => 'vote', 'icon' => 'fa-check-square-o'],
