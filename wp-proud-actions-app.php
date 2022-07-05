@@ -310,7 +310,7 @@ class ActionsApp extends \ProudPlugin {
         }
         else {
           // Get file path
-          if ($item['file_location'] == 'upload') {
+          if ( isset( $item['file_location'] ) && $item['file_location'] == 'upload') {
             $services[$i]['file'] = wp_get_attachment_url($item['file']);
           }
           else {
