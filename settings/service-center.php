@@ -33,7 +33,8 @@ class ServiceCenterPage
         'Service Center', 
         'edit_proud_options', 
         $this->key, array($this, 'page'), 
-        plugins_url('/images/icon.png', __FILE__) 
+		plugins_url('/images/icon.png', __FILE__),
+		'3'
       );
 
     }
