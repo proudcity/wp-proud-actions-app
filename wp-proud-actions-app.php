@@ -3,7 +3,7 @@
 Plugin Name:        Proud 311 Actions App
 Plugin URI:         http://proudcity.com
 Description:        ProudCity distribution
-Version:            2023.05.09.1307
+Version:            2023.08.30.0940
 Author:             ProudCity
 Author URI:         http://proudcity.com
 
