@@ -70,7 +70,12 @@ $bg = str_replace('-150x150', '', $bg);
   }
   .logo-bar {
     padding: 3px;
-    background: <?php echo get_theme_mod( 'color_topnav', '#000000' ); ?>;
+    background: <?php $proud_topnav = get_theme_mod( 'color_topnav', '#000000' );
+                // is_string() rather than a (string) cast: a theme mod can hold an
+                // array after an import or via the theme_mod_* filter, which warns
+                // on cast, and an object, which is fatal. Matches
+                // Proud\Core\action_button_color() and proud_hex_theme_mod().
+                echo ( is_string( $proud_topnav ) ? sanitize_hex_color( $proud_topnav ) : null ) ?: '#000000'; ?>;
     position: fixed;
     width: 100%;
     z-index: 1000;
