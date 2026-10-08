@@ -1,0 +1,16 @@
+<div ng-if="menu.length > 1" class="col-sm-12" ng-class="menuDisplay == 'top' ? 'nav-contain' : ''">
+
+  <a ng-if="logo" ng-click="home($event)" href="#"><img  ng-src="{{logo}}" class="service-center-logo" style="max-width: 100%;" alt="Logo" /></a>
+
+  <ul class="nav nav-pills nav-stacked {{addlClass}}" role="tablist">
+    <li role="presentation" ng-repeat="item in menu" ui-sref-active="active">
+      <a ng-if="item.state" role="tab" aria-controls="main-311" menu-click main-toggle="slide-left" main-toggle-force="remove" animate-route="{{item.direction}}" ui-sref="city.{{item.state}}({{item.params}})" menu-item ng-click="menuClick($index, item)">
+        <i aria-hidden="true" class="fa fa-fw" ng-class="isLoading(item) ? 'fa-spin fa-spinner' : item.icon"></i>
+        <span class="xs-sr-only">{{item.title}}</span>
+      </a>
+      <a ng-if="item.url" href="" ng-href="{{item.url}}">
+        <i aria-hidden="true" class="fa fa-fw" ng-class="isLoading(item) ? 'fa-spin fa-spinner' : item.icon"></i> <span class="xs-sr-only">{{item.title}}</span>
+      </a>
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,22 @@
+<div role="presentation" ng-repeat="node in nodes" class="panel" ng-class="{active: activeSlug == node.slug}">
+  <div id="{{'heading-' + node.slug}}" role="tab" class="panel-heading">
+    <h3 class="panel-title">
+      <a role="button" aria-expanded="{{activeSlug == node.slug}}" aria-controls="{{'faq-' + node.slug}}" href="" ui-sref="city.faq.child.answers({postSlug: node.slug})" ng-bind-html="node.title.rendered" ng-click="openClick(node)"></a>
+    </h3>
+  </div>
+
+  <div id="{{'faq-' + node.slug}}" role="tabpanel" aria-labelledby="{{'heading-' + node.slug}}" class="panel-body" ng-show="activeSlug == node.slug">
+    <div ng-bind-html="node.content.rendered | absoluteUrlFilter"></div>
+    <div proudcity-get-involved></div>
+    <p ng-if="node.field_faq_link">
+      <a href="" ng-href="{{node.field_faq_link.url}}" class="btn btn-primary">{{node.field_faq_link.title}} &raquo;</a>
+    </p>
+
+    <a class="btn btn-default btn-xs" ng-class="{active : node.hearted}" href="#" ng-click="heartClick(node, $event)" title="This makes me proud">
+      <i aria-hidden="true" class="fa fa-fw fa-heart"></i> Helpful
+    </a>
+
+  </div>
+  
+</div>
+<div main-toggle="slide-left" main-toggle-force="add" main-toggle-enter="true"></div>

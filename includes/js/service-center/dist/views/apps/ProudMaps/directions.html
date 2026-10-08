@@ -1,0 +1,14 @@
+<div class="map-pane map-directions row">
+  <div class="map-pane map-directions col-sm-6">
+    <div id="pc-gmap-{{mapId}}" style="height:300px;"></div>
+  </div>
+  <div class="col-sm-6">
+    <div class="btn-group" aria-label="Toolbar with direction methods">
+      <button type="button" class="btn btn-default" ng-repeat="item in methods" ng-class="item.key == method ? 'active' : ''" ng-click="setMethod(item.key)">
+        <i class="fa fa-fw" ng-class="item.icon"></i>{{item.label}}
+      </button>
+    </div>
+
+    <div id="pc-gmap-directions-list-{{mapId}}"></div>
+  </div>
+</div>

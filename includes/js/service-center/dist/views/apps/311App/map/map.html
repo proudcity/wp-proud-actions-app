@@ -1,0 +1,30 @@
+<div class="slide-left-2 column">
+  <search></search>
+  <ol class="breadcrumb clean">
+    <li class="active">
+      <i aria-hidden="true" class="fa fa-th"></i> Select map
+    </li>
+  </ol>
+  <dl class="angular-311-2col">
+    <dd ng-repeat="item in layers" class="col-sm-6 col-md-4 category-wrapper">
+      <div class="h4"><map-layer-link main-toggle="slide-left" main-toggle-force="add" parent="city.map" item="item"></map-layer-link></div>
+    </dd>
+  </dl>
+</div>
+
+<div class="animation-wrap slide-left-2" aria-hidden="true">
+  <search></search>
+  <ol class="breadcrumb clean">
+    <li>
+      <a href="" main-toggle="slide-left"><i aria-hidden="true" class="fa fa-th"></i> Select map</a>
+    </li>
+    <li class="active">
+      <i aria-hidden="true" class="fa" ng-class="layerLoading ? 'fa-spinner fa-spin' : currentLayer.icon"></i> {{currentLayer.title}}
+    </li>
+  </ol>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="quickfade" ui-view></div>
+    </div>
+  </div>
+</div>

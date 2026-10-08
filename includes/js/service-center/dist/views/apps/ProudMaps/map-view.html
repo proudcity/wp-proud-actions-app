@@ -1,0 +1,56 @@
+<h3 ng-if="showTitle" class="text-muted no-margin-top">
+  <i aria-hidden="true" class="fa fa-fw" ng-class="layerLoading ? 'fa-spin fa-spinner' : layer.icon"></i>
+  {{layer.title}} {{titleSuffix}}
+</h3>
+<div aria-hidden="true" ng-if="includeFilters && !hasOverlay" class="btn-toolbar btn-toolbar-legend" role="toolbar">
+  <div class="btn-group">
+    <map-layer-link 
+      classes="btn btn-default" 
+      ng-repeat="item in layers" 
+      parent="{{parentState}}"
+      hide-title="true"
+      item="item"></map-layer-link>
+  </div>
+</div>
+<div aria-hidden="true" ng-attr-id="{{'pc-gmap-' + mapId + '-wrap'}}" 
+     class="map-wrapper" 
+     ng-class="{ 
+                 'has-overlay': hasOverlay,
+                 'map-style-fullscreen': mapStyleFullscreen,
+                 'details-open': detailsOpen, 
+                 'map-loading': layerLoading, 
+                 'filter-open': filterOpen 
+               }" ng-click="toggleFullScreen(null, 'open')">
+  <div class="fullscreen-wrap">
+    <div class="overflow map-slider">
+      <div ng-if="resultsError" class="alert alert-danger">
+        <p>Sorry there was an error fetching that information, please try again later</p>
+      </div>
+      <div ng-if="includeFilters && hasOverlay" class="menu-pane">
+        <nav id="menu-ui" class="menu-ui">
+          <map-layer-link ng-repeat="item in layers" parent="{{parentState}}" item="item"></map-layer-link>
+        </nav>
+      </div>
+      <a ng-if="includeFilters && hasOverlay" class="btn btn-xs btn-default visible-xs-block filter-button" href="" ng-click="toggleFilter($event)"><i aria-hidden="true" class="fa fa-filter"></i> <span>Filter</span></a>
+      <a class="btn btn-xs btn-default full-screen-button" href="" ng-click="toggleFullScreen($event, 'close')">
+          <i aria-hidden="true" class="fa fa-times-circle"></i> 
+          <span>Close</span>
+      </a>
+      <pc-map 
+        zoom="zoom"
+        layers="layers"
+        results="results"
+        layer="layer"
+        active-layer="activeLayer"
+        active-item="listing"
+        zoom-to-include-markers="true"></pc-map>
+      <div class="map-details">
+        <a href="#" class="map-details-close" ng-click="closeDetails($event)">
+          <i aria-hidden="true" class="fa fa-times-circle"></i>
+          <span class="sr-only">Hide</span>
+        </a>
+        <div class="fadeonly" ui-view></div>
+      </div>
+    </div>
+  </div>
+</div>

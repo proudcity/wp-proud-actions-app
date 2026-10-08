@@ -1,0 +1,47 @@
+
+<ol class="breadcrumb clean" role="tablist">
+  <li role="presentation">
+    <a href="" role="tab" aria-controls="main-311" main-toggle="slide-left"><i aria-hidden="true" class="fa fa-th"></i><span class="sr-only">Select payment type</span></a>
+  </li>
+  <li role="presentation" class="active">
+    <i aria-hidden="true" class="fa fa-money"></i> Make {{paymentString}}
+  </li>
+</ol>
+
+<h3 ng-if="post.meta.type != 'gravityform'">{{post.title.rendered}}</h3>
+
+<div class="row">
+
+  <div class="col-sm-5" ng-if="post.meta.type == 'link'">
+
+    <h4>Online {{paymentString | lowercase}}</h4>
+    <p>
+      <a href="" ng-href="{{post.meta.link}}" class="btn btn-primary btn-lg" target="_blank" ng-bind-html="externalLinkText"></a>
+    </p>
+    <p>
+      <small><em>You will be redirected to our secure online {{paymentString | lowercase}} provider.</em></small>
+    </p>
+  </div>
+
+  <div ng-class="post.content.rendered ? 'col-sm-7' : 'col-sm-12'" ng-if="post.meta.type == 'gravityform'">
+
+    <h4>
+
+      Make {{paymentString | lowercase}} online now
+    </h4>
+    <iframe ng-src="{{trustSrc(post)}}" ng-onload="manageHeight(event)" style="border:none;height:1900px;width:100%"></iframe>
+
+  </div>
+
+  <div class="col-sm-5" ng-if="post.content.rendered">
+    <h4>{{paymentString}} info</h4>
+    <div class="body" ng-bind-html="post.content.rendered"></div>
+  </div>
+
+</div>
+<div main-toggle="slide-left" main-toggle-force="add" main-toggle-enter="true"></div>
+
+
+
+
+

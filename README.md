@@ -2,21 +2,23 @@
 An interactive, Angular-based 311 interface for FAQ, Payments, Issue reporting and Issue lookup. [ProudCity](http://proudcity.com) is a Wordpress platform for modern, standards-compliant municipal websites.
 
 ### Development
-By default, this app calls the ProudCity Service Center remove JS include files at https://service-center.proudcity.com.  Fo development,
-we can use the local or beta version.:
+By default, this app loads the ProudCity Service Center JS from the built copy bundled in `./includes/js/service-center/dist`
+(see https://github.com/proudcity/wp-proudcity/issues/2959). When the service center is rebuilt, copy its new `dist/` here:
 
 ```
-# Use local version (in ./includes/js/service-center/dist)
-cd ./includes/js
-git clone git@github.com:proudcity/service-center.git
-wp --allow-root option update wp_proud_service_center_path 'local'
-# OR
-wp --allow-root option update wp_proud_service_center_path '/wp-content/plugins/wp-proud-actions-app/includes/js/service-center/dist/'
+rsync -a --delete --exclude .DS_Store <path-to>/service-center/dist/ ./includes/js/service-center/dist/
+```
+
+To load it from somewhere else, set `wp_proud_service_center_path`:
+
+```
+# Use the Firebase-hosted version (https://service-center.proudcity.com)
+wp --allow-root option update wp_proud_service_center_path '//service-center.proudcity.com/'
 
 # Use beta version
 wp --allow-root option update wp_proud_service_center_path '//service-center-beta.proudcity.com/'
 
-# Use production version (https://service-center.proudcity.com)
+# Back to the bundled copy (default)
 wp --allow-root option delete wp_proud_service_center_path
 ```
 

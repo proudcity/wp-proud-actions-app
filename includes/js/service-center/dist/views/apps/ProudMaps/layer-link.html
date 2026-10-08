@@ -1,0 +1,7 @@
+<a class="{{classes}}"
+   aria-label="{{item.title}}" 
+   title="{{item.title}}" 
+   ui-sref-active="active" 
+   ui-sref="{{state}}({{url}})">
+     <i aria-hidden="true" ng-if="item.icon" class="fa {{item.icon}}"></i><span ng-hide="item.icon && hideTitle">{{item.title}}</span>
+</a>

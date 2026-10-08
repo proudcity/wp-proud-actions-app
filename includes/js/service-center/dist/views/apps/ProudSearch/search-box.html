@@ -1,0 +1,5 @@
+<form class="form-inline form-inline-mobile" ng-submit="googleSearch($event)">
+  <label class="sr-only">Search</label>
+  <input class="form-control form-control-lg" ng-model="term" ng-model-options='{ debounce: 250 }' ng-change='searchSubmit()' placeholder="How may we help you?" style="width:80%" autofocus />
+  <button type="submit" class="btn btn-primary btn-lg" title="Search Google"><i aria-hidden="true" class="fa fa-search" ng-class="loading ? 'fa fa-spin fa-spinner' : 'fa fa-search'"></i></button>
+</form>

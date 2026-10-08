@@ -1,0 +1,36 @@
+<search></search>
+<ol class="breadcrumb clean">
+  <li>
+    <a href="" main-toggle="slide-left"><i aria-hidden="true" class="fa fa-th"></i> I would like to</a>
+  </li>
+  <li class="active">
+    <i aria-hidden="true" class="fa fa-map-marker"></i> {{post.title.rendered}}
+  </li>
+</ol>
+
+<div class="directory-description">
+  <h3 ng-bind-html="post.meta.directory_description"></h3>
+  <ul class="list-inline">
+    <li><a external-link ng-if="post.meta.directory_url" class="btn btn-default pull-left" href="" url="{{post.meta.directory_url}}" role="tab" aria-controls="directory">
+      <i class="fa fa-fw fa-info-circle"></i>Visit Website
+    </a></li>
+    <li><a ng-if="post.meta.directory_phone" class="btn btn-default pull-left" role="tab" aria-controls="directory">
+      <i class="fa fa-fw fa-phone"></i>{{post.meta.directory_phone}}
+    </a></li>
+  </ul>
+  <div ng-if="post.content.rendered" ng-bind-html="post.content.rendered | absoluteUrlFilter"></div>
+</div>
+
+<hr>
+
+<pc-directions ng-if="post.meta.directory_location_type == 'map'"
+               start="{{directionsStart}}"
+               destination="{{post.meta.directory_address}}"
+               method="{{post.meta.directory_location_method}}"></pc-directions>
+
+<div ng-if="post.meta.directory_location_type == 'image'" clas="row">
+  <img ng-src="{{image}}" />
+</div>
+
+
+<div main-toggle="slide-left" main-toggle-force="add" main-toggle-enter="true"></div>

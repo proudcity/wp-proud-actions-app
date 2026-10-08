@@ -1,0 +1,11 @@
+<ul ng-if="results" class="search-autosuggest" style="display: block" >
+  <li ng-repeat="item in results">
+    <a ng-href="{{item.url}}" ng-click="go(item, $event)" class="result-link">
+      <span class="title-span">  
+        <i aria-hidden="true" class="fa fa-fw {{item.icon}}"></i>
+        <span ng-bind-html="item.title"></span>
+      </span>
+      <span ng-if="item.suffix" ng-bind-html="trustHtml(item.suffix)"></span>
+    </a>
+  </li>
+</ul>

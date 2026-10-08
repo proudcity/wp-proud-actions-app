@@ -1,0 +1,30 @@
+<div class="slide-left-2">
+  <search></search>
+  <ol class="breadcrumb clean">
+    <li class="active">
+      <i aria-hidden="true" class="fa fa-th"></i> Select issue type
+    </li>
+  </ol>
+  <dl class="angular-311-2col" role="tablist">
+    <dd role="presentation" ng-repeat="item in types" class="col-sm-6 col-md-4">
+      <div class="h4">
+        <a ng-if="service !== 'seeclickfix' && item.meta.issue_category_type === 'link'" ng-href="{{item.meta.url}}" target="_blank">
+          <i aria-hidden="true" ng-if="item.meta.icon" class="fa {{item.meta.icon}}"></i>
+          <span ng-bind-html="item.title.rendered"></span>
+        </a>
+        <a role="tab" aria-controls="main-311-1" ng-if="service !== 'seeclickfix' && (item.meta.issue_category_type === 'iframe' || item.meta.issue_category_type === 'form' || item.meta.issue_category_type === 'custom')" main-toggle="slide-left" href="#" ui-sref="city.report.iframe({slug: item.slug})">
+          <i aria-hidden="true" ng-if="item.meta.icon" class="fa {{item.meta.icon}}"></i>
+          <span ng-bind-html="item.title.rendered"></span>
+        </a>
+        <a role="tab" aria-controls="main-311-1" ng-if="service === 'seeclickfix'" main-toggle="slide-left" href="#" ui-sref="city.report.map({type: item.id})">
+          <i aria-hidden="true" ng-if="item.icon" class="fa fa-{{item.icon}}"></i>
+          <span ng-bind-html="item.title"></span>
+        </a>
+      </div>
+    </dd>
+  </dl>
+</div>
+
+<div class="animation-wrap slide-left-2" aria-hidden="true">
+  <div id="main-311-1" class="main-311 transform clearfix quickfade" ui-view></div>
+</div>

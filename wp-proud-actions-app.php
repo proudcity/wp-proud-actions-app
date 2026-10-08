@@ -3,7 +3,7 @@
 Plugin Name:        Proud 311 Actions App
 Plugin URI:         http://proudcity.com
 Description:        ProudCity distribution
-Version:            2026.09.03.1407
+Version:            2026.10.08.1115
 Author:             ProudCity
 Author URI:         http://proudcity.com
 
@@ -617,15 +617,19 @@ class ActionsApp extends \ProudPlugin
 
 	/**
 	 *  Get path to app based on `wp_proud_service_center_path` option.
+	 *
+	 *  Defaults to the copy bundled in includes/js/service-center/dist/ so
+	 *  tenant pages don't depend on Firebase Hosting. Set the option to a
+	 *  URL (e.g. '//service-center.proudcity.com/') to load from elsewhere.
 	 */
 	public static function get_app_path()
 	{
 		$local_path = plugins_url('includes/js', __FILE__);
 		$path = get_option('wp_proud_service_center_path', false);
-		if ($path == 'local') {
+		if (empty($path) || $path == 'local') {
 			return $local_path . '/service-center/dist/';
 		} else {
-			return $path ? $path : '//service-center.proudcity.com/';
+			return $path;
 		}
 	}
 

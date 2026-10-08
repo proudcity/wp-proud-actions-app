@@ -1,0 +1,8 @@
+<form class="form-inline pull-right form-inline-mobile" ng-if="searchActive">
+  <button ng-if="send2Phone" role="tab" aria-controls="main-311" class="btn btn-default btn-sm btn-send2phone" ui-sref-active="city.search" main-toggle="slide-left" main-toggle-force="remove" ng-click="doSend2Phone()" style="height:30px;">
+    <i aria-hidden="true" class="fa fa-fw fa-share-square-o"></i><span class="xs-sr-only">Send to Phone</span>
+  </button>
+  <button role="tab" aria-controls="main-311" class="btn btn-default btn-sm" ui-sref-active="city.gravityform" main-toggle="slide-left" main-toggle-force="remove" ng-click="doSearch()" style="height:30px;">
+    <i aria-hidden="true" class="fa fa-fw fa-search"></i><span class="xs-sr-only">Search</span>
+  </button>
+</form>

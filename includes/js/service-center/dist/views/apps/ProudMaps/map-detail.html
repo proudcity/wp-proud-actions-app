@@ -1,0 +1,40 @@
+<div class="detail-inner">
+  <div ng-if="activeItem.resultType == 'error'">
+    <h3 ng-bind-html="activeItem.title"></h3>
+    <p ng-bind-html="activeItem.content"></p>
+  </div>
+  <div ng-if="activeItem.resultType === 'wordpress'">
+    <h3 ng-bind-html="activeItem.title.rendered"></h3>
+    <div>
+      <div ng-bind-html="activeItem.meta.address"></div>
+      <div ng-if="activeItem.address2" ng-bind-html="activeItem.meta.address2"></div>
+      <div ng-if="activeItem.meta.city">{{activeItem.meta.city}}, {{activeItem.meta.state}} {{activeItem.meta.zip}}</div>
+    </div>
+    <p>
+      <a class="btn btn-default btn-xs" ng-href="https://www.google.com/maps/dir/{{activeItem.meta.address}}, {{activeItem.meta.city}}, {{activeItem.meta.state}} {{activeItem.meta.postalCode}}" target="_blank">Get directions <i aria-hidden="true" class="fa fa-location-arrow"></i></a>
+    </p>
+    <p>
+      <a ng-if="activeItem.meta.website" ng-href="{{activeItem.meta.website}}" class="btn btn-default btn-xs"><i aria-hidden="true" class="fa fa-fw fa-globe"></i> Website</a>
+      <a ng-if="activeItem.meta.phone" ng-href="tel:{{activeItem.meta.phone}}" class="btn btn-default btn-xs"><i aria-hidden="true" class="fa fa-fw fa-phone"></i> Phone</a>
+      <a ng-if="activeItem.meta.email" ng-href="mailto:{{activeItem.meta.email}}" class="btn btn-default btn-xs"><i aria-hidden="true" class="fa fa-fw fa-envelope-o"></i> Email us</a>
+    </p>
+    <div ng-bind-html="activeItem.content.rendered"></div>
+  </div>
+  <div ng-if="activeItem.resultType == 'googlePlaces'">
+    <h3 ng-bind-html="activeItem.name"></h3>
+    <div>
+      <div ng-bind-html="activeItem.adr_address"></div>
+    </div>
+    <p>
+      <a class="btn btn-default btn-xs" ng-href="{{activeItem.url}}" target="_blank">Get directions <i aria-hidden="true" class="fa fa-location-arrow"></i></a>
+    </p>
+    <p>
+      <a ng-if="activeItem.website" ng-href="{{activeItem.website}}" class="btn btn-default btn-xs"><i aria-hidden="true" class="fa fa-fw fa-globe"></i> Website</a>
+      <a ng-if="activeItem.formatted_phone_number" ng-href="tel:{{activeItem.formatted_phone_number}}" class="btn btn-default btn-xs"><i aria-hidden="true" class="fa fa-fw fa-phone"></i> Phone</a>
+    </p>
+    <div ng-if="activeItem.opening_hours">
+      <div ng-bind-html="activeItem.opening_hours.weekday_text.join('<br/>')" class="hours-wrapper"></div>
+      <p><strong>Currently <span ng-if="activeItem.opening_hours.open_now">Open</span><span ng-if="!activeItem.opening_hours.open_now">Closed</span></strong></p>
+    </div>
+  </div>
+</div>

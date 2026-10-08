@@ -1,0 +1,36 @@
+<div ng-if="items" class="search-additional-box">
+  <h3 class="no-margin">Meeting Results</h3>
+  
+  <ul class="search-autosuggest" style="display: block">
+    <li ng-repeat="item in items" 
+        ng-if="$index <= num" 
+        class="clearfix granicus-item" 
+        ng-class="{'result-open': $index == activeDetails}">
+      
+      <a href="#" ng-click="showDetails($index, $event)" title="See Details -- {{item._source.name | limitTo : 100 : begin}}" class="result-link">
+        <i aria-hidden="true" class="fa fa-fw fa-list-alt"></i>
+        <span ng-bind-html="getTitle(item)"></span>
+      </a>
+      <div class="search-autosuggest-content" style="clear:left;">
+        <div class="text-muted">{{ item._source.datetime | date : format : shortDate}}</div>
+        <ul class="list-inline" style="margin-bottom: 15px;">
+          <li ng-if="item._source.video_name">
+            <span class="label label-default">{{item._source.video_name}}</span>
+          </li>
+          <li ng-if="item._source.keywords" ng-repeat="keyword in item._source.keywords">
+            <span class="label label-default">{{keyword}}</span>
+          </li>
+        </ul>
+      </div>
+      <div ng-if="$index == activeDetails" class="search-autosuggest-content" style="clear:left;">
+        <p><a href="#" ng-click="go(item, $event)" class="btn btn-primary"><i aria-hidden="true" class="fa fa-fw fa-external-link"></i> Show details</a></p>
+      </div>
+
+    </li>
+  </ul>
+  <ul class="list-inline">
+    <li ng-if="more"><p><a class="btn btn-default btn-sm" ng-click="updateNum($event)" href="#" target="_blank"><i aria-hidden="true" class="fa fa-fw fa-plus-circle"></i>See more</a></p></li>
+    <li ng-if="granicusLinkLocal"><p><a class="btn btn-primary btn-sm" ng-href="{{granicusLinkLocal}}" title="More Meeting Results"><i aria-hidden="true" class="fa fa-fw fa-plus"></i> More Meeting Results</a></p></li>
+    <li><p><a class="btn btn-default btn-sm" ng-href="{{granicusSearchUrl}}" ng-click="granicusSearch(granicusSearchUrl, $event)" target="_blank" title="Search Granicus in a new window"><i aria-hidden="true" class="fa fa-fw fa-external-link"></i> Search Granicus</a></p></li>
+  </ul>
+</div>

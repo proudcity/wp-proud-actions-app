@@ -1,0 +1,11 @@
+<form class="form-inline form-inline-mobile">
+  <div class="form-group has-feedback">
+    <input class="input-lg form-control" type="text" googleplace ng-model="place" place="chosenPlace" ng-change="chosenUpdate()" style="width:350px" placeholder="Enter an address or location" />
+    <i aria-hidden="true" class="form-control-feedback fa fa-search text-muted"></i>
+  </div>
+</form>
+
+<div ng-if="geolocation">
+  <div class="or-bar"><span>OR</span></div>
+  <button class="btn btn-primary btn-lg" ng-click="locate()"><i aria-hidden="true" class="fa fa-fw" ng-class="geolocationLoading ? 'fa-spin fa-status' : 'fa-location-arrow'"></i> Use my current location</button>
+</div>

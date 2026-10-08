@@ -1,0 +1,8 @@
+<div class="row">
+  <div ng-class="showAdditional && additional.granicus ? 'col-sm-7' : 'col-sm-12'">
+    <search-results></search-results>
+  </div>
+  <div class="col-sm-5" ng-if="showAdditional && additional.granicus">
+    <granicus-results></granicus-results>
+  </div>
+</div>

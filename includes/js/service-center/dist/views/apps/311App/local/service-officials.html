@@ -1,0 +1,14 @@
+<div class="row">
+  <div class="col-sm-1 col-xs-2 col-icon"><i aria-hidden="true" class="fa fa-fw fa-2x text-muted fa-users"></i></div>
+  <div class="col-sm-11 col-xs-10">
+    <div class="pull-right action-buttons">
+      <a role="tab" aria-controls="main-311" class="btn btn-xs btn-default" ui-sref="city.local.officials({latlng: latlng})"><i aria-hidden="true" class="fa fa-fw fa-users"></i> See All</a>
+    </div>
+    <div>Elected Officials</div>
+    <div ng-repeat="official in officials">
+      <span>{{official.name}}:</span>
+      <span class="text-muted">{{official.office}}</span>
+    </div>
+    <hr class="compact" />
+  </div>
+</div>
