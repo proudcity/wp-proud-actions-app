@@ -3,7 +3,7 @@
 Plugin Name:        Proud 311 Actions App
 Plugin URI:         http://proudcity.com
 Description:        ProudCity distribution
-Version:            2026.10.08.1115
+Version:            2026.10.26.1425
 Author:             ProudCity
 Author URI:         http://proudcity.com
 
@@ -318,6 +318,11 @@ class ActionsApp extends \ProudPlugin
 
 			// My services settings
 			$services = get_option('services_local', array());
+			// The option can be saved as an empty string; treat anything that
+			// isn't an array as "no services" (wp-proudcity#3006).
+			if (! is_array($services)) {
+				$services = array();
+			}
 			foreach ($services as $i => $item) {
 
 				if (isset($item['type']) && $item['type'] == 'hours') {
@@ -327,14 +332,14 @@ class ActionsApp extends \ProudPlugin
 					if (isset($item['file_location']) && $item['file_location'] == 'upload') {
 						$services[$i]['file'] = wp_get_attachment_url($item['file']);
 					} else {
-						$services[$i]['file'] = $item['file_url'];
+						$services[$i]['file'] = $item['file_url'] ?? '';
 					}
 					unset($services[$i]['file_location']);
 					unset($services[$i]['file_url']);
 
 					// Split items string into array
 					$p = array();
-					preg_match_all("/(.+)\|(.+)/", $item['items'], $p);
+					preg_match_all("/(.+)\|(.+)/", $item['items'] ?? '', $p);
 					$services[$i]['items'] = array_combine($p[1], $p[2]);
 				}
 			}
@@ -425,7 +430,8 @@ class ActionsApp extends \ProudPlugin
 			//       if(empty($instance['active_tabs'])) {
 			//         $instance['active_tabs'] = ['faq' => 'faq', 'payments' => 'payments', 'report' => 'report', 'status' => 'status'];
 			//       }
-			foreach ($instance['active_tabs'] as $tab_key => $tab) {
+			$active_tabs = isset($instance['active_tabs']) && is_array($instance['active_tabs']) ? $instance['active_tabs'] : [];
+			foreach ($active_tabs as $tab_key => $tab) {
 				if (!empty($tabs[$tab])) {
 					$item = $tabs[$tab];
 				} elseif (strpos($tab, 'custom') !== false) {

@@ -1,3 +1,12 @@
+## 2026.10.26.1425
+
+- Fixed PHP 8 warnings that started showing in Cloud Logging once PHP errors were routed to stderr (wp-proudcity#2997), about 2,300 an hour fleet-wide.
+  - `services_local` saved as an empty string made both `foreach` loops warn. Anything that is not an array is now treated as no services, so the service center receives `services: []` instead of `""`; both render nothing.
+  - Local services without `file_url` or `items` now default to empty.
+  - Instances with no `active_tabs` (or a non-array value) are treated as having no tabs, which is what the old loop did after warning.
+
+References: https://github.com/proudcity/wp-proudcity/issues/3006
+
 ## 2026.10.08.1115
 
 - The service center widget now loads its JavaScript from a copy bundled in this plugin (`includes/js/service-center/dist/`) instead of Firebase Hosting at `service-center.proudcity.com`. Release 1.66.0 deleted the `wp_proud_service_center_path` option fleet-wide, so `ActionsApp::get_app_path()` fell back to Firebase on every site. Every homepage Actions widget then fetched `js/libraries.min.js`, `js/app.min.js` and `views/app.templates.js` from the `service-center-cbe20` project, which used about 50-60 GB of Hosting transfer a month. Firebase began enforcing the Spark plan's 10 GB monthly cap in October 2026 and warned that Hosting could be disabled, which would have broken the widget on every tenant site. `get_app_path()` now returns the bundled path when the option is empty or set to `local`. Any other value, such as `//service-center.proudcity.com/`, is still used as the path, so a site can be pointed back at Firebase or at beta.
