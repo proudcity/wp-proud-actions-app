@@ -680,7 +680,7 @@ class ActionsApp extends \ProudPlugin
 					'slug' => $topic->slug,
 					'title' => $topic->name,
 					'icon' => $meta ? get_term_meta($topic->term_id, 'icon', true) : null,
-					'color' => $meta ? get_term_meta($topic->term_id, 'color', true) : null,
+					'color' => $meta ? (function_exists('Proud\Core\proud_normalize_palette_color') ? \Proud\Core\proud_normalize_palette_color(get_term_meta($topic->term_id, 'color', true)) : '') : null,
 				]);
 			}
 		}
