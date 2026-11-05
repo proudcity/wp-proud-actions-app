@@ -679,7 +679,7 @@ class ActionsApp extends \ProudPlugin
 					'type' => 'wordpress',
 					'slug' => $topic->slug,
 					'title' => $topic->name,
-					'icon' => $meta ? get_term_meta($topic->term_id, 'icon', true) : null,
+					'icon' => $meta ? (function_exists('Proud\Core\proud_sanitize_icon_class') ? \Proud\Core\proud_sanitize_icon_class(get_term_meta($topic->term_id, 'icon', true)) : '') : null,
 					'color' => $meta ? (function_exists('Proud\Core\proud_normalize_palette_color') ? \Proud\Core\proud_normalize_palette_color(get_term_meta($topic->term_id, 'color', true)) : '') : null,
 				]);
 			}
