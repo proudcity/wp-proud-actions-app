@@ -1,3 +1,9 @@
+## 2026.11.05.1045
+
+- Map layer `color` and `icon` from location categories now go through the wp-proud-core palette and icon sanitizers before reaching the page (wp-proudcity#2768). Closes a stored XSS path for legacy `icon` values.
+
+References: https://github.com/proudcity/wp-proudcity/issues/2768
+
 ## 2026.10.26.1425
 
 - Fixed PHP 8 warnings that started showing in Cloud Logging once PHP errors were routed to stderr (wp-proudcity#2997), about 2,300 an hour fleet-wide.
